@@ -4,7 +4,7 @@
  *  É disponibilizado para auxiliar o processo de estudo. Os alunos são encorajados a testar adequadamente o
  *  código fornecido e a procurar soluções alternativas, à medida que forem adquirindo mais conhecimentos.
  */
-package uminho.dss.turmas3l.data;
+package DSS_Grupo27_2022_23.FaseIII.data;
 
 import uminho.dss.turmas3l.business.Aluno;
 import uminho.dss.turmas3l.business.Sala;
@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
 import static java.util.stream.Collectors.toList;
 
 import static java.util.stream.Collectors.*;
