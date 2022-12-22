@@ -1,97 +1,203 @@
 package data;
 
+import java.sql.Connection;
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.sql.*;
 
 import business.subCatálogos.Piloto;
 
-public class PilotoDAO implements Map<String, Piloto>{
+public class PilotoDAO implements Map<String, Piloto> {
 
     private static PilotoDAO singleton = null;
 
     public static PilotoDAO getInstance() {
-        
+
         if (PilotoDAO.singleton == null) {
-            
+
             PilotoDAO.singleton = new PilotoDAO();
         }
 
         return PilotoDAO.singleton;
     }
 
+    public PilotoDAO() {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();) {
+            stm.executeUpdate("CREATE TABLE IF NOT EXISTS pilotos ("
+                    + "nome VARCHAR(255) NOT NULL,"
+                    + "cts DOUBLE NOT NULL,"
+                    + "sva DOUBLE NOT NULL,"
+                    + "PRIMARY KEY (nome))");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
-        
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement()) {
+            stm.executeUpdate("TRUNCATE pilotos");
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
     }
 
     @Override
     public boolean containsKey(Object key) {
-        // TODO Auto-generated method stub
-        return false;
+        boolean r;
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT nome FROM pilotos WHERE nome='" + key.toString() + "'")) {
+            r = rs.next();
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return r;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        // TODO Auto-generated method stub
-        return false;
+        if (value.getClass() != Piloto.class) {
+            return false;
+        }
+        return this.containsKey(((Piloto) value).getNome());
     }
 
     @Override
     public Set<Entry<String, Piloto>> entrySet() {
-        // TODO Auto-generated method stub
-        return null;
+        Set<Entry<String, Piloto>> set = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM pilotos")) {
+            while (rs.next()) {
+                Piloto p = new Piloto(rs.getString("nome"), rs.getDouble("cts"), rs.getDouble("sga"));
+                set.add(new AbstractMap.SimpleEntry<>(p.getNome(), p));
+            }
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return set;
     }
 
     @Override
     public Piloto get(Object key) {
-        // TODO Auto-generated method stub
-        return null;
+        Piloto p = null;
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM pilotos WHERE nome='" + key.toString() + "'")) {
+            if (rs.next()) {
+                p = new Piloto(rs.getString("nome"), rs.getDouble("cts"), rs.getDouble("sga"));
+            }
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return p;
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.size() == 0;
     }
 
     @Override
     public Set<String> keySet() {
-        // TODO Auto-generated method stub
-        return null;
+        Set<String> set = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT nome FROM pilotos")) {
+            while (rs.next()) {
+                set.add(rs.getString("nome"));
+            }
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return set;
     }
 
     @Override
     public Piloto put(String arg0, Piloto arg1) {
-        // TODO Auto-generated method stub
-        return null;
+        Piloto p = this.get(arg0);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement()) {
+            stm.executeUpdate("INSERT INTO pilotos (nome, cts, sga) VALUES ('" + arg1.getNome() + "', " + arg1.getCTS()
+                    + ", " + arg1.getSVA() + ")");
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return p;
     }
 
     @Override
     public void putAll(Map<? extends String, ? extends Piloto> m) {
-        // TODO Auto-generated method stub
-        
+        for (Piloto p : m.values()) {
+            this.put(p.getNome(), p);
+        }
     }
 
     @Override
     public Piloto remove(Object key) {
-        // TODO Auto-generated method stub
-        return null;
+        Piloto p = this.get(key);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement()) {
+            stm.executeUpdate("DELETE FROM pilotos WHERE nome='" + key.toString() + "'");
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return p;
     }
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
-        return 0;
+        int i = 0;
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM pilotos")) {
+            while (rs.next()) {
+                i++;
+            }
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return i;
     }
 
     @Override
     public Collection<Piloto> values() {
-        // TODO Auto-generated method stub
-        return null;
+        Collection<Piloto> col = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM pilotos")) {
+            while (rs.next()) {
+                Piloto p = new Piloto(rs.getString("nome"), rs.getDouble("cts"), rs.getDouble("sga"));
+                col.add(p);
+            }
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return col;
     }
 
- 
-    
 }

@@ -16,6 +16,12 @@ public class Campeonato {
         this.circuitoDAO = CircuitoDAO.getInstance();
     }
 
+    public Campeonato(String nome) {
+        this.nome = nome;
+        this.circuitos = new ArrayList<>();
+        this.circuitoDAO = CircuitoDAO.getInstance();
+    }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -36,6 +42,10 @@ public class Campeonato {
             copia.add(c);
         }
         return copia;
+    }
+
+    public void addCircuitos(String circuito){
+        this.circuitos.add(circuito);
     }
 
 }

@@ -18,9 +18,9 @@ public class GT extends Carro
         super();
     }
     
-    public GT(String marca, String modelo, int cilindrada, int potencia, int fiabilidade, int id, double PAC, double taxaDeterioracao)
+    public GT(int id, String marca, String modelo, int cilindrada, int potencia, int fiabilidade, double PAC, double taxaDeterioracao)
     {
-        super(marca,modelo,cilindrada,potencia,fiabilidade,id,PAC);
+        super(id,marca,modelo,cilindrada,potencia,fiabilidade,PAC);
         this.taxaDeterioracao = taxaDeterioracao;
     }
     

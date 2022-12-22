@@ -11,46 +11,47 @@ package business.subCatálogos;
 public abstract class Carro
 {
     //Variaveis de instancia
+    private int id;
     private String marca;
     private String modelo;
     private int cilindrada;
     private int potenciaCombustao;
     private double PAC;
     private int fiabilidade;
-    private int id;
+    
     
     /* Construtores */
     public Carro()
     {
+        this.id = 0;
         this.marca = "";
         this.modelo = "";
         this.cilindrada = 0;
         this.potenciaCombustao = 0;
         this.fiabilidade = 0;
         this.PAC = 0;
-        this.id = 0;
     }
     
-    public Carro(String marca, String modelo, int cilindrada, int potencia, int fiabilidade, int id, double PAC)
+    public Carro(int id, String marca, String modelo, int cilindrada, int potencia, int fiabilidade, double PAC)
     {
+        this.id = id;
         this.marca = marca;
         this.modelo = modelo;
         this.cilindrada = cilindrada;
         this.potenciaCombustao = potencia;
         this.fiabilidade = fiabilidade; 
-        this.id = id;
         this.PAC = PAC;
     }
     
     public Carro(Carro c)
     {
-       this.marca = c.getMarca();
-       this.modelo = c.getModelo();
-       this.cilindrada = c.getCilindrada();
-       this.potenciaCombustao = c.getPotencia();
-       this.fiabilidade = c.getFiabilidade();
-       this.id = c.getID();
-       this.PAC = c.getPAC();
+        this.id = c.getID();
+        this.marca = c.getMarca();
+        this.modelo = c.getModelo();
+        this.cilindrada = c.getCilindrada();
+        this.potenciaCombustao = c.getPotencia();
+        this.fiabilidade = c.getFiabilidade();
+        this.PAC = c.getPAC();
     }
     
     /* Gets e sets */
@@ -124,12 +125,12 @@ public abstract class Carro
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
+        sb.append("\nID: ");sb.append(this.id);
         sb.append("\nMarca: ");sb.append(this.marca);
         sb.append("\nModelo: ");sb.append(this.modelo);
         sb.append("\nCilindrada: ");sb.append(this.cilindrada);
         sb.append("\nPotencia: ");sb.append(this.potenciaCombustao);
         sb.append("\nFiabiliade: ");sb.append(this.fiabilidade);
-        sb.append("\nID: ");sb.append(this.id);
         sb.append("\nPAC: ");sb.append(this.PAC);
         return sb.toString();
     }

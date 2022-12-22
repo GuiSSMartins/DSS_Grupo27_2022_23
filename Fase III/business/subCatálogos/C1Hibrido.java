@@ -7,41 +7,32 @@
  */
 package business.subCatálogos;
 
-public class C1Hibrido extends C1 implements Hibrido
+public class C1Hibrido extends Hibrido
 {
-    private int potenciaEletrico;
-    
     public C1Hibrido()
     {
        super();
-       this.potenciaEletrico = 0;
     }
-    
-    public C1Hibrido(String marca, String modelo, int potencia, int fiabilidade,int id, double PAC, int eletrico)
+
+
+    public C1Hibrido(int id, String marca, String modelo, int cilindrada, int potencia, int fiabilidade, double PAC, int eletrico)
     {
-        super(marca,modelo,potencia,fiabilidade,id,PAC);
-        this.potenciaEletrico = eletrico;
+        super(id,marca,modelo,cilindrada,potencia,fiabilidade,PAC,eletrico);
     }
     
     public C1Hibrido(C1Hibrido p)
     {
         super(p);
-        this.potenciaEletrico = p.getPotenciaEletrico();
     }
     
     public C1Hibrido clone()
     {
         return new C1Hibrido(this);
     }
-    
-    public int getPotenciaEletrico()
-    {
-        return this.potenciaEletrico;
-    }
-    
-    public void setPotenciaEletrico(int potencia)
-    {
-        this.potenciaEletrico = potencia;
+
+    public boolean verificaFiabilidade(int fiabilidade) {
+        if (fiabilidade >= 90 && fiabilidade <= 100) return true;
+        return false;
     }
     
     public boolean equals(Object o)
@@ -53,6 +44,6 @@ public class C1Hibrido extends C1 implements Hibrido
         return false;
         
         C1Hibrido c = (C1Hibrido) o;
-        return ( super.equals(c) && this.potenciaEletrico == c.getPotenciaEletrico());
+        return ( super.equals(c));
     }    
 }

@@ -57,7 +57,7 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs =
-                stm.executeQuery("SELECT EMail FROM utilizadores WHERE Email='"+key.toString()+"'")) {
+                stm.executeQuery("SELECT Email FROM utilizadores WHERE Email='"+key.toString()+"'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!

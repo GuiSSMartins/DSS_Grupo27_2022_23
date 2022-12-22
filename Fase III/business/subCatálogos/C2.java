@@ -15,9 +15,9 @@ public class C2 extends Carro
         super();
     }
     
-    public C2(String marca, String modelo, int cilindrada, int potencia, int fiabilidade, int id, double PAC)
+    public C2(int id, String marca, String modelo, int cilindrada, int potencia, int fiabilidade, double PAC)
     {
-        super(marca,modelo,cilindrada,potencia,fiabilidade,id,PAC);
+        super(id,marca,modelo,cilindrada,potencia,fiabilidade,PAC);
     }
     
     public C2(C2 p)

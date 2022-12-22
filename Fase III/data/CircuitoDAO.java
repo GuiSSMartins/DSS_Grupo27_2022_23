@@ -1,8 +1,12 @@
 package data;
 
+import java.sql.Connection;
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.sql.*;
 
 import business.subCatálogos.Circuito;
 
@@ -20,77 +24,195 @@ public class CircuitoDAO implements Map<String,Circuito>{
         return CircuitoDAO.singleton;
     }
 
+    private CircuitoDAO() {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();) {
+            stm.executeUpdate("CREATE TABLE IF NOT EXISTS circuitos ("
+                    + "nome VARCHAR(255) NOT NULL,"
+                    + "nvoltas INT NOT NULL,"
+                    + "comprimento DOUBLE NOT NULL,"
+                    + "ncurvas INT NOT NULL,"
+                    + "nretas INT NOT NULL,"
+                    + "nchicanes INT NOT NULL,"
+                    + "PRIMARY KEY (nome))");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
-        
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();) {
+            stm.executeUpdate("TRUNCATE circuitos");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean containsKey(Object key) {
-        // TODO Auto-generated method stub
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos WHERE nome='"+key+"'")) {
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        // TODO Auto-generated method stub
-        return false;
+        Circuito t = (Circuito) value;
+        return this.containsKey(t.getNome());
     }
 
     @Override
     public Set<Entry<String, Circuito>> entrySet() {
-        // TODO Auto-generated method stub
-        return null;
+        Set<Entry<String, Circuito>> res = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) { 
+            while (rs.next()) {
+                String idt = rs.getString("nome");
+                Circuito t = this.get(idt);
+                res.add(new AbstractMap.SimpleEntry<>(idt, t));
+            }
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return res;
     }
 
     @Override
     public Circuito get(Object key) {
-        // TODO Auto-generated method stub
-        return null;
+        Circuito t = null;
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT * FROM circuitos WHERE nome='"+key+"'")) { 
+            if (rs.next()) {
+                t = new Circuito(rs.getString("nome"), rs.getInt("nvoltas"), rs.getDouble("comprimento"), rs.getInt("ncurvas"), rs.getInt("nretas"), rs.getInt("nchicanes"));
+            }
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return t;
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.size() == 0;
     }
 
     @Override
     public Set<String> keySet() {
-        // TODO Auto-generated method stub
-        return null;
+        Set<String> res = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) { 
+            while (rs.next()) {
+                String idt = rs.getString("nome");
+                res.add(idt);
+            }
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return res;
     }
 
     @Override
     public Circuito put(String arg0, Circuito arg1) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        Circuito t = null;
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement()) {
 
-    @Override
-    public void putAll(Map<? extends String, ? extends Circuito> m) {
-        // TODO Auto-generated method stub
+            String nome = arg1.getNome();
+            int nVoltas = arg1.getNVoltas();    
+            double comprimento = arg1.getComprimento();       
+            int nCurvas = arg1.getNCurvas();      
+            int nRetas = arg1.getNRetas();
+            int nChicanes = arg1.getNChicanes();  
+
+            stm.executeUpdate(
+                    "INSERT INTO utilizadores " +
+                            "VALUES ('"+ nome + "', '"+
+                            nVoltas +"', '"+
+                            comprimento +"', '"+
+                            nCurvas +"', '"+
+                            nRetas +"', '"+
+                            nChicanes + ") '");
+
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return t;
         
     }
 
     @Override
+    public void putAll(Map<? extends String, ? extends Circuito> m) {
+         for (Circuito p : m.values()) {
+            this.put(p.getNome(), p);
+        }
+    }
+
+    @Override
     public Circuito remove(Object key) {
-        // TODO Auto-generated method stub
-        return null;
+        Circuito p = this.get(key);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement()) {
+            stm.executeUpdate("DELETE FROM circuitos WHERE nome='" + key.toString() + "'");
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return p;
     }
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
-        return 0;
+       int i = 0;
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM circuitos")) {
+            while (rs.next()) {
+                i++;
+            }
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return i;
     }
 
     @Override
     public Collection<Circuito> values() {
-        // TODO Auto-generated method stub
-        return null;
+        Collection<Circuito> res = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) { 
+            while (rs.next()) {
+                String idt = rs.getString("nome");
+                Circuito t = this.get(idt);
+                res.add(t);
+            }
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return res;
     }
-
 
 }

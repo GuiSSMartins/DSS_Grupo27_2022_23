@@ -197,7 +197,7 @@ public class Corrida implements Serializable
      */   
     public void simulaCorrida()
     {
-        int voltas = this.circuito.getVoltas();
+        int voltas = this.circuito.getNVoltas();
         long t_aux, t_volta;
         ArrayList<Carro> aux = new ArrayList<Carro>();
         HashMap<Carro,Integer> temp = new HashMap<Carro,Integer>();
@@ -412,7 +412,6 @@ public class Corrida implements Serializable
        {
            sb.append("\n");
            sb.append(i);sb.append(" - ");sb.append(c.getMarca());sb.append(" ");sb.append(c.getModelo());
-           sb.append("\t ");sb.append(c.getEquipa().getNome());sb.append("\t ");sb.append(c.getClass().getName());
            i++;
        }
        return sb.toString();

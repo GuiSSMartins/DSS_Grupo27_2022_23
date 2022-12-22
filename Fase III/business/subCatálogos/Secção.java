@@ -5,9 +5,24 @@ public class Secção {
     private int GDU;
     private String tipo;
     private int id;
+    private int posicao;
+    private String nomeCircuito;
+
 
     public Secção(){
 
+    }
+
+    public Secção(int id, String tipo, int GDU, int posicao, String nomeCircuito){
+        this.id = id;
+        this.tipo = tipo;
+        this.GDU = GDU;
+        this.posicao = posicao;
+        this.nomeCircuito = nomeCircuito;
+    }
+
+    public String getNomeCircuito() {
+        return this.nomeCircuito;
     }
 
     public int getGDU(){
@@ -17,6 +32,7 @@ public class Secção {
     public void setGDU(int GDU) {
         this.GDU = GDU;
     }
+
 
     public String getTipo() {
         return this.tipo;
@@ -34,6 +50,13 @@ public class Secção {
         this.tipo = tipo;
     }
 
+    public int getPosicao() {
+        return this.posicao;
+    }
+
+    public void setPosicao(int posicao) {
+        this.posicao = posicao;
+    }
     public int hashCode() {
         int lHashCode = 0;
         if ( this.tipo != null ) {

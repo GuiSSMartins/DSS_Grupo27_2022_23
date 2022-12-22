@@ -1,11 +1,34 @@
 package business.subPartidas;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Evento {
 	private int idSecção;
 	private int acontecimento;
+
+	/**
+	 * acidente - 0
+	 * ultrapassagem - 1
+	 * foste ultrapassado - 2
+	 * despiste - 3
+	 * avaria - 4
+	 */
+
 	private List<String> idjogadoresEnvolvidos;
+
+
+	public Evento() {
+		this.idjogadoresEnvolvidos = new ArrayList<>();
+	}
+
+	public void addJogador(String jogador) {
+		this.idjogadoresEnvolvidos.add(jogador);
+	}
+
+	public int getIDSecção(){
+		return this.idSecção;
+	}
 
 
 	public boolean equals(Object aObject) {

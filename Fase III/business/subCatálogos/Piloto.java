@@ -24,11 +24,11 @@ public class Piloto implements Serializable
         this.SVA = 0;
     }
     
-    public Piloto(String nome, String nacionalidade, int qual, int qual_chuva, int palmares)
+    public Piloto(String nome, double CTS, double SVA)
     {
         this.nome = nome;
-        this.CTS = qual;
-        this.SVA = qual_chuva;
+        this.CTS = CTS;
+        this.SVA = SVA;
     }
     
     public Piloto(Piloto p)
