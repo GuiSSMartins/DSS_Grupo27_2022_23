@@ -59,7 +59,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs =
-                stm.executeQuery("SELECT Id FROM carreiras WHERE Id='"+key+"'")) {
+                stm.executeQuery("SELECT Id FROM carreiras WHERE Id='"+key.toString()+"'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -85,7 +85,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         Carreira t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id='"+key+"'")) {
+             ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id='"+key.toString()+"'")) {
             
             new Carreira();
         
@@ -104,7 +104,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
 
     @Override
     public Set<String> keySet() {
-        throw new NullPointerException("Not implemented!");// TODO Auto-generated method stub
+        throw new NullPointerException("Not implemented!");
     }
 
     @Override
@@ -193,7 +193,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         return res;
     }
 
-public List<Carreira> getCarreiras(String email){
+    public List<Carreira> getCarreiras(String email){
         List<Carreira> res = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
@@ -210,5 +210,17 @@ public List<Carreira> getCarreiras(String email){
         }
         return res;
     }
+
+    public void updatePontuacao(String id, int pontuacao){
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("UPDATE carreiras SET Pontuacao='"+pontuacao+"' WHERE Id='"+id+"'")) { 
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+    }
+
     
 }

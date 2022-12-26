@@ -36,7 +36,15 @@ public class Campeonato {
         }
     }
 
-    public List<String> getCircuitos() {
+    public List<Circuito> getCircuitos() {
+        List<Circuito> copia = new ArrayList<>();
+        for (String c : this.circuitos) {
+            copia.add(this.circuitoDAO.get(c));
+        }
+        return copia;
+    }
+
+    public List<String> getNomesCircuitos() {
         List<String> copia = new ArrayList<>();
         for (String c : this.circuitos) {
             copia.add(c);
@@ -46,6 +54,10 @@ public class Campeonato {
 
     public void addCircuitos(String circuito){
         this.circuitos.add(circuito);
+    }
+
+    public String toString() {
+        return this.nome;
     }
 
 }

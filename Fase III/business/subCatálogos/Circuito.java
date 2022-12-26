@@ -30,8 +30,12 @@ public class Circuito {
 		this.nCurvas = nCurvas;
 		this.nChicanes = nChicanes;
 		this.nRetas = nRetas;
-		this.secções = new ArrayList<>();
 		this.secçãoDAO = SecçãoDAO.getInstance();
+		this.secções = new ArrayList<>();
+
+		List<Secção> list = secçãoDAO.getSecções(nome);
+		setSecções(list);
+
 	}
 
 	public Circuito(Circuito c) {
@@ -94,11 +98,17 @@ public class Circuito {
 	}
 
 	public List<Secção> getSecções() {
-		return this.secções;
+		List<Secção> list = new ArrayList<>();
+
+		for(Secção s : this.secções) list.add(s.clone());
+
+		return list;
 	}
 
 	public void setSecções(List<Secção> secções) {
-		this.secções = secções;
+		for(Secção s : secções) {
+			this.secções.add(s.clone());
+		}
 	}
 
 	
@@ -134,6 +144,22 @@ public class Circuito {
 			return lEquals;
 		}
 		return false;
+	}
+
+	public double getTempoMedio() {
+		double tempo = 0;
+		for (Secção s : this.secções) {
+			tempo += s.getTempoMedio();
+		}
+		return tempo;
+	}
+
+	public double getTempoDesvio() {
+		double tempo = 0;
+		for (Secção s : this.secções) {
+			tempo += s.getTempoDesvio();
+		}
+		return tempo;
 	}
 
 	public Circuito clone() {

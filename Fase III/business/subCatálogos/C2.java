@@ -7,6 +7,8 @@
  */
 package business.subCatálogos;
 
+import java.util.Random;
+
 public class C2 extends Carro
 {
     
@@ -45,5 +47,14 @@ public class C2 extends Carro
         
         C2 c = (C2) o;
         return ( super.equals(c));
+    }
+
+    public boolean checkDNF(int volta,int totalvoltas,int clima)
+    {
+       Random rand=new Random();
+       int x=rand.nextInt(85);
+       //no maximo fiabilidade de 85%
+       int fiabilidade = super.getFiabilidade() + (super.getCilindrada()/1200);
+       return (x > fiabilidade);
     }
 }

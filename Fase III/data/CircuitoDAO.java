@@ -54,7 +54,7 @@ public class CircuitoDAO implements Map<String,Circuito>{
     public boolean containsKey(Object key) {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
             Statement stm = conn.createStatement();
-            ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos WHERE nome='"+key+"'")) {
+            ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos WHERE nome='"+key.toString()+"'")) {
             return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,9 +92,9 @@ public class CircuitoDAO implements Map<String,Circuito>{
         Circuito t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM circuitos WHERE nome='"+key+"'")) { 
+             ResultSet rs = stm.executeQuery("SELECT * FROM circuitos WHERE nome='"+key.toString()+"'")) { 
             if (rs.next()) {
-                t = new Circuito(rs.getString("nome"), rs.getInt("nvoltas"), rs.getDouble("comprimento"), rs.getInt("ncurvas"), rs.getInt("nretas"), rs.getInt("nchicanes"));
+                t = new Circuito(rs.getString("nome"), rs.getInt("nvoltas"), rs.getDouble("comprimento"), rs.getInt("ncurvas"), rs.getInt("nchicanes"), rs.getInt("nretas"));
             }
         } catch (Exception e) {
             // Database error!

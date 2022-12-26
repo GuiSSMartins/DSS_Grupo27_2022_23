@@ -7,18 +7,39 @@ public class Secção {
     private int id;
     private int posicao;
     private String nomeCircuito;
+    private double comprimento;
 
 
     public Secção(){
 
     }
 
-    public Secção(int id, String tipo, int GDU, int posicao, String nomeCircuito){
+    public Secção(int id, String tipo, int GDU, int posicao, String nomeCircuito, double comprimento){
         this.id = id;
         this.tipo = tipo;
         this.GDU = GDU;
         this.posicao = posicao;
         this.nomeCircuito = nomeCircuito;
+        this.comprimento = comprimento;
+    }
+
+    public Secção(Secção s){
+        this.id = s.getID();
+        this.tipo = s.getTipo();
+        this.GDU = s.getGDU();
+        this.posicao = s.getPosicao();
+        this.nomeCircuito = s.getNomeCircuito();
+        this.comprimento = s.getComprimento();
+    }
+
+    public double getComprimento()
+    {
+        return this.comprimento;
+    }
+
+    public void setComprimento(double c)
+    {
+        this.comprimento=c;
     }
 
     public String getNomeCircuito() {
@@ -78,8 +99,50 @@ public class Secção {
             lEquals &= ((this.tipo == lSecçãoObject.tipo)
                     || (this.tipo != null && this.tipo.equals(lSecçãoObject.tipo)));
             lEquals &= this.id == lSecçãoObject.id;
+            lEquals &= this.comprimento == lSecçãoObject.comprimento;
             return lEquals;
         }
         return false;
     }
+
+    public double getTempoMedio(){
+        return this.comprimento/this.getVelocidadeMedia();
+    }
+
+    public double getTempoDesvio(){
+        return this.comprimento/this.getVelocidadeDesvio();
+    }
+
+    public double getVelocidadeMedia()
+    {
+        switch(tipo){
+            case "Reta":
+                return 180;
+            case "Curva":
+                return 120;
+            case "Chicane":
+                return 80;
+            default:
+                return 0;
+        }
+    }
+
+    public double getVelocidadeDesvio()
+    {
+        switch(tipo){
+            case "Reta":
+                return 150;
+            case "Curva":
+                return 80;
+            case "Chicane":
+                return 50;
+            default:
+                return 0;
+        }
+    }
+
+    public Secção clone(){
+        return new Secção(this);
+    }
+
 }

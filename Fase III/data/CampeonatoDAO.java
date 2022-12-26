@@ -31,7 +31,7 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
             stm.executeUpdate("CREATE TABLE IF NOT EXISTS campeonatos ("
                     + "Id varchar(510) NOT NULL PRIMARY KEY," //Nome campeonato + nome circuito
                     + "Nome VARCHAR(255) NOT NULL,"
-                    + "nomeCircuito VARCHAR(255) NOT NULL FOREIGN KEY REFERENCES circuitos(Nome))"
+                    + "nomeCircuito VARCHAR(255) NOT NULL FOREIGN KEY REFERENCES circuitos(nome))"
                     );
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs =
-                stm.executeQuery("SELECT Id FROM campeonatos WHERE Id='"+key+"'")) {
+                stm.executeQuery("SELECT Id FROM campeonatos WHERE Id='"+key.toString()+"'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -114,7 +114,7 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
              Statement stm = conn.createStatement()) {
 
             String nome = arg1.getNome();
-            List<String> circuitos = arg1.getCircuitos();
+            List<String> circuitos = arg1.getNomesCircuitos();
 
             for(String nomeCircuito : circuitos) {
                 String id = nome.concat(nomeCircuito);

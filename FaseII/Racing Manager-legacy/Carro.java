@@ -220,6 +220,6 @@ public abstract class Carro implements Comparable<Carro>,Serializable
     /**
      * define se o carro desiste (true desiste, false continua em prova)
      */
-    public abstract boolean DNF(int volta,int totalvoltas,int clima);
+    public abstract boolean checkDNF(int volta,int totalvoltas,int clima);
     
 }

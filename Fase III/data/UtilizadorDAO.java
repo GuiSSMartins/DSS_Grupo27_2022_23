@@ -30,7 +30,7 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
                     "Password varchar(100) NOT NULL," +
                     "Nome varchar(100) NOT NULL)" +
                     "Jogador int NOT NULL" +
-                    "VersaoJogo varchar(10)";
+                    "VersaoJogo int";
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...
@@ -83,11 +83,11 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
         Utilizador t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM utilizadores WHERE Email='"+key+"'")) {
+             ResultSet rs = stm.executeQuery("SELECT * FROM utilizadores WHERE Email='"+key.toString()+"'")) {
             if (rs.next()) {  // A chave existe na tabela
                 int jogador = rs.getInt("Jogador");
                 if (jogador == 1) {
-                    t = new Jogador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"), rs.getString("VersaoJogo"));
+                    t = new Jogador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"), rs.getInt("VersaoJogo"));
                 }
                 else {
                     t = new Administrador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"));
@@ -179,7 +179,7 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
             String nome = arg1.getNome();
             String password = arg1.getPassword();
             int jogador = 0;
-            String versaoJogo = null; //arg1.getVersaoJogo();
+            int versaoJogo = 0; //arg1.getVersaoJogo();
 
             if (arg1 instanceof Jogador) {
                 jogador = 1;
@@ -201,5 +201,27 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
             throw new NullPointerException(e.getMessage());
         }
         return t;
+    }
+
+    public void updatePassword(String email, String password){
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("UPDATE utilizadores SET Password='"+password+"' WHERE Email='"+email+"'")) { 
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+    }
+
+    public void updateVersao(String email, int versao){
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("UPDATE utilizadores SET VersaoJogo='"+versao+"' WHERE Email='"+email+"'")) { 
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
     }
 }

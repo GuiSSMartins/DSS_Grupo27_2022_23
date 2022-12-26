@@ -33,6 +33,7 @@ public class SecçãoDAO implements Map<Integer,Secção>{
                     "NomeCircuito varchar(100) NOT NULL FOREIGN KEY REFERENCES circuitos(Nome)," +
                     "Tipo varchar(10) NOT NULL," +
                     "Posicao int NOT NULL," +
+                    "Comprimento double NOT NULL," +
                     "GDU int NOT NULL)";
             stm.executeUpdate(sql);
         } catch (SQLException e) {
@@ -104,9 +105,9 @@ public class SecçãoDAO implements Map<Integer,Secção>{
         Secção t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM seccoes WHERE Id='"+key+"'")) {
+             ResultSet rs = stm.executeQuery("SELECT * FROM seccoes WHERE Id='"+key.toString()+"'")) {
             
-            new Secção(rs.getInt("Id"), rs.getString("Tipo"), rs.getInt("GDU"), rs.getInt("Posicao"), rs.getString("NomeCircuito"));
+            new Secção(rs.getInt("Id"), rs.getString("Tipo"), rs.getInt("GDU"), rs.getInt("Posicao"), rs.getString("NomeCircuito"), rs.getDouble("Comprimento"));
         
         } catch (SQLException e) {
             // Database error!
@@ -189,13 +190,15 @@ public class SecçãoDAO implements Map<Integer,Secção>{
             int GDU = value.getGDU();
             int posicao = value.getPosicao();
             String nomeCircuito = value.getNomeCircuito();
+            double comprimento = value.getComprimento();
             stm.executeUpdate(
                     "INSERT INTO utilizadores " +
                             "VALUES ('"+ Id + "', '"+
                             nomeCircuito +"', '"+
                             Tipo +"', '"+
-                            GDU +"', '"+
-                            posicao + ") '");
+                            posicao +"', '"+
+                            comprimento +"', '"+
+                            GDU + ") '");
 
         } catch (SQLException e) {
             // Database error!

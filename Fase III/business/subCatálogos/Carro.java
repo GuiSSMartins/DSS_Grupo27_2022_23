@@ -1,6 +1,5 @@
 package business.subCatálogos;
 
-
 /**
  * Write a description of class Carro here.
  * 
@@ -18,6 +17,8 @@ public abstract class Carro
     private int potenciaCombustao;
     private double PAC;
     private int fiabilidade;
+    private double tempo;
+    private boolean dnf;
     
     
     /* Construtores */
@@ -30,6 +31,8 @@ public abstract class Carro
         this.potenciaCombustao = 0;
         this.fiabilidade = 0;
         this.PAC = 0;
+        this.tempo = 0;
+        this.dnf = false;
     }
     
     public Carro(int id, String marca, String modelo, int cilindrada, int potencia, int fiabilidade, double PAC)
@@ -41,6 +44,8 @@ public abstract class Carro
         this.potenciaCombustao = potencia;
         this.fiabilidade = fiabilidade; 
         this.PAC = PAC;
+        this.tempo = 0;
+        this.dnf = false;
     }
     
     public Carro(Carro c)
@@ -52,10 +57,15 @@ public abstract class Carro
         this.potenciaCombustao = c.getPotencia();
         this.fiabilidade = c.getFiabilidade();
         this.PAC = c.getPAC();
+        this.tempo = c.getTempo();
+        this.dnf = c.getDNF();
     }
     
     /* Gets e sets */
-    
+    public double getTempo()
+    {
+        return this.tempo;
+    }
     
     public String getMarca()
     {
@@ -89,6 +99,11 @@ public abstract class Carro
     public double getPAC() {
         return this.PAC;
     }
+
+    public boolean getDNF()
+    {
+        return this.dnf;
+    }
     
     public void setMarca(String marca)
     {
@@ -117,6 +132,16 @@ public abstract class Carro
     public void setPAC(double PAC) {
         this.PAC = PAC;
     }
+
+    public void setTempo(double t)
+    {
+        this.tempo = t;
+    }
+    
+    public void setDNF(boolean b)
+    {
+        this.dnf = b;
+    }
     
     
     /* Metodos usuais */
@@ -132,6 +157,8 @@ public abstract class Carro
         sb.append("\nPotencia: ");sb.append(this.potenciaCombustao);
         sb.append("\nFiabiliade: ");sb.append(this.fiabilidade);
         sb.append("\nPAC: ");sb.append(this.PAC);
+        sb.append("\nTempo: ");sb.append(this.tempo);
+        sb.append("\nDNF: ");sb.append(this.dnf);
         return sb.toString();
     }
     
@@ -150,46 +177,30 @@ public abstract class Carro
                 this.potenciaCombustao == c.getPotencia() &&
                 this.fiabilidade == c.getFiabilidade() &&
                 this.id == c.getID() &&
-                this.PAC == c.getPAC() );
+                this.PAC == c.getPAC() ) &&
+                this.tempo == c.getTempo() &&
+                this.dnf == c.getDNF();
     }
 
     
-    //Outros metodos
-    /**
-     * Tempo em milisegundos de uma volta
-
-    public long tempoProximaVolta(Circuito c, int clima, int volta)
+    
+    public Double tempoProximaVolta(Circuito c, int clima, int volta, Piloto p1)
     {
-        Piloto p1 = this.getEquipa().getPiloto1();
-        Piloto p2 = this.getEquipa().getPiloto2();
-        Map<String,Long> aux = c.getTemposMedios();
-        long t_medio = aux.get(this.getClass().getName());
-        long t_chuva = c.getTempoDesvio();
-        long minimum = 0;
-        long maximum = 5000;
-        long fator_sorte = minimum + Double.valueOf(Math.random()*(maximum-minimum)).intValue();
-        long maximum_chuva = 2000;
-        long fator_sorte_chuva= minimum + Double.valueOf(Math.random()*(maximum_chuva-minimum)).intValue();
-        
-        if(volta<(c.getVoltas()/2))
-        {
-            // usa piloto 1
-            return (t_medio + ((this.getCilindrada()/this.getPotencia())-p1.getQualidade())*1000) - fator_sorte 
-                    + (clima*(t_chuva - p1.getQualidadeChuva()*1000)) - fator_sorte_chuva;
-        }
-        else
-        {   
-            //usa piloto 2
-            if(volta == (c.getVoltas()/2))
-            {
-                return (t_medio + ((this.getCilindrada()/this.getPotencia())-p2.getQualidade())*1000) - fator_sorte 
-                    + (clima*(t_chuva - p2.getQualidadeChuva()*1000)) - fator_sorte_chuva + c.getTempoBox();
-            }
-            else
-            return (t_medio + ((this.getCilindrada()/this.getPotencia())-p2.getQualidade())*1000) - fator_sorte 
-                    + (clima*(t_chuva - p2.getQualidadeChuva()*1000)) - fator_sorte_chuva;
-        }
-    }
-    **/
+        double t_medio = c.getTempoMedio();
+        double t_chuva = c.getTempoDesvio();
+        double minimum = 0; 
+        double maximum = 5000;
+        double fator_sorte = minimum + Double.valueOf(Math.random()*(maximum-minimum)).intValue();
+        double maximum_chuva = 2000;
+        double fator_sorte_chuva= minimum + Double.valueOf(Math.random()*(maximum_chuva-minimum)).intValue();
+        return ((t_medio + (this.getCilindrada()/this.getPotencia())*1000) - fator_sorte 
+                + (clima*(t_chuva - p1.getCTS()*1000)) - fator_sorte_chuva);
     
+    }
+    
+    
+    /**
+     * define se o carro desiste (true desiste, false continua em prova)
+     */
+    public abstract boolean checkDNF(int volta,int totalvoltas,int clima);
 }
