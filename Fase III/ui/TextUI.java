@@ -91,7 +91,7 @@ public class TextUI {
             }
 
             int opcao2 = Integer.parseInt(op_carro);
-            Carro carro = carros.get(opcao1 - 1);
+            Carro carro = carros.get(opcao2 - 1);
 
             // Escolher piloto
 
@@ -105,10 +105,13 @@ public class TextUI {
                 this.printPilotos(pilotos);
                 int nPilotos = pilotos.size();
                 System.out.println("\nNúmero do carro: ");
-                op_carro = scin.nextLine();
+                op_piloto = scin.nextLine();
 
-                bool_opcao2 = this.verificaOpcaoCarro(nPilotos, op_carro);
+                bool_opcao3 = this.verificaOpcaoPiloto(nPilotos, op_piloto);
             }
+
+            int opcao3 = Integer.parseInt(op_piloto);
+            Piloto piloto = pilotos.get(opcao3 - 1);
 
             // Apresentar os outros jogadores "bot"
 
@@ -117,9 +120,37 @@ public class TextUI {
             // Perguntar se o jogador pretende alterar a afinação do carro
             // Se sim, alterar downforce
 
+            boolean pode_avancar = false;
+            boolean bool_opcao4 = false;
+            String op_afinacao = null;
+
+            while (!pode_avancar) { // Enquanto o jogador não fornecer uma opção correta, dve insistir
+                System.out.println("\nDeseja alterar a afinação do seu carro? (Escreva o número da opção desejada)\n");
+                System.out.println("1 - Sim");
+                System.out.println("2 - Não");
+                System.out.println("\nOpção: ");
+                op_afinacao = scin.nextLine();
+                Integer opcao =  Integer.parseInt(op_afinacao);
+                if (opcao == 1) {
+                    pode_avancar = true;
+                    bool_opcao4 = true;
+                }
+                else if (opcao == 2) pode_avancar = true;
+                else System.out.println("\n\nOpção inválida!\n");
+            }
+
+            if (bool_opcao4) { // Pode alterar a downforce do carro
+
+
+            }
+
             // Escolher modo dos pneus & modo do motor
 
             // (Gerar definições dos pilotos e dos carros aleatórios)
+
+            // Correr a simulação
+
+            // Apresentar os resulatdos
         }
         catch (NullPointerException e) {
             System.out.println(e.getMessage());
@@ -130,7 +161,7 @@ public class TextUI {
         int i=1;
         System.out.println("\n--- CAMPEONATOS DISPONÍVEIS ---\n");
         for (Campeonato c : campeonatos) {
-            System.out.println(i+": "+c);
+            System.out.println("Campeonato "+i+": "+c);
             i+=1;
         }
         System.out.println();
@@ -151,29 +182,44 @@ public class TextUI {
 
         for(Circuito circuito : circuitos) {
             String nome = circuito.getNome();
-            System.out.println((i+": "+nome));
+            System.out.println(i+": "+nome);
             i+=1;
         }
         System.out.println();
     }
 
     private void printCarros(List<Carro> carros) {
-        System.out.println("\n--- Lista de CIRCUITOS do Campeonato ---\n");
+        System.out.println("\n--- Lista de CARROS disponíveis  ---\n");
         int i=1;
-
-        for(Circuito circuito : circuitos) {
-            String nome = circuito.getNome();
-            System.out.println((i+": "+circuito));
+        for(Carro carro : carros) {
+            System.out.println(i+": "+carro);
             i+=1;
         }
         System.out.println();
     }
 
-// socorro deussssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss sos
-
     private boolean verificaOpcaoCarro(int nCarros, String op_carro) {
         int opcao = Integer.parseInt(op_carro);
         if (opcao > 0 && opcao <= nCarros) return true;
+        else {
+            System.out.println("\nATENÇÃO: Opção inválida!\n");
+            return false;
+        }
+    }
+
+    private void printPilotos(List<Piloto> pilotos) {
+        System.out.println("\n--- Lista de PILOTOS disponíveis  ---\n");
+        int i=1;
+        for(Piloto piloto : pilotos) {
+            System.out.println("Piloto "+i+": "+piloto);
+            i+=1;
+        }
+        System.out.println();
+    }
+
+    private boolean verificaOpcaoPiloto(int nPilotos, String op_piloto) {
+        int opcao = Integer.parseInt(op_piloto);
+        if (opcao > 0 && opcao <= nPilotos) return true;
         else {
             System.out.println("\nATENÇÃO: Opção inválida!\n");
             return false;

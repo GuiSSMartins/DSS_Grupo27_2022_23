@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import business.subCatálogos.*;
 import business.subPartidas.*;
@@ -241,8 +242,9 @@ public class Menu {
     /**
      * Lista os resultados da corrida.
      */ 
-   public String printResultados(Corrida corrida, Circuito circuito)
+   public String printResultados(Corrida corrida)
    {
+       Circuito circuito = corrida.getCircuito();
        StringBuilder sb = new StringBuilder();
        int i = 1;
        sb.append("\n||||| ");sb.append(circuito.getNome());sb.append(" |||||");
@@ -257,41 +259,38 @@ public class Menu {
         {
             sb.append("Chuva");;
         }
-       sb.append(" |||||");
-       sb.append("\n||||| ");sb.append("Record: ");sb.append(TimeConverter.toTimeFormat(this.circuito.getRecord().getTempo()));
-       sb.append(" | Piloto: ");sb.append(corrida.getRecord().getPiloto().getNome());
-       sb.append(" Carro: ");sb.append(circuito.getRecord().getCarro().getMarca());
-       sb.append(" ");sb.append(circuito.getRecord().getCarro().getModelo());
-       sb.append(" Equipa: ");sb.append(circuito.getRecord().getCarro().getEquipa().getNome());
        sb.append("\n\n||||| Classificacoes da corrida |||||");
-       for(Carro c : corrida.)
+
+       Set<Progresso> resultados = corrida.getResultados();
+       for(Progresso progresso : resultados)
        {
+            Carro c = progresso.getCarro();
             sb.append("\n");
             sb.append(i);sb.append("º: ");
-            sb.append(TimeConverter.toTimeFormat(c.getTempo()));
+            sb.append(c.getTempo());
             sb.append("\t Categoria: "); sb.append(c.getClass().getName()); sb.append(" ");
             sb.append("\t Carro: "); sb.append(c.getMarca()); sb.append(" ");
             sb.append(c.getModelo());
-            sb.append("\t Equipa: ");sb.append(c.getEquipa().getNome());
             i++;
        }      
        sb.append("\n\n||||| Classificacoes da corrida Hibridos |||||");
        i=1;
-       for(Carro c : this.resultados)
+       for(Progresso progresso : resultados)
        {
+            Carro c = progresso.getCarro();
             if(c instanceof Hibrido)
             {
+
             sb.append("\n");
             sb.append(i);sb.append("º: ");
-            sb.append(TimeConverter.toTimeFormat(c.getTempo()));
+            sb.append(c.getTempo());
             sb.append("\t Categoria: "); sb.append(c.getClass().getName()); sb.append(" ");
             sb.append("\t Carro: "); sb.append(c.getMarca()); sb.append(" ");
             sb.append(c.getModelo());
-            sb.append("\t Equipa: ");sb.append(c.getEquipa().getNome());
             i++;
             }
        }      
-       sb.append(this.printPrimeiroVolta());
+       sb.append(this.printPrimeiroVolta(corrida));
        return sb.toString();
    }
 }
