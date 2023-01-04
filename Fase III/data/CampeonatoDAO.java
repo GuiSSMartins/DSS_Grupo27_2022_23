@@ -25,18 +25,21 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
         return CampeonatoDAO.singleton;
     }
 
- private CampeonatoDAO() {
+    private CampeonatoDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();) {
             stm.executeUpdate("CREATE TABLE IF NOT EXISTS campeonatos ("
                     + "Id varchar(510) NOT NULL PRIMARY KEY," //Nome campeonato + nome circuito
                     + "Nome VARCHAR(255) NOT NULL,"
-                    + "nomeCircuito VARCHAR(255) NOT NULL FOREIGN KEY REFERENCES circuitos(nome))"
+                    + "nomeCircuito VARCHAR(255) NOT NULL,"
+                    + "FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome));"
                     );
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
     @Override
     public void clear() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);

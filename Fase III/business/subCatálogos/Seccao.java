@@ -1,6 +1,6 @@
 package business.subCatálogos;
 
-public class Secção {
+public class Seccao {
 
     private int GDU;
     private String tipo;
@@ -10,11 +10,11 @@ public class Secção {
     private double comprimento;
 
 
-    public Secção(){
+    public Seccao(){
 
     }
 
-    public Secção(int id, String tipo, int GDU, int posicao, String nomeCircuito, double comprimento){
+    public Seccao(int id, String tipo, int GDU, int posicao, String nomeCircuito, double comprimento){
         this.id = id;
         this.tipo = tipo;
         this.GDU = GDU;
@@ -23,7 +23,7 @@ public class Secção {
         this.comprimento = comprimento;
     }
 
-    public Secção(Secção s){
+    public Seccao(Seccao s){
         this.id = s.getID();
         this.tipo = s.getTipo();
         this.GDU = s.getGDU();
@@ -92,14 +92,14 @@ public class Secção {
     public boolean equals(Object aObject) {
         if (this == aObject) {
             return true;
-        } else if (aObject instanceof Secção) {
-            Secção lSecçãoObject = (Secção) aObject;
+        } else if (aObject instanceof Seccao) {
+            Seccao lSeccaoObject = (Seccao) aObject;
             boolean lEquals = true;
-            lEquals &= this.GDU == lSecçãoObject.GDU;
-            lEquals &= ((this.tipo == lSecçãoObject.tipo)
-                    || (this.tipo != null && this.tipo.equals(lSecçãoObject.tipo)));
-            lEquals &= this.id == lSecçãoObject.id;
-            lEquals &= this.comprimento == lSecçãoObject.comprimento;
+            lEquals &= this.GDU == lSeccaoObject.GDU;
+            lEquals &= ((this.tipo == lSeccaoObject.tipo)
+                    || (this.tipo != null && this.tipo.equals(lSeccaoObject.tipo)));
+            lEquals &= this.id == lSeccaoObject.id;
+            lEquals &= this.comprimento == lSeccaoObject.comprimento;
             return lEquals;
         }
         return false;
@@ -141,8 +141,8 @@ public class Secção {
         }
     }
 
-    public Secção clone(){
-        return new Secção(this);
+    public Seccao clone(){
+        return new Seccao(this);
     }
 
 }

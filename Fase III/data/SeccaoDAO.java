@@ -8,34 +8,27 @@ import java.util.Map;
 import java.util.Set;
 import java.sql.*;
 
-import business.subCatálogos.Secção;
+import business.subCatálogos.Seccao;
 
-public class SecçãoDAO implements Map<Integer,Secção>{
-    private static SecçãoDAO singleton = null;
+public class SeccaoDAO implements Map<Integer,Seccao>{
+    private static SeccaoDAO singleton = null;
 
-    public static SecçãoDAO getInstance() {
+    public static SeccaoDAO getInstance() {
         
-        if (SecçãoDAO.singleton == null) {
+        if (SeccaoDAO.singleton == null) {
             
-            SecçãoDAO.singleton = new SecçãoDAO();
+            SeccaoDAO.singleton = new SeccaoDAO();
         }
 
-        return SecçãoDAO.singleton;
+        return SeccaoDAO.singleton;
     }
 
     //seccao(__id__, _nomecircuito_, tipo, posicao, gdu) 
 
-    public SecçãoDAO() {
+    public SeccaoDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
-            String sql = "CREATE TABLE IF NOT EXISTS seccoes (" +
-                    "Id int NOT NULL PRIMARY KEY AUTO_INCREMENT," +
-                    "NomeCircuito varchar(100) NOT NULL FOREIGN KEY REFERENCES circuitos(Nome)," +
-                    "Tipo varchar(10) NOT NULL," +
-                    "Posicao int NOT NULL," +
-                    "Comprimento double NOT NULL," +
-                    "GDU int NOT NULL)";
-            stm.executeUpdate(sql);
+            stm.executeUpdate("CREATE TABLE IF NOT EXISTS seccoes (id INT NOT NULL AUTO_INCREMENT, tipo VARCHAR(10) NOT NULL, posicao INT NOT NULL, comprimento DOUBLE NOT NULL, GDU INT NOT NULL, nomeCircuito VARCHAR(255) NOT NULL, PRIMARY KEY (Id), FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome));");
         } catch (SQLException e) {
             // Erro a criar tabela...
             e.printStackTrace();
@@ -55,14 +48,14 @@ public class SecçãoDAO implements Map<Integer,Secção>{
         }
     }
 
-    public List<Secção> getSecções(String nomeCircuito){
-        List<Secção> res = new ArrayList<>();
+    public List<Seccao> getSeccoes(String nomeCircuito){
+        List<Seccao> res = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs = stm.executeQuery("SELECT * FROM seccoes where NomeCircuito='"+nomeCircuito+"'")) { 
             while (rs.next()) {
                 Integer idt = rs.getInt("Id");
-                Secção t = this.get(idt);
+                Seccao t = this.get(idt);
                 res.add(t);
             }
         } catch (Exception e) {
@@ -91,23 +84,23 @@ public class SecçãoDAO implements Map<Integer,Secção>{
 
     @Override
     public boolean containsValue(Object value) {
-        Secção t = (Secção) value;
+        Seccao t = (Seccao) value;
 		return this.containsKey(t.getID());
     }
 
     @Override
-    public Set<Entry<Integer, Secção>> entrySet() {
+    public Set<Entry<Integer, Seccao>> entrySet() {
         throw new NullPointerException("public Set<Map.Entry<Integer,Seccao>> entrySet() not implemented!");
     }
 
     @Override
-    public Secção get(Object key) {
-        Secção t = null;
+    public Seccao get(Object key) {
+        Seccao t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs = stm.executeQuery("SELECT * FROM seccoes WHERE Id='"+key.toString()+"'")) {
             
-            new Secção(rs.getInt("Id"), rs.getString("Tipo"), rs.getInt("GDU"), rs.getInt("Posicao"), rs.getString("NomeCircuito"), rs.getDouble("Comprimento"));
+            new Seccao(rs.getInt("Id"), rs.getString("Tipo"), rs.getInt("GDU"), rs.getInt("Posicao"), rs.getString("NomeCircuito"), rs.getDouble("Comprimento"));
         
         } catch (SQLException e) {
             // Database error!
@@ -128,8 +121,8 @@ public class SecçãoDAO implements Map<Integer,Secção>{
     }
 
     @Override
-    public Secção remove(Object key) {
-        Secção t = this.get(key);
+    public Seccao remove(Object key) {
+        Seccao t = this.get(key);
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
             
@@ -161,14 +154,14 @@ public class SecçãoDAO implements Map<Integer,Secção>{
     }
 
     @Override
-    public Collection<Secção> values() {
-        Collection<Secção> res = new HashSet<>();
+    public Collection<Seccao> values() {
+        Collection<Seccao> res = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs = stm.executeQuery("SELECT Id FROM seccoes")) { 
             while (rs.next()) {
                 Integer idt = rs.getInt("Id");
-                Secção t = this.get(idt);
+                Seccao t = this.get(idt);
                 res.add(t);
             }
         } catch (Exception e) {
@@ -180,8 +173,8 @@ public class SecçãoDAO implements Map<Integer,Secção>{
     }
 
     @Override
-    public Secção put(Integer key, Secção value) {
-        Secção t = null;
+    public Seccao put(Integer key, Seccao value) {
+        Seccao t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
 
@@ -209,8 +202,8 @@ public class SecçãoDAO implements Map<Integer,Secção>{
     }
 
     @Override
-    public void putAll(Map<? extends Integer, ? extends Secção> m) {
-        for(Secção t : m.values()) {
+    public void putAll(Map<? extends Integer, ? extends Seccao> m) {
+        for(Seccao t : m.values()) {
             this.put(t.getID(), t);
         }
         

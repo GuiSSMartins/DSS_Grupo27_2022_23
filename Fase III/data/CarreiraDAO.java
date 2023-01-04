@@ -29,9 +29,11 @@ public class CarreiraDAO implements Map<String, Carreira>{
              Statement stm = conn.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS carreiras (" +
                     "Id varchar(245) NOT NULL PRIMARY KEY," + // Id = NomeCampeonato + Email
-                    "NomeCampeonato varchar(100) NOT NULL FOREIGN KEY REFERENCES campeonatos(Nome)," +
-                    "Email varchar(100) NOT NULL FOREIGN KEY REFERENCES utilizadores(Email)," +
-                    "Pontuacao int NOT NULL)"; 
+                    "Pontuacao int NOT NULL," +
+                    "NomeCampeonato varchar(510) NOT NULL," +
+                    "Email varchar(100) NOT NULL," +
+                    "FOREIGN KEY(Email) REFERENCES utilizadores(Email)," + 
+                    "FOREIGN KEY(NomeCampeonato) REFERENCES campeonatos(Id));"; 
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...

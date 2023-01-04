@@ -18,7 +18,7 @@ public class C1Hibrido extends C1 implements Hibrido
     
     public C1Hibrido(int id, String marca, String modelo, int potencia, int fiabilidade, double PAC, int eletrico)
     {
-        super(id,marca,modelo,potencia,fiabilidade,PAC);
+        super(id,marca,modelo,potencia+eletrico,fiabilidade,PAC);
         this.potenciaEletrico = eletrico;
     }
     

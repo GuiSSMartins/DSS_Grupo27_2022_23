@@ -3,6 +3,8 @@ package business.subCatálogos;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import business.SubUtilizadores.Carreira;
+import business.SubUtilizadores.Utilizador;
 import data.*;
 
 public class FacadeCatalogos {
@@ -11,12 +13,20 @@ public class FacadeCatalogos {
     private CircuitoDAO circuitos;
     private PilotoDAO pilotos;
     private CarroDAO carros;
+    private SeccaoDAO seccoes;
+    private CarreiraDAO carreiras;
+    private UtilizadorDAO utilizadores;
 
     public FacadeCatalogos() {
-        this.campeonatos = CampeonatoDAO.getInstance();
+        
         this.circuitos = CircuitoDAO.getInstance();
+        this.campeonatos = CampeonatoDAO.getInstance();
         this.pilotos = PilotoDAO.getInstance();
         this.carros = CarroDAO.getInstance();
+        this.seccoes = SeccaoDAO.getInstance();
+        this.utilizadores = UtilizadorDAO.getInstance();
+        this.carreiras = CarreiraDAO.getInstance();
+        
     }
 
     public Collection<Campeonato> getCampeonatos() {
@@ -33,5 +43,17 @@ public class FacadeCatalogos {
 
     public Collection<Carro> getCarros() {
         return new ArrayList<>(this.carros.values());
+    }
+
+    public Collection<Seccao> getSeccoes() {
+        return new ArrayList<>(this.seccoes.values());
+    }
+
+    public Collection<Carreira> getCarreiras() {
+        return new ArrayList<>(this.carreiras.values());
+    }
+
+    public Collection<Utilizador> getUtilizadores() {
+        return new ArrayList<>(this.utilizadores.values());
     }
 }

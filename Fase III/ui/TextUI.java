@@ -1,10 +1,14 @@
 package ui;
 
+import business.subCatálogos.Campeonato;
+import business.subCatálogos.Carro;
+import business.subCatálogos.Circuito;
+import business.subCatálogos.FacadeCatalogos;
+import business.subCatálogos.Piloto;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import business.subCatálogos.*;
 
 /**
  * Exemplo de interface em modo texto.
@@ -19,7 +23,7 @@ public class TextUI {
     // Scanner para leitura
     private Scanner scin;
 
-        /**
+    /**
      * Construtor.
      *
      * Cria os menus e a camada de negócio.
@@ -30,7 +34,6 @@ public class TextUI {
             "Entrar em Campeonato",
             "Consultar Carreira do Jogador"
         });
-
         this.menu.setHandler(1, this::trataEntrarCampeonato);
 
         this.model = new FacadeCatalogos();
@@ -124,7 +127,7 @@ public class TextUI {
             boolean bool_opcao4 = false;
             String op_afinacao = null;
 
-            while (!pode_avancar) { // Enquanto o jogador não fornecer uma opção correta, dve insistir
+            while (!pode_avancar) { // Enquanto o jogador não fornecer uma opção correta, deve insistir
                 System.out.println("\nDeseja alterar a afinação do seu carro? (Escreva o número da opção desejada)\n");
                 System.out.println("1 - Sim");
                 System.out.println("2 - Não");

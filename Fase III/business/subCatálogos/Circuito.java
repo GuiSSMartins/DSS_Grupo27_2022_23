@@ -5,7 +5,7 @@ package business.subCatálogos;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.SecçãoDAO;
+import data.SeccaoDAO;
 
 public class Circuito {
 
@@ -15,12 +15,12 @@ public class Circuito {
 	private int nCurvas;
 	private int nChicanes;
 	private int nRetas;
-	private List<Secção> secções;
-	private SecçãoDAO secçãoDAO;
+	private List<Seccao> seccoes;
+	private SeccaoDAO seccaoDAO;
 
 	public Circuito(){
-		this.secções = new ArrayList<Secção>();
-		this.secçãoDAO = SecçãoDAO.getInstance();
+		this.seccoes = new ArrayList<Seccao>();
+		this.seccaoDAO = SeccaoDAO.getInstance();
 	}
 
 	public Circuito(String nome, int nVoltas, double comprimento, int nCurvas, int nChicanes, int nRetas) {
@@ -30,11 +30,11 @@ public class Circuito {
 		this.nCurvas = nCurvas;
 		this.nChicanes = nChicanes;
 		this.nRetas = nRetas;
-		this.secçãoDAO = SecçãoDAO.getInstance();
-		this.secções = new ArrayList<>();
+		this.seccaoDAO = SeccaoDAO.getInstance();
+		this.seccoes = new ArrayList<>();
 
-		List<Secção> list = secçãoDAO.getSecções(nome);
-		setSecções(list);
+		List<Seccao> list = seccaoDAO.getSeccoes(nome);
+		setseccoes(list);
 
 	}
 
@@ -45,8 +45,8 @@ public class Circuito {
 		this.nCurvas = c.getNCurvas();
 		this.nChicanes = c.getNChicanes();
 		this.nRetas = c.getNCurvas();
-		this.secções = c.getSecções();
-		this.secçãoDAO = SecçãoDAO.getInstance();
+		this.seccoes = c.getseccoes();
+		this.seccaoDAO = SeccaoDAO.getInstance();
 	}
 
 	public int getNVoltas() {
@@ -97,17 +97,17 @@ public class Circuito {
 		this.nRetas = nRetas;
 	}
 
-	public List<Secção> getSecções() {
-		List<Secção> list = new ArrayList<>();
+	public List<Seccao> getseccoes() {
+		List<Seccao> list = new ArrayList<>();
 
-		for(Secção s : this.secções) list.add(s.clone());
+		for(Seccao s : this.seccoes) list.add(s.clone());
 
 		return list;
 	}
 
-	public void setSecções(List<Secção> secções) {
-		for(Secção s : secções) {
-			this.secções.add(s.clone());
+	public void setseccoes(List<Seccao> seccoes) {
+		for(Seccao s : seccoes) {
+			this.seccoes.add(s.clone());
 		}
 	}
 
@@ -117,8 +117,8 @@ public class Circuito {
 		if ( this.nome != null ) {
 			lHashCode += this.nome.hashCode();
 		}
-		if ( this.secções != null ) {
-			lHashCode += this.secções.hashCode();
+		if ( this.seccoes != null ) {
+			lHashCode += this.seccoes.hashCode();
 		}
 		if ( lHashCode == 0 ) {
 			lHashCode = super.hashCode();
@@ -139,8 +139,8 @@ public class Circuito {
 			lEquals &= this.nCurvas == lCircuitoObject.nCurvas;
 			lEquals &= this.nChicanes == lCircuitoObject.nChicanes;
 			lEquals &= this.nRetas == lCircuitoObject.nRetas;
-			lEquals &= ((this.secções == lCircuitoObject.secções)
-					|| (this.secções != null && this.secções.equals(lCircuitoObject.secções)));
+			lEquals &= ((this.seccoes == lCircuitoObject.seccoes)
+					|| (this.seccoes != null && this.seccoes.equals(lCircuitoObject.seccoes)));
 			return lEquals;
 		}
 		return false;
@@ -148,7 +148,7 @@ public class Circuito {
 
 	public double getTempoMedio() {
 		double tempo = 0;
-		for (Secção s : this.secções) {
+		for (Seccao s : this.seccoes) {
 			tempo += s.getTempoMedio();
 		}
 		return tempo;
@@ -156,7 +156,7 @@ public class Circuito {
 
 	public double getTempoDesvio() {
 		double tempo = 0;
-		for (Secção s : this.secções) {
+		for (Seccao s : this.seccoes) {
 			tempo += s.getTempoDesvio();
 		}
 		return tempo;

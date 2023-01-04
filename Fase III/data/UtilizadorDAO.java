@@ -28,9 +28,9 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
             String sql = "CREATE TABLE IF NOT EXISTS utilizadores (" +
                     "Email varchar(100) NOT NULL PRIMARY KEY," +
                     "Password varchar(100) NOT NULL," +
-                    "Nome varchar(100) NOT NULL)" +
-                    "Jogador int NOT NULL" +
-                    "VersaoJogo int";
+                    "Nome varchar(100) NOT NULL," +
+                    "Jogador int NOT NULL," +
+                    "VersaoJogo int);";
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...
