@@ -109,8 +109,8 @@ public class SSUtilizadores implements ISubUtilizadores{
         if(utilizadores.containsKey(idJogador)){
             Utilizador u = utilizadores.get(idJogador);
             if(u instanceof Jogador){
-                Jogador j = (Jogador) u;
-                j.registaPontuacao(nomeCampeonato, pontuacao);
+                // Jogador j = (Jogador) u;
+                //j.registaPontuacao(nomeCampeonato, pontuacao);
                 res = true;
             }
         }

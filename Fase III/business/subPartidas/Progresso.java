@@ -6,7 +6,7 @@ import business.subCatálogos.Piloto;
 public class Progresso {
 	private Piloto piloto;
 	private Carro carro;
-	private double tempo;
+	private long tempo;
 	private int seccao;
 
 	public Piloto getPiloto() {
@@ -25,11 +25,11 @@ public class Progresso {
 		this.carro = carro;
 	}
 
-	public double getTempo() {
+	public long getTempo() {
 		return this.tempo;
 	}
 
-	public void setTempo(double tempo) {
+	public void setTempo(long tempo) {
 		this.tempo = tempo;
 	}
 
@@ -41,7 +41,7 @@ public class Progresso {
 		this.seccao = seccao;
 	}
 
-	public Progresso(Piloto piloto, Carro carro, double tempo, int seccao)
+	public Progresso(Piloto piloto, Carro carro, long tempo, int seccao)
 	{
 		this.piloto = piloto.clone();
 		this.carro = carro.clone();

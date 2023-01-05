@@ -27,6 +27,9 @@ public class PilotoDAO implements Map<String, Piloto> {
     public PilotoDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();) {
+
+            stm.executeUpdate("DROP TABLE IF EXISTS pilotos");
+            
             stm.executeUpdate("CREATE TABLE IF NOT EXISTS pilotos ("
                     + "nome VARCHAR(255) NOT NULL,"
                     + "cts DOUBLE NOT NULL,"
@@ -198,6 +201,24 @@ public class PilotoDAO implements Map<String, Piloto> {
             throw new NullPointerException(e.getMessage());
         }
         return col;
+    }
+
+    public void povoar() {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+            Statement stm = conn.createStatement()) {
+
+            // 1º Carro
+            stm.executeUpdate(
+                "INSERT INTO pilotos " +
+                    "VALUES ('Battery Voltar', "+ //nome
+                    "0.6, "+ // cts
+                    "0.4)"); // sva
+
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }  
     }
 
 }

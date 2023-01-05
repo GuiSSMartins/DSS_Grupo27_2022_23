@@ -28,6 +28,9 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
     private CampeonatoDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();) {
+            
+            stm.executeUpdate("DROP TABLE IF EXISTS pilotos");
+
             stm.executeUpdate("CREATE TABLE IF NOT EXISTS campeonatos ("
                     + "Id varchar(510) NOT NULL PRIMARY KEY," //Nome campeonato + nome circuito
                     + "Nome VARCHAR(255) NOT NULL,"
@@ -124,9 +127,9 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
 
                 stm.executeUpdate(
                         "INSERT INTO campeonatos " +
-                                "VALUES ('"+ id + "', '"+
+                                "VALUES ("+ id + ", '"+
                                 nome+"', '"+
-                                nomeCircuito + ") '");
+                                nomeCircuito + "')");
             }
 
         } catch (SQLException e) {
@@ -202,6 +205,22 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
         return res;
     }
 
+    public void povoar() {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+            Statement stm = conn.createStatement()) {
 
+            // 1º Carro
+            /*stm.executeUpdate(
+                "INSERT INTO campeonatos " +
+                        "VALUES (1, '"+ //Id
+
+                        ")");*/
+
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }  
+    }
     
 }

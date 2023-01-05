@@ -5,6 +5,8 @@ import business.subCatálogos.Carro;
 import business.subCatálogos.Circuito;
 import business.subCatálogos.FacadeCatalogos;
 import business.subCatálogos.Piloto;
+import business.subPartidas.SSPartidas;
+
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 public class TextUI {
     // O model tem a 'lógica de negócio'.
     private FacadeCatalogos model;
+
+    private SSPartidas sspartidas;
 
     // Menus da aplicação
     private Menu menu;
@@ -29,6 +33,8 @@ public class TextUI {
      * Cria os menus e a camada de negócio.
      */
     public TextUI() {
+        this.sspartidas = new SSPartidas();
+
         // Criar o menu
         this.menu = new Menu("Racing Manager", new String[]{
             "Entrar em Campeonato",
@@ -37,6 +43,7 @@ public class TextUI {
         this.menu.setHandler(1, this::trataEntrarCampeonato);
 
         this.model = new FacadeCatalogos();
+        this.model.povoar();
         this.scin = new Scanner(System.in);
     }
 
@@ -50,6 +57,14 @@ public class TextUI {
 
     private void trataEntrarCampeonato(){
         try {
+            // Perguntar se quer BASE ou PREMIUM
+
+            System.out.println("\nVersão desejada? (Escreva o número desejado)\n");
+            System.out.println("1 - BASE");
+            System.out.println("2 - PREMIUM");
+            System.out.println("\nEscreva aqui o valor desejado: ");
+
+            // Apresentar e escolher o CAMPEONATO
 
             boolean bool_opcao1 = false;
             String op_camp = null;
@@ -116,9 +131,9 @@ public class TextUI {
             int opcao3 = Integer.parseInt(op_piloto);
             Piloto piloto = pilotos.get(opcao3 - 1);
 
-            // Apresentar os outros jogadores "bot"
+            // Apresentar os outros jogadores "bot" (Dummy: 1 jogador)
 
-            // Apresentar as situacoes meteorologicas de cada circuito
+            // Apresentar a situação meteorologica da corrida
 
             // Perguntar se o jogador pretende alterar a afinação do carro
             // Se sim, alterar downforce
@@ -142,9 +157,19 @@ public class TextUI {
                 else System.out.println("\n\nOpção inválida!\n");
             }
 
-            if (bool_opcao4) { // Pode alterar a downforce do carro
+            String s_downforce;
+            double downforce = -1;
+            if (bool_opcao4) { // Quer alterar a downforce do carro (entre 0 e 1)
+                while(downforce >= 0 && downforce <= 1) {
+                    System.out.println("\nEscreva o novo valor da downforce  (Entre 0 e 1)\n");
+                    System.out.println("Valor: ");
+                    s_downforce = scin.nextLine();
+                    downforce = Double.parseDouble(s_downforce);
 
-
+                    if (downforce < 0 && downforce > 1) { // Valor inválido
+                        System.out.println("\nO valor está errado!!! (tem de ser dentro de 0 e 1)\n");
+                    }
+                }
             }
 
             // Escolher modo dos pneus & modo do motor
@@ -152,8 +177,11 @@ public class TextUI {
             // (Gerar definições dos pilotos e dos carros aleatórios)
 
             // Correr a simulação
+            sspartidas.iniciarPartida();
 
-            // Apresentar os resulatdos
+            // Apresentar os resultados da partida
+            List<String> resultados_finais = sspartidas.finalizarPartida();
+            System.out.println(resultados_finais);
         }
         catch (NullPointerException e) {
             System.out.println(e.getMessage());

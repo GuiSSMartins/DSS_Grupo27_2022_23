@@ -186,12 +186,12 @@ public class SeccaoDAO implements Map<Integer,Seccao>{
             double comprimento = value.getComprimento();
             stm.executeUpdate(
                     "INSERT INTO utilizadores " +
-                            "VALUES ('"+ Id + "', '"+
+                            "VALUES ("+ Id + ", '"+
                             nomeCircuito +"', '"+
-                            Tipo +"', '"+
-                            posicao +"', '"+
-                            comprimento +"', '"+
-                            GDU + ") '");
+                            Tipo +"', "+
+                            posicao +", "+
+                            comprimento +", "+
+                            GDU + ")");
 
         } catch (SQLException e) {
             // Database error!
@@ -209,5 +209,8 @@ public class SeccaoDAO implements Map<Integer,Seccao>{
         
     }
 
+    public void povoar() {
+
+    }
 
 }

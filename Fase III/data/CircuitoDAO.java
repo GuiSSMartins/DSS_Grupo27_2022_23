@@ -141,13 +141,13 @@ public class CircuitoDAO implements Map<String,Circuito>{
             int nChicanes = arg1.getNChicanes();  
 
             stm.executeUpdate(
-                    "INSERT INTO utilizadores " +
-                            "VALUES ('"+ nome + "', '"+
-                            nVoltas +"', '"+
-                            comprimento +"', '"+
-                            nCurvas +"', '"+
-                            nRetas +"', '"+
-                            nChicanes + ") '");
+                    "INSERT INTO circuitos " +
+                            "VALUES ('"+ nome + "', "+
+                            nVoltas +", "+
+                            comprimento +", "+
+                            nCurvas +", "+
+                            nRetas +", "+
+                            nChicanes + ")");
 
         } catch (SQLException e) {
             // Database error!
@@ -213,6 +213,24 @@ public class CircuitoDAO implements Map<String,Circuito>{
             throw new NullPointerException(e.getMessage());
         }
         return res;
+    }
+
+    public void povoar() {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+            Statement stm = conn.createStatement()) {
+
+            // 1º Circuito
+            /*stm.executeUpdate(
+                "INSERT INTO circuitos " +
+                    "VALUES ('Battery Voltar', "+ //nome
+                    "0.6, "+ // cts
+                    "0.4)"); // sva*/
+
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        } 
     }
 
 }

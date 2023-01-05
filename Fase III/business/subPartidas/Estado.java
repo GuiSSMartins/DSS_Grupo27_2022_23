@@ -6,12 +6,27 @@ import business.subCatálogos.Piloto;
 public class Estado {
 	private int nAfinacoes;
 	private int posicao;
-	private int tipoPneus;
+	private int tipoPneus; // 1 - macio, 2 - duro e 3 - chuva
 	private int modoMotor;
 	private int downforce;
 	private int pontuacao;
 	private Piloto piloto;
 	private Carro carro;
+
+	public Estado() {
+		this.pontuacao = 0; // inicialmente, o jogador não possui pontuação
+	}
+
+	public Estado(int nAfinacoes, int posicao, int tipoPneus, int modoMotor, int downforce, Piloto piloto, Carro carro) {
+		this.nAfinacoes = nAfinacoes;
+		this.posicao = posicao;
+		this.tipoPneus = tipoPneus;
+		this.modoMotor = modoMotor;
+		this.downforce = downforce;
+		this.pontuacao = 0; // inicialmente, o jogador não possui pontuação
+		this.piloto = piloto;
+		this.carro = carro;
+	}
 
 	public Carro getCarro() {
 		return this.carro;
@@ -80,15 +95,17 @@ public class Estado {
 	// public SubSistemaCatálogo___carro carro;
 
 	public boolean haAfinacoesDisponiveis() {
-		throw new UnsupportedOperationException();
+		if (this.nAfinacoes > 0) return true;
+		return false;
 	}
 
 	public void decnAfinacoes() {
-		throw new UnsupportedOperationException();
+		this.nAfinacoes--;
 	}
 
 	public void configuraEstadoJogador(int aTipoPneus, int aModoMotor) {
-		throw new UnsupportedOperationException();
+		this.tipoPneus = aTipoPneus;
+		this.modoMotor = aModoMotor;
 	}
 
 	public boolean equals(Object aObject) {

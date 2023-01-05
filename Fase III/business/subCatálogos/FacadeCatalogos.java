@@ -18,15 +18,24 @@ public class FacadeCatalogos {
     private UtilizadorDAO utilizadores;
 
     public FacadeCatalogos() {
-        
+        this.utilizadores = UtilizadorDAO.getInstance();
         this.circuitos = CircuitoDAO.getInstance();
         this.campeonatos = CampeonatoDAO.getInstance();
         this.pilotos = PilotoDAO.getInstance();
         this.carros = CarroDAO.getInstance();
         this.seccoes = SeccaoDAO.getInstance();
-        this.utilizadores = UtilizadorDAO.getInstance();
         this.carreiras = CarreiraDAO.getInstance();
-        
+    }
+
+    // Povoar a base de dados 
+    public void povoar(){
+        this.circuitos.povoar();
+        this.campeonatos.povoar();
+        this.pilotos.povoar();
+        this.carros.povoar();
+        this.seccoes.povoar();
+        this.utilizadores.povoar();
+        this.carreiras.povoar();
     }
 
     public Collection<Campeonato> getCampeonatos() {

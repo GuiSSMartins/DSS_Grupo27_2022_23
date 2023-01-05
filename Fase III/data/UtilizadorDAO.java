@@ -86,10 +86,10 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
              ResultSet rs = stm.executeQuery("SELECT * FROM utilizadores WHERE Email='"+key.toString()+"'")) {
             if (rs.next()) {  // A chave existe na tabela
                 int jogador = rs.getInt("Jogador");
-                if (jogador == 1) {
+                if (jogador == 1) { // Joagdor
                     t = new Jogador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"), rs.getInt("VersaoJogo"));
                 }
-                else {
+                else { // administrador
                     t = new Administrador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"));
                 }
             }
@@ -191,9 +191,9 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
                     "INSERT INTO utilizadores " +
                             "VALUES ('"+ email + "', '"+
                             password +"', '"+
-                            nome +"', '"+
-                            jogador +"', '"+
-                            versaoJogo + ") '");
+                            nome +"', "+
+                            jogador +", "+
+                            versaoJogo + ")");
 
         } catch (SQLException e) {
             // Database error!
@@ -223,5 +223,9 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
         }
+    }
+
+    public void povoar() {
+
     }
 }

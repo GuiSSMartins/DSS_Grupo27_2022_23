@@ -17,19 +17,32 @@ public class Partida {
 	private int totalAfinações;
 	private List<Circuito> circuitos;
 	private List<Corrida> corridas;
-	private Simulador simulador;
+	private int idCorridaAtual;
 	private Map<String, Estado> estados = new HashMap<String, Estado>();
 
 
-	public Partida(Simulador aSimulador, Campeonato c) {
+	public Partida(Campeonato c) {
 		for (Circuito s : c.getCircuitos()){
 			this.circuitos.add(s);
 		}
 		this.totalAfinações = (this.circuitos.size()/3)*2; 
-		this.simulador = aSimulador;
 		this.corridas = new ArrayList<Corrida>();
 		this.estados = new HashMap<String,Estado>();
+		this.idCorridaAtual = 0;
 		this.resultadoFinal = new ArrayList<String>();
+	}
+
+	public Map<String, String> getClimas() {
+		Map<String,String> climas = new HashMap<>();
+		for (Corrida corrida : this.corridas) {
+
+		}
+		return climas;
+	}
+
+	public void iniciarCorrida() {
+		Corrida corrida = this.corridas.get(this.idCorridaAtual);
+		corrida.simulaCorrida();
 	}
 	
 	public void adicionaJogador(String aIdJogador, Piloto aPiloto, Carro aCarro) {
@@ -73,8 +86,6 @@ public class Partida {
 				|| (this.corridas != null && this.corridas.equals(lPartidaObject.corridas)));
 			lEquals &= ((this.estados == lPartidaObject.estados)
 				|| (this.estados != null && this.estados.equals(lPartidaObject.estados)));
-			lEquals &= ((this.simulador == lPartidaObject.simulador)
-				|| (this.simulador != null && this.simulador.equals(lPartidaObject.simulador)));
 			return lEquals;
 		}
 		return false;

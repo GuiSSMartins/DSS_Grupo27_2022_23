@@ -8,6 +8,7 @@
 package business.subPartidas;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class Corrida implements Serializable
     private Circuito circuito;
     private Set<Progresso> resultados;
     //private Map<Carro,double> bestLap;
+    private Map<Carro, Integer> dnf;
     private List<Progresso> primeiroVolta;
     private int clima; //1-chove 0-sol
     private int versaoJogo;
@@ -38,6 +40,7 @@ public class Corrida implements Serializable
         this.versaoJogo = 0;
         this.listaProgressos = new ArrayList<Progresso>();
         this.circuito = new Circuito();
+        this.dnf = new HashMap<Carro,Integer>();
         this.resultados = new TreeSet<Progresso>();
         //this.bestLap = new HashMap<Carro,double>();
         this.primeiroVolta = new ArrayList<Progresso>();
@@ -77,6 +80,7 @@ public class Corrida implements Serializable
         this.primeiroVolta = c.getPrimeiroVolta();
         this.clima = c.getClima();
         this.versaoJogo = c.getVersaoJogo();
+        this.dnf = c.getDNF();
     }
     
     
@@ -190,7 +194,7 @@ public class Corrida implements Serializable
     public void simulaCorrida()
     {
         int voltas = this.circuito.getNVoltas();
-        double t_aux, t_volta;
+        long t_aux, t_volta;
         ArrayList<Progresso> aux = new ArrayList<Progresso>();
         HashMap<Progresso,Integer> temp = new HashMap<Progresso,Integer>();
         for(Progresso c : this.listaProgressos)
@@ -199,22 +203,23 @@ public class Corrida implements Serializable
         }
         for(int i=0; i<voltas; i++)
         {
-            for(Progresso c : aux)
+            for(Progresso p : aux)
             { 
-                if(c.getCarro().getDNF()==false) //verifica se o carro esta acidentado
+                Carro carro = p.getCarro();
+                if(carro.getDNF()==false) //verifica se o carro esta acidentado
                 {
-                    if(c.getCarro().checkDNF(i,voltas,this.clima)==true) //verifica se o carro tem acidente na volta
+                    if(carro.checkDNF(i,voltas,this.clima)==true) //verifica se o carro tem acidente na volta
                     {
-                        c.getCarro().setDNF(true);
-                        temp.put(c.clone(),i);
+                        carro.setDNF(true);
+                        temp.put(p.clone(),i);
                     }
                     else
                     {
-                        t_aux = c.getTempo(); //tempo feito ate ao momento
-                        Hibrido h = (Hibrido)c;
+                        t_aux = p.getTempo(); //tempo feito ate ao momento
+                        Hibrido h = (Hibrido)carro;
                         int motor = h.getPotenciaEletrico();
-                        t_volta = c.getCarro().tempoProximaVolta(this.circuito, 0, i, c.getPiloto()) - motor*10;
-                        c.setTempo(t_aux +t_volta); 
+                        t_volta = (long) (carro.tempoProximaVolta(this.circuito, 0, i, p.getPiloto()) - motor*10);
+                        p.setTempo(t_aux +t_volta); 
                     }
                     
                 }
@@ -241,6 +246,31 @@ public class Corrida implements Serializable
     }
     
    
+
+   /**
+    * Lista de Acidentados DNF
+    */
+    public String printDNF()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Espetados!!!");
+        for(Carro c : this.dnf.keySet())
+        {
+            sb.append("\n" + c.getMarca() + " \t\tVolta: " + this.dnf.get(c));
+        }
+        return sb.toString();
+    }
+
+    public Map<Carro,Integer> getDNF()
+    {
+        HashMap<Carro,Integer> aux = new HashMap<Carro,Integer>();
+        for(Carro c : this.dnf.keySet())
+        {
+            aux.put(c.clone(), this.dnf.get(c));
+         }
+         return aux;
+    }
+
    /**
     * Lista de participantes da corrida
     */
@@ -255,6 +285,84 @@ public class Corrida implements Serializable
             sb.append(i);sb.append(" - ");sb.append(c.getMarca());sb.append(" ");sb.append(c.getModelo());
             i++;
        }
+       return sb.toString();
+   }
+
+       /**
+     * Lista o 1o classificado em cada volta
+     */
+    private String printPrimeiroVolta(Corrida corrida)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append("\n||||| Primeiro carro a cada volta e desistentes |||||");
+        List<Progresso> primeiroVolta= corrida.getPrimeiroVolta();
+        for(int i=0; i<primeiroVolta.size();i++)
+        {
+            sb.append("\n");
+            sb.append(i+1);sb.append("ª Volta: ");
+            sb.append(primeiroVolta.get(i).getCarro().getMarca());sb.append(" ");
+            sb.append(primeiroVolta.get(i).getCarro().getModelo());sb.append(" ");
+            if(primeiroVolta.get(i).getCarro().checkDNF(i+1, primeiroVolta.size(), corrida.getClima()))
+                sb.append("DESISTIU");
+        }
+        return sb.toString();
+    }
+
+
+
+    /**
+     * Lista os resultados da corrida.
+     */ 
+   public String printResultados(Corrida corrida)
+   {
+       Circuito circuito = corrida.getCircuito();
+       StringBuilder sb = new StringBuilder();
+       int i = 1;
+       sb.append("\n||||| ");sb.append(circuito.getNome());sb.append(" |||||");
+       sb.append("\n||||| ");sb.append("Voltas: ");sb.append(circuito.getNVoltas());sb.append(" |||||");
+       sb.append("\n||||| ");sb.append("Distancia: ");sb.append(circuito.getComprimento());sb.append("km | ");
+       sb.append("Condição meteorológica: ");
+       if(corrida.getClima() == 0)
+        {
+            sb.append("Sol");
+        }
+       else
+        {
+            sb.append("Chuva");
+        }
+       sb.append("\n\n||||| Classificacoes da corrida |||||");
+
+       Set<Progresso> resultados = corrida.getResultados();
+       for(Progresso progresso : resultados)
+       {
+            Carro c = progresso.getCarro();
+            sb.append("\n");
+            sb.append(i);sb.append("º: ");
+            sb.append(TimeConverter.toTimeFormat(progresso.getTempo()));
+            sb.append("\t Categoria: "); sb.append(c.getClass().getName()); sb.append(" ");
+            sb.append("\t Carro: "); sb.append(c.getMarca()); sb.append(" ");
+            sb.append(c.getModelo());
+            i++;
+       }      
+       sb.append("\n\n||||| Classificacoes da corrida Hibridos |||||");
+       i=1;
+       for(Progresso progresso : resultados)
+       {
+            Carro c = progresso.getCarro();
+            if(c instanceof Hibrido)
+            {
+
+                sb.append("\n");
+                sb.append(i);sb.append("º: ");
+                sb.append(TimeConverter.toTimeFormat(progresso.getTempo()));
+                sb.append("\t Categoria: "); sb.append(c.getClass().getName()); sb.append(" ");
+                sb.append("\t Carro: "); sb.append(c.getMarca()); sb.append(" ");
+                sb.append(c.getModelo());
+                i++;
+            }
+       }      
+       sb.append(this.printPrimeiroVolta(corrida));
        return sb.toString();
    }
 }

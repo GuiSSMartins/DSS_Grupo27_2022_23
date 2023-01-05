@@ -121,11 +121,11 @@ public class CarreiraDAO implements Map<String, Carreira>{
             int pontuacao = arg1.getPontuacao();
 
             stm.executeUpdate(
-                    "INSERT INTO utilizadores " +
-                            "VALUES ('"+ id + "', '"+
+                    "INSERT INTO carreiras " +
+                            "VALUES ("+ id + ", '"+
                             NomeCampeonato +"', '"+
-                            Email +"', '"+
-                            pontuacao + ") '");
+                            Email +"', "+
+                            pontuacao + ")");
 
         } catch (SQLException e) {
             // Database error!
@@ -224,5 +224,8 @@ public class CarreiraDAO implements Map<String, Carreira>{
         }
     }
 
+    public void povoar() {
+
+    }
     
 }

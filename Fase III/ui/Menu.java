@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-
-import business.subCatálogos.*;
-import business.subPartidas.*;
 
 /**
  * Esta classe implementa um menu em modo texto.
@@ -215,82 +211,4 @@ public class Menu {
         }
         return op;
     }
-
-    /**
-     * Lista o 1o classificado em cada volta
-     */
-    private String printPrimeiroVolta(Corrida corrida)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n");
-        sb.append("\n||||| Primeiro carro a cada volta e desistentes |||||");
-        List<Progresso> primeiroVolta= corrida.getPrimeiroVolta();
-        for(int i=0; i<primeiroVolta.size();i++)
-        {
-            sb.append("\n");
-            sb.append(i+1);sb.append("ª Volta: ");
-            sb.append(primeiroVolta.get(i).getCarro().getMarca());sb.append(" ");
-            sb.append(primeiroVolta.get(i).getCarro().getModelo());sb.append(" ");
-            if(primeiroVolta.get(i).getCarro().checkDNF(i+1, primeiroVolta.size(), corrida.getClima()))
-                sb.append("DESISTIU");
-        }
-        return sb.toString();
-    }
-
-
-
-    /**
-     * Lista os resultados da corrida.
-     */ 
-   public String printResultados(Corrida corrida)
-   {
-       Circuito circuito = corrida.getCircuito();
-       StringBuilder sb = new StringBuilder();
-       int i = 1;
-       sb.append("\n||||| ");sb.append(circuito.getNome());sb.append(" |||||");
-       sb.append("\n||||| ");sb.append("Voltas: ");sb.append(circuito.getNVoltas());sb.append(" |||||");
-       sb.append("\n||||| ");sb.append("Distancia: ");sb.append(circuito.getComprimento());sb.append("km | ");
-       sb.append("Condição meteorológica: ");
-       if(corrida.getClima() == 0)
-        {
-            sb.append("Sol");
-        }
-       else
-        {
-            sb.append("Chuva");;
-        }
-       sb.append("\n\n||||| Classificacoes da corrida |||||");
-
-       Set<Progresso> resultados = corrida.getResultados();
-       for(Progresso progresso : resultados)
-       {
-            Carro c = progresso.getCarro();
-            sb.append("\n");
-            sb.append(i);sb.append("º: ");
-            sb.append(c.getTempo());
-            sb.append("\t Categoria: "); sb.append(c.getClass().getName()); sb.append(" ");
-            sb.append("\t Carro: "); sb.append(c.getMarca()); sb.append(" ");
-            sb.append(c.getModelo());
-            i++;
-       }      
-       sb.append("\n\n||||| Classificacoes da corrida Hibridos |||||");
-       i=1;
-       for(Progresso progresso : resultados)
-       {
-            Carro c = progresso.getCarro();
-            if(c instanceof Hibrido)
-            {
-
-            sb.append("\n");
-            sb.append(i);sb.append("º: ");
-            sb.append(c.getTempo());
-            sb.append("\t Categoria: "); sb.append(c.getClass().getName()); sb.append(" ");
-            sb.append("\t Carro: "); sb.append(c.getMarca()); sb.append(" ");
-            sb.append(c.getModelo());
-            i++;
-            }
-       }      
-       sb.append(this.printPrimeiroVolta(corrida));
-       return sb.toString();
-   }
 }

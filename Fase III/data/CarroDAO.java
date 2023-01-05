@@ -212,7 +212,7 @@ public class CarroDAO implements Map<Integer,Carro>{
                             fiabilidade  +"', '"+ 
                             hibrido  +"', '"+
                             potenciaeletrica  +"', '"+
-                            taxaDeterioracao + ") '");
+                            taxaDeterioracao + "')");
 
         } catch (SQLException e) {
             // Database error!
@@ -281,6 +281,31 @@ public class CarroDAO implements Map<Integer,Carro>{
         return res;
     }
 
+    public void povoar() {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+            Statement stm = conn.createStatement()) {
+
+            // 1º Carro
+            stm.executeUpdate(
+                "INSERT INTO carros " +
+                        "VALUES (1, '"+ //id
+                        "C2', '"+ // categoria
+                        "Ferrari', '"+ // marca
+                        "488 GTE', "+ // modelo
+                        "3902, "+ // cilindrada
+                        "661, "+ // potencia
+                        "0.2, "+  // pac
+                        "0.8, "+ // fiabilidade
+                        "0, "+ // hibrido (neste acso, não é híbrido)
+                        "0, "+ // potenciaeletrica
+                        "0.1)"); // taxaDeteriorcao
+
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }        
+    }
 
     
 }

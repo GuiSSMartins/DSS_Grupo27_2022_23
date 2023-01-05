@@ -15,9 +15,8 @@ public abstract class Carro
     private String modelo;
     private int cilindrada;
     private int potenciaCombustao;
-    private double PAC;
+    private double PAC; // perfil aerodinâmico do carro (entre 0 e 1)
     private int fiabilidade;
-    private double tempo;
     private boolean dnf;
     
     
@@ -31,7 +30,6 @@ public abstract class Carro
         this.potenciaCombustao = 0;
         this.fiabilidade = 0;
         this.PAC = 0;
-        this.tempo = 0;
         this.dnf = false;
     }
     
@@ -44,7 +42,6 @@ public abstract class Carro
         this.potenciaCombustao = potencia;
         this.fiabilidade = fiabilidade; 
         this.PAC = PAC;
-        this.tempo = 0;
         this.dnf = false;
     }
     
@@ -57,15 +54,10 @@ public abstract class Carro
         this.potenciaCombustao = c.getPotencia();
         this.fiabilidade = c.getFiabilidade();
         this.PAC = c.getPAC();
-        this.tempo = c.getTempo();
         this.dnf = c.getDNF();
     }
     
     /* Gets e sets */
-    public double getTempo()
-    {
-        return this.tempo;
-    }
     
     public String getMarca()
     {
@@ -132,11 +124,6 @@ public abstract class Carro
     public void setPAC(double PAC) {
         this.PAC = PAC;
     }
-
-    public void setTempo(double t)
-    {
-        this.tempo = t;
-    }
     
     public void setDNF(boolean b)
     {
@@ -157,7 +144,6 @@ public abstract class Carro
         sb.append("\nPotencia: ");sb.append(this.potenciaCombustao);
         sb.append("\nFiabiliade: ");sb.append(this.fiabilidade);
         sb.append("\nPAC: ");sb.append(this.PAC);
-        sb.append("\nTempo: ");sb.append(this.tempo);
         sb.append("\nDNF: ");sb.append(this.dnf);
         return sb.toString();
     }
@@ -178,7 +164,6 @@ public abstract class Carro
                 this.fiabilidade == c.getFiabilidade() &&
                 this.id == c.getID() &&
                 this.PAC == c.getPAC() ) &&
-                this.tempo == c.getTempo() &&
                 this.dnf == c.getDNF();
     }
 
