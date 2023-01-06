@@ -1,33 +1,89 @@
 package business.subPartidas;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import business.subCatálogos.Campeonato;
+import business.subCatálogos.Carro;
+import business.subCatálogos.Circuito;
+import business.subCatálogos.Piloto;
 
 public class Partida {
-	private List<String> _resultadoFinal;
-	private int _totalAfinações;
-	// private Campeonato _campeonato;
-	private ArrayList<Corrida> _corridas = new ArrayList<Corrida>();
-	private Estado _estados;
-	private Simulador _simulador;
+	private List<String> resultadoFinal;
+	private int totalAfinações;
+	private List<Circuito> circuitos;
+	private List<Corrida> corridas;
+	private int idCorridaAtual;
+	private Map<String, Estado> estados = new HashMap<String, Estado>();
+
+
+	public Partida(Campeonato c) {
+		for (Circuito s : c.getCircuitos()){
+			this.circuitos.add(s);
+		}
+		this.totalAfinações = (this.circuitos.size()/3)*2; 
+		this.corridas = new ArrayList<Corrida>();
+		this.estados = new HashMap<String,Estado>();
+		this.idCorridaAtual = 0;
+		this.resultadoFinal = new ArrayList<String>();
+	}
+
+	public Map<String, Integer> getClimas() {
+		Map<String,Integer> climas = new HashMap<>();
+		for (Corrida corrida : this.corridas) {
+			climas.put(corrida.getCircuito().getNome(), corrida.getClima());
+		}
+		return climas;
+	}
+
+	public void iniciarCorrida() {
+		Corrida corrida = this.corridas.get(this.idCorridaAtual);
+		corrida.simulaCorrida();
+	}
+	
+	public void adicionaJogador(String aIdJogador, Piloto aPiloto, Carro aCarro) {
+		this.estados.put(aIdJogador, new Estado());
+	}
 
 	public boolean verificaDisponibilidadeAfinacoesPartida(String aIdJogador) {
-		throw new UnsupportedOperationException();
+		return this.estados.get(aIdJogador).getNAfinacoes() < this.totalAfinações;
 	}
 
 	public void aplicarNovaAfinacaoPartida(String aIdJogador, double aAfinacao) {
-		throw new UnsupportedOperationException();
+		this.estados.get(aIdJogador).setNAfinacoes(this.estados.get(aIdJogador).getNAfinacoes() + 1);
+		this.estados.get(aIdJogador).setDownforce(totalAfinações);
 	}
 
 	public void registaConfiguracaoCorridaPartida(int aTipoPneus, int aModoMotor, String aIdJogador) {
-		throw new UnsupportedOperationException();
+		this.estados.get(aIdJogador).setTipoPneus(aTipoPneus);
+		this.estados.get(aIdJogador).setModoMotor(aModoMotor);
 	}
 
 	public List<String> calculaResultadoPartida() {
-		throw new UnsupportedOperationException();
+		List<String> lKeys = new ArrayList<String>(this.estados.keySet());
+		Collections.sort(lKeys, new Comparator<String>() {
+			@Override
+			public int compare(String aKey1, String aKey2) {
+				return estados.get(aKey2).getPontuacao() - estados.get(aKey1).getPontuacao();
+			}
+		});
+		return lKeys;
 	}
 
+	public String calculaResultadoCorrida() {
+		Corrida corrida = corridas.get(this.idCorridaAtual);
+		String resultados = corrida.printResultados();
+		this.idCorridaAtual++;
+		return resultados;
+	}
+
+	public int getNCorridas() {
+		return this.corridas.size();
+	}
 
 	public boolean equals(Object aObject) {
 		if (this == aObject) {
@@ -35,14 +91,12 @@ public class Partida {
 		} else if (aObject instanceof Partida) {
 			Partida lPartidaObject = (Partida) aObject;
 			boolean lEquals = true;
-			lEquals &= this._resultadoFinal == lPartidaObject._resultadoFinal;
-			lEquals &= this._totalAfinações == lPartidaObject._totalAfinações;
-			lEquals &= ((this._corridas == lPartidaObject._corridas)
-				|| (this._corridas != null && this._corridas.equals(lPartidaObject._corridas)));
-			lEquals &= ((this._estados == lPartidaObject._estados)
-				|| (this._estados != null && this._estados.equals(lPartidaObject._estados)));
-			lEquals &= ((this._simulador == lPartidaObject._simulador)
-				|| (this._simulador != null && this._simulador.equals(lPartidaObject._simulador)));
+			lEquals &= this.resultadoFinal == lPartidaObject.resultadoFinal;
+			lEquals &= this.totalAfinações == lPartidaObject.totalAfinações;
+			lEquals &= ((this.corridas == lPartidaObject.corridas)
+				|| (this.corridas != null && this.corridas.equals(lPartidaObject.corridas)));
+			lEquals &= ((this.estados == lPartidaObject.estados)
+				|| (this.estados != null && this.estados.equals(lPartidaObject.estados)));
 			return lEquals;
 		}
 		return false;

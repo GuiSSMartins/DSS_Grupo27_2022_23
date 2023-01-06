@@ -31,7 +31,7 @@ public class Menu {
     private String titulo;                  // Titulo do menu (opcional)
     private List<String> opcoes;            // Lista de opções
     private List<PreCondition> disponivel;  // Lista de pré-condições
-    private List<Handler> handlers;         // Lista de handlers
+    private List<Handler> handlers;         // Lista de handlers (do Menu Principal)
 
     // Construtor
 
@@ -102,12 +102,6 @@ public class Menu {
      *
      * Cria um menu de opções sem event handlers.
      * Utilização de arrays é útil para definir menus estáticos. P.e.:
-     *
-     * new Menu(String[]{
-     *     "Opção 1",
-     *     "Opção 2",
-     *     "Opção 3"
-     * })
      *
      * @param opcoes Um array de Strings com as opções do menu.
      */

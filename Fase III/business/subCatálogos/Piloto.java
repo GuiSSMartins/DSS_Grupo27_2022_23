@@ -13,8 +13,8 @@ public class Piloto implements Serializable
 {
     //Variaveis de instancia
     private String nome;
-    private double CTS;
-    private double SVA;
+    private double CTS; // Chuva vs. Tempo Seco // (entre 0 e 1)
+    private double SVA; // Segurança vs. Agressividade // (entre 0 e 1)
     
     //Construtores
     public Piloto()

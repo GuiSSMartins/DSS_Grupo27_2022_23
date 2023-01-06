@@ -4,10 +4,58 @@ import business.subCatálogos.Carro;
 import business.subCatálogos.Piloto;
 
 public class Progresso {
-	private Piloto _piloto;
-	private Carro _carro;
-	private double _tempo;
-	private int _seccao;
+	private Piloto piloto;
+	private Carro carro;
+	private long tempo;
+	private int seccao;
+
+	public Piloto getPiloto() {
+		return this.piloto;
+	}
+
+	public void setPiloto(Piloto piloto) {
+		this.piloto = piloto;
+	}
+
+	public Carro getCarro() {
+		return this.carro;
+	}
+
+	public void setCarro(Carro carro) {
+		this.carro = carro;
+	}
+
+	public long getTempo() {
+		return this.tempo;
+	}
+
+	public void setTempo(long tempo) {
+		this.tempo = tempo;
+	}
+
+	public int getSeccao() {
+		return this.seccao;
+	}
+
+	public void setSeccao(int seccao) {
+		this.seccao = seccao;
+	}
+
+	public Progresso(Piloto piloto, Carro carro, long tempo, int seccao)
+	{
+		this.piloto = piloto.clone();
+		this.carro = carro.clone();
+		this.tempo = tempo;
+		this.seccao = seccao;
+	}
+
+	public Progresso(Progresso p)
+	{
+		this.carro=p.getCarro();
+		this.piloto=p.getPiloto();
+		this.tempo=p.getTempo();
+		this.seccao=p.getSeccao();
+	}
 
 	public void update(Evento aE, String aIdJogador) {
 		throw new UnsupportedOperationException();
@@ -20,14 +68,30 @@ public class Progresso {
 		} else if (aObject instanceof Progresso) {
 			Progresso lProgressoObject = (Progresso) aObject;
 			boolean lEquals = true;
-			lEquals &= ((this._piloto == lProgressoObject._piloto)
-				|| (this._piloto != null && this._piloto.equals(lProgressoObject._piloto)));
-			lEquals &= ((this._carro == lProgressoObject._carro)
-				|| (this._carro != null && this._carro.equals(lProgressoObject._carro)));
-			lEquals &= this._tempo == lProgressoObject._tempo;
-			lEquals &= this._seccao == lProgressoObject._seccao;
+			lEquals &= ((this.piloto == lProgressoObject.piloto)
+				|| (this.piloto != null && this.piloto.equals(lProgressoObject.piloto)));
+			lEquals &= ((this.carro == lProgressoObject.carro)
+				|| (this.carro != null && this.carro.equals(lProgressoObject.carro)));
+			lEquals &= this.tempo == lProgressoObject.tempo;
+			lEquals &= this.seccao == lProgressoObject.seccao;
 			return lEquals;
 		}
 		return false;
 	}
+	
+	public Integer compareTo(Progresso p)
+	{
+		if(this.tempo<p.getTempo())
+			return -1;
+		else if(this.tempo>p.getTempo())
+			return 1;
+		else
+			return 0; 
+	}
+
+	public Progresso clone()
+    {
+        return new Progresso(this);
+    }
+
 }

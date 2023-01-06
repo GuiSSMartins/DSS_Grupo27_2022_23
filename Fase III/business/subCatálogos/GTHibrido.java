@@ -8,30 +8,41 @@ package business.subCatálogos;
  * @version (a version number or a date)
  */
 
-public class GTHibrido extends Hibrido
+public class GTHibrido extends GT implements Hibrido
 {
-    private double taxaDeterioracao;
-
+    private int potenciaEletrico;
+    
     public GTHibrido()
     {
         super();
+        this.potenciaEletrico = 0;
     }
     
-    public GTHibrido(int id, String marca, String modelo, int cilindrada, int potencia, int fiabilidade, double PAC,  double taxaDeterioracao, int eletrico)
+    public GTHibrido(int id, String marca, String modelo, int cilindrada, int potencia, int fiabilidade, double PAC, double taxaDeterioracao, int eletrico)
     {
-        super(id,marca,modelo,cilindrada,potencia,fiabilidade,PAC,eletrico);
-        this.taxaDeterioracao=taxaDeterioracao;
+        super(id,marca,modelo,cilindrada,potencia+eletrico,fiabilidade,PAC,taxaDeterioracao);
+        this.potenciaEletrico = eletrico;
     }
     
     public GTHibrido(GTHibrido p)
     {
         super(p);
-        this.taxaDeterioracao = p.getTaxaDeterioracao();
+        this.potenciaEletrico = p.getPotenciaEletrico();
     }
     
     public GTHibrido clone()
     {
         return new GTHibrido(this);
+    }
+    
+    public int getPotenciaEletrico()
+    {
+        return this.potenciaEletrico;
+    }
+
+    public void setPotenciaEletrico(int potencia)
+    {
+        this.potenciaEletrico = potencia;
     }
 
     public boolean verificaCilindrada(int cilindrada) {
@@ -48,14 +59,6 @@ public class GTHibrido extends Hibrido
         return false;
         
         GTHibrido c = (GTHibrido) o;
-        return ( super.equals(c));
-    }
-
-    public double getTaxaDeterioracao(){
-        return this.taxaDeterioracao;
-    }
-
-    public void setTaxaDeterioracao(double taxaDeterioracao){
-        this.taxaDeterioracao = taxaDeterioracao;
-    }
+        return ( super.equals(c) && this.potenciaEletrico == c.getPotenciaEletrico());
+    }   
 }

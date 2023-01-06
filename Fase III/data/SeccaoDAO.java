@@ -28,6 +28,7 @@ public class SeccaoDAO implements Map<Integer,Seccao>{
     public SeccaoDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
+
             stm.executeUpdate("CREATE TABLE IF NOT EXISTS seccoes (id INT NOT NULL AUTO_INCREMENT, tipo VARCHAR(10) NOT NULL, posicao INT NOT NULL, comprimento DOUBLE NOT NULL, GDU INT NOT NULL, nomeCircuito VARCHAR(255) NOT NULL, PRIMARY KEY (Id), FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome));");
         } catch (SQLException e) {
             // Erro a criar tabela...

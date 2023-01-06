@@ -27,11 +27,14 @@ public class CarreiraDAO implements Map<String, Carreira>{
     public CarreiraDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
+
             String sql = "CREATE TABLE IF NOT EXISTS carreiras (" +
                     "Id varchar(245) NOT NULL PRIMARY KEY," + // Id = NomeCampeonato + Email
-                    "NomeCampeonato varchar(100) NOT NULL FOREIGN KEY REFERENCES campeonatos(Nome)," +
-                    "Email varchar(100) NOT NULL FOREIGN KEY REFERENCES utilizadores(Email)," +
-                    "Pontuacao int NOT NULL)"; 
+                    "Pontuacao int NOT NULL," +
+                    "NomeCampeonato varchar(510) NOT NULL," +
+                    "Email varchar(100) NOT NULL," +
+                    "FOREIGN KEY(Email) REFERENCES utilizadores(Email)," + 
+                    "FOREIGN KEY(NomeCampeonato) REFERENCES campeonatos(Id));"; 
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...
@@ -59,7 +62,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs =
-                stm.executeQuery("SELECT Id FROM carreiras WHERE Id='"+key+"'")) {
+                stm.executeQuery("SELECT Id FROM carreiras WHERE Id='"+key.toString()+"'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -85,7 +88,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         Carreira t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id='"+key+"'")) {
+             ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id='"+key.toString()+"'")) {
             
             new Carreira();
         
@@ -104,7 +107,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
 
     @Override
     public Set<String> keySet() {
-        throw new NullPointerException("Not implemented!");// TODO Auto-generated method stub
+        throw new NullPointerException("Not implemented!");
     }
 
     @Override
@@ -119,11 +122,11 @@ public class CarreiraDAO implements Map<String, Carreira>{
             int pontuacao = arg1.getPontuacao();
 
             stm.executeUpdate(
-                    "INSERT INTO utilizadores " +
-                            "VALUES ('"+ id + "', '"+
+                    "INSERT INTO carreiras " +
+                            "VALUES ("+ id + ", '"+
                             NomeCampeonato +"', '"+
-                            Email +"', '"+
-                            pontuacao + ") '");
+                            Email +"', "+
+                            pontuacao + ")");
 
         } catch (SQLException e) {
             // Database error!
@@ -193,7 +196,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         return res;
     }
 
-public List<Carreira> getCarreiras(String email){
+    public List<Carreira> getCarreiras(String email){
         List<Carreira> res = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
@@ -209,6 +212,21 @@ public List<Carreira> getCarreiras(String email){
             throw new NullPointerException(e.getMessage());
         }
         return res;
+    }
+
+    public void updatePontuacao(String id, int pontuacao){
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("UPDATE carreiras SET Pontuacao='"+pontuacao+"' WHERE Id='"+id+"'")) { 
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+    }
+
+    public void povoar() {
+
     }
     
 }
