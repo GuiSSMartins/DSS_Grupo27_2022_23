@@ -10,14 +10,14 @@ import java.util.Set;
 
 import business.SubUtilizadores.Carreira;
 
-public class CarreiraDAO implements Map<String, Carreira>{
+public class CarreiraDAO implements Map<String, Carreira> {
 
     private static CarreiraDAO singleton = null;
 
     public static CarreiraDAO getInstance() {
-        
+
         if (CarreiraDAO.singleton == null) {
-            
+
             CarreiraDAO.singleton = new CarreiraDAO();
         }
 
@@ -26,15 +26,15 @@ public class CarreiraDAO implements Map<String, Carreira>{
 
     public CarreiraDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
 
             String sql = "CREATE TABLE IF NOT EXISTS carreiras (" +
                     "Id varchar(245) NOT NULL PRIMARY KEY," + // Id = NomeCampeonato + Email
                     "Pontuacao int NOT NULL," +
                     "NomeCampeonato varchar(510) NOT NULL," +
                     "Email varchar(100) NOT NULL," +
-                    "FOREIGN KEY(Email) REFERENCES utilizadores(Email)," + 
-                    "FOREIGN KEY(NomeCampeonato) REFERENCES campeonatos(Id));"; 
+                    "FOREIGN KEY(Email) REFERENCES utilizadores(Email)," +
+                    "FOREIGN KEY(NomeCampeonato) REFERENCES campeonatos(Id));";
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...
@@ -46,23 +46,22 @@ public class CarreiraDAO implements Map<String, Carreira>{
     @Override
     public void clear() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
             stm.executeUpdate("TRUNCATE carreiras");
         } catch (SQLException e) {
             // Database error!
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
         }
-        
+
     }
 
     @Override
     public boolean containsKey(Object key) {
-         boolean r;
+        boolean r;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs =
-                stm.executeQuery("SELECT Id FROM carreiras WHERE Id='"+key.toString()+"'")) {
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT Id FROM carreiras WHERE Id='" + key.toString() + "'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -75,23 +74,23 @@ public class CarreiraDAO implements Map<String, Carreira>{
     @Override
     public boolean containsValue(Object value) {
         Carreira t = (Carreira) value;
-		return this.containsKey(t.getID());
+        return this.containsKey(t.getID());
     }
 
     @Override
     public Set<Entry<String, Carreira>> entrySet() {
-       throw new NullPointerException("public Set<Map.Entry<String,Carreira>> entrySet() not implemented!");
+        throw new NullPointerException("public Set<Map.Entry<String,Carreira>> entrySet() not implemented!");
     }
 
     @Override
     public Carreira get(Object key) {
         Carreira t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id='"+key.toString()+"'")) {
-            
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id='" + key.toString() + "'")) {
+
             new Carreira();
-        
+
         } catch (SQLException e) {
             // Database error!
             e.printStackTrace();
@@ -114,7 +113,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
     public Carreira put(String arg0, Carreira arg1) {
         Carreira t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
 
             String id = arg1.getID();
             String NomeCampeonato = arg1.getNomeCampeonato();
@@ -123,9 +122,9 @@ public class CarreiraDAO implements Map<String, Carreira>{
 
             stm.executeUpdate(
                     "INSERT INTO carreiras " +
-                            "VALUES ("+ id + ", '"+
-                            NomeCampeonato +"', '"+
-                            Email +"', "+
+                            "VALUES (" + id + ", '" +
+                            NomeCampeonato + "', '" +
+                            Email + "', " +
                             pontuacao + ")");
 
         } catch (SQLException e) {
@@ -138,19 +137,19 @@ public class CarreiraDAO implements Map<String, Carreira>{
 
     @Override
     public void putAll(Map<? extends String, ? extends Carreira> m) {
-        for(Carreira t : m.values()) {
+        for (Carreira t : m.values()) {
             this.put(t.getID(), t);
         }
-        
+
     }
 
     @Override
     public Carreira remove(Object key) {
         Carreira t = this.get(key);
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
-            
-            stm.executeUpdate("DELETE FROM carreiras WHERE Id='"+key+"'");
+                Statement stm = conn.createStatement()) {
+
+            stm.executeUpdate("DELETE FROM carreiras WHERE Id='" + key + "'");
         } catch (Exception e) {
             // Database error!
             e.printStackTrace();
@@ -163,13 +162,12 @@ public class CarreiraDAO implements Map<String, Carreira>{
     public int size() {
         int i = 0;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT count(*) FROM carreiras")) {
-            if(rs.next()) {
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT count(*) FROM carreiras")) {
+            if (rs.next()) {
                 i = rs.getInt(1);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Erro a criar tabela...
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
@@ -181,8 +179,8 @@ public class CarreiraDAO implements Map<String, Carreira>{
     public Collection<Carreira> values() {
         Collection<Carreira> res = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT Id FROM carreiras")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT Id FROM carreiras")) {
             while (rs.next()) {
                 String idt = rs.getString("Id");
                 Carreira t = this.get(idt);
@@ -196,11 +194,11 @@ public class CarreiraDAO implements Map<String, Carreira>{
         return res;
     }
 
-    public List<Carreira> getCarreiras(String email){
+    public List<Carreira> getCarreiras(String email) {
         List<Carreira> res = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM carreiras where Email='"+email+"'")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM carreiras where Email='" + email + "'")) {
             while (rs.next()) {
                 String idt = rs.getString("Id");
                 Carreira t = this.get(idt);
@@ -214,10 +212,11 @@ public class CarreiraDAO implements Map<String, Carreira>{
         return res;
     }
 
-    public void updatePontuacao(String id, int pontuacao){
+    public void updatePontuacao(String id, int pontuacao) {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("UPDATE carreiras SET Pontuacao='"+pontuacao+"' WHERE Id='"+id+"'")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm
+                        .executeQuery("UPDATE carreiras SET Pontuacao='" + pontuacao + "' WHERE Id='" + id + "'")) {
         } catch (Exception e) {
             // Database error!
             e.printStackTrace();
@@ -227,6 +226,21 @@ public class CarreiraDAO implements Map<String, Carreira>{
 
     public void povoar() {
 
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement()) {
+
+            if (this.size() < 0) {
+                String sql = "INSERT INTO carreiras (Id,Pontuacao,NomeCampeonato,Email)" +
+                        "Values ('camp1p1',0,'camp1','p1');";
+                stm.executeUpdate(sql);
+            }
+
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+
     }
-    
+
 }

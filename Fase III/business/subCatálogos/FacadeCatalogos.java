@@ -18,11 +18,10 @@ public class FacadeCatalogos {
     private UtilizadorDAO utilizadores;
 
     public FacadeCatalogos() {
-
+        this.circuitos = CircuitoDAO.getInstance();
         this.campeonatos = CampeonatoDAO.getInstance();
         this.utilizadores = UtilizadorDAO.getInstance();
         this.seccoes = SeccaoDAO.getInstance();
-        this.circuitos = CircuitoDAO.getInstance();
         this.pilotos = PilotoDAO.getInstance();
         this.carros = CarroDAO.getInstance();
         this.carreiras = CarreiraDAO.getInstance();

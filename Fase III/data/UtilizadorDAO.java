@@ -8,14 +8,14 @@ import java.util.Set;
 
 import business.SubUtilizadores.*;
 
-public class UtilizadorDAO implements Map<String,Utilizador>{
+public class UtilizadorDAO implements Map<String, Utilizador> {
 
     private static UtilizadorDAO singleton = null;
 
     public static UtilizadorDAO getInstance() {
-        
+
         if (UtilizadorDAO.singleton == null) {
-            
+
             UtilizadorDAO.singleton = new UtilizadorDAO();
         }
 
@@ -24,7 +24,7 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
 
     public UtilizadorDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
 
             String sql = "CREATE TABLE IF NOT EXISTS utilizadores (" +
                     "Email varchar(100) NOT NULL PRIMARY KEY," +
@@ -43,7 +43,7 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     @Override
     public void clear() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
             stm.executeUpdate("TRUNCATE utilizadores");
         } catch (SQLException e) {
             // Database error!
@@ -56,9 +56,9 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     public boolean containsKey(Object key) {
         boolean r;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs =
-                stm.executeQuery("SELECT Email FROM utilizadores WHERE Email='"+key.toString()+"'")) {
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm
+                        .executeQuery("SELECT Email FROM utilizadores WHERE Email='" + key.toString() + "'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -83,14 +83,14 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     public Utilizador get(Object key) {
         Utilizador t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM utilizadores WHERE Email='"+key.toString()+"'")) {
-            if (rs.next()) {  // A chave existe na tabela
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM utilizadores WHERE Email='" + key.toString() + "'")) {
+            if (rs.next()) { // A chave existe na tabela
                 int jogador = rs.getInt("Jogador");
                 if (jogador == 1) { // Joagdor
-                    t = new Jogador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"), rs.getInt("VersaoJogo"));
-                }
-                else { // administrador
+                    t = new Jogador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"),
+                            rs.getInt("VersaoJogo"));
+                } else { // administrador
                     t = new Administrador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"));
                 }
             }
@@ -114,7 +114,7 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
 
     @Override
     public void putAll(Map<? extends String, ? extends Utilizador> utilizadores) {
-        for(Utilizador t : utilizadores.values()) {
+        for (Utilizador t : utilizadores.values()) {
             this.put(t.getEmail(), t);
         }
     }
@@ -123,9 +123,9 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     public Utilizador remove(Object key) {
         Utilizador t = this.get(key);
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
-            
-            stm.executeUpdate("DELETE FROM utilizadores WHERE Email='"+key+"'");
+                Statement stm = conn.createStatement()) {
+
+            stm.executeUpdate("DELETE FROM utilizadores WHERE Email='" + key + "'");
         } catch (Exception e) {
             // Database error!
             e.printStackTrace();
@@ -138,13 +138,12 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     public int size() {
         int i = 0;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT count(*) FROM utilizadores")) {
-            if(rs.next()) {
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT count(*) FROM utilizadores")) {
+            if (rs.next()) {
                 i = rs.getInt(1);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Erro a criar tabela...
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
@@ -155,8 +154,8 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     public Collection<Utilizador> values() {
         Collection<Utilizador> res = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT Email FROM utilizadores")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT Email FROM utilizadores")) {
             while (rs.next()) {
                 String idt = rs.getString("Email");
                 Utilizador t = this.get(idt);
@@ -174,13 +173,13 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     public Utilizador put(String arg0, Utilizador arg1) {
         Utilizador t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
 
             String email = arg1.getEmail();
             String nome = arg1.getNome();
             String password = arg1.getPassword();
             int jogador = 0;
-            int versaoJogo = 0; //arg1.getVersaoJogo();
+            int versaoJogo = 0; // arg1.getVersaoJogo();
 
             if (arg1 instanceof Jogador) {
                 jogador = 1;
@@ -190,10 +189,10 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
 
             stm.executeUpdate(
                     "INSERT INTO utilizadores " +
-                            "VALUES ('"+ email + "', '"+
-                            password +"', '"+
-                            nome +"', "+
-                            jogador +", "+
+                            "VALUES ('" + email + "', '" +
+                            password + "', '" +
+                            nome + "', " +
+                            jogador + ", " +
                             versaoJogo + ")");
 
         } catch (SQLException e) {
@@ -204,10 +203,11 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
         return t;
     }
 
-    public void updatePassword(String email, String password){
+    public void updatePassword(String email, String password) {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("UPDATE utilizadores SET Password='"+password+"' WHERE Email='"+email+"'")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(
+                        "UPDATE utilizadores SET Password='" + password + "' WHERE Email='" + email + "'")) {
         } catch (Exception e) {
             // Database error!
             e.printStackTrace();
@@ -215,10 +215,11 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
         }
     }
 
-    public void updateVersao(String email, int versao){
+    public void updateVersao(String email, int versao) {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("UPDATE utilizadores SET VersaoJogo='"+versao+"' WHERE Email='"+email+"'")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery(
+                        "UPDATE utilizadores SET VersaoJogo='" + versao + "' WHERE Email='" + email + "'")) {
         } catch (Exception e) {
             // Database error!
             e.printStackTrace();
@@ -227,6 +228,18 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     }
 
     public void povoar() {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement()) {
 
+            String sql = "INSERT INTO utilizadores (Email,Password,Nome,Jogador,VersaoJogo)" +
+                    "Values ('user1','123','Me',0,0)," +
+                    "('user2','123','Me',1,1);";
+            stm.executeUpdate(sql);
+
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
     }
 }

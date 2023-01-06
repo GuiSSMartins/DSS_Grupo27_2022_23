@@ -10,14 +10,14 @@ import java.sql.*;
 
 import business.subCatálogos.Circuito;
 
-public class CircuitoDAO implements Map<String,Circuito>{
+public class CircuitoDAO implements Map<String, Circuito> {
 
     private static CircuitoDAO singleton = null;
 
     public static CircuitoDAO getInstance() {
-        
+
         if (CircuitoDAO.singleton == null) {
-            
+
             CircuitoDAO.singleton = new CircuitoDAO();
         }
 
@@ -26,12 +26,12 @@ public class CircuitoDAO implements Map<String,Circuito>{
 
     private CircuitoDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-                Statement stm = conn.createStatement();) {   
+                Statement stm = conn.createStatement();) {
 
             stm.executeUpdate("CREATE TABLE IF NOT EXISTS circuitos ("
                     + "nome VARCHAR(255) NOT NULL,"
                     + "nvoltas INT NOT NULL,"
-                    + "comprimento DOUBLE NOT NULL,"
+                    + "comprimento DOUBLE(5,2) NOT NULL,"
                     + "ncurvas INT NOT NULL,"
                     + "nretas INT NOT NULL,"
                     + "nchicanes INT NOT NULL,"
@@ -54,8 +54,8 @@ public class CircuitoDAO implements Map<String,Circuito>{
     @Override
     public boolean containsKey(Object key) {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-            Statement stm = conn.createStatement();
-            ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos WHERE nome='"+key.toString()+"'")) {
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos WHERE nome='" + key.toString() + "'")) {
             return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -73,8 +73,8 @@ public class CircuitoDAO implements Map<String,Circuito>{
     public Set<Entry<String, Circuito>> entrySet() {
         Set<Entry<String, Circuito>> res = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) {
             while (rs.next()) {
                 String idt = rs.getString("nome");
                 Circuito t = this.get(idt);
@@ -92,10 +92,11 @@ public class CircuitoDAO implements Map<String,Circuito>{
     public Circuito get(Object key) {
         Circuito t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM circuitos WHERE nome='"+key.toString()+"'")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT * FROM circuitos WHERE nome='" + key.toString() + "'")) {
             if (rs.next()) {
-                t = new Circuito(rs.getString("nome"), rs.getInt("nvoltas"), rs.getDouble("comprimento"), rs.getInt("ncurvas"), rs.getInt("nchicanes"), rs.getInt("nretas"));
+                t = new Circuito(rs.getString("nome"), rs.getInt("nvoltas"), rs.getDouble("comprimento"),
+                        rs.getInt("ncurvas"), rs.getInt("nchicanes"), rs.getInt("nretas"));
             }
         } catch (Exception e) {
             // Database error!
@@ -114,8 +115,8 @@ public class CircuitoDAO implements Map<String,Circuito>{
     public Set<String> keySet() {
         Set<String> res = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) {
             while (rs.next()) {
                 String idt = rs.getString("nome");
                 res.add(idt);
@@ -132,22 +133,22 @@ public class CircuitoDAO implements Map<String,Circuito>{
     public Circuito put(String arg0, Circuito arg1) {
         Circuito t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
 
             String nome = arg1.getNome();
-            int nVoltas = arg1.getNVoltas();    
-            double comprimento = arg1.getComprimento();       
-            int nCurvas = arg1.getNCurvas();      
+            int nVoltas = arg1.getNVoltas();
+            double comprimento = arg1.getComprimento();
+            int nCurvas = arg1.getNCurvas();
             int nRetas = arg1.getNRetas();
-            int nChicanes = arg1.getNChicanes();  
+            int nChicanes = arg1.getNChicanes();
 
             stm.executeUpdate(
                     "INSERT INTO circuitos " +
-                            "VALUES ('"+ nome + "', "+
-                            nVoltas +", "+
-                            comprimento +", "+
-                            nCurvas +", "+
-                            nRetas +", "+
+                            "VALUES ('" + nome + "', " +
+                            nVoltas + ", " +
+                            comprimento + ", " +
+                            nCurvas + ", " +
+                            nRetas + ", " +
                             nChicanes + ")");
 
         } catch (SQLException e) {
@@ -156,12 +157,12 @@ public class CircuitoDAO implements Map<String,Circuito>{
             throw new NullPointerException(e.getMessage());
         }
         return t;
-        
+
     }
 
     @Override
     public void putAll(Map<? extends String, ? extends Circuito> m) {
-         for (Circuito p : m.values()) {
+        for (Circuito p : m.values()) {
             this.put(p.getNome(), p);
         }
     }
@@ -182,7 +183,7 @@ public class CircuitoDAO implements Map<String,Circuito>{
 
     @Override
     public int size() {
-       int i = 0;
+        int i = 0;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();
                 ResultSet rs = stm.executeQuery("SELECT * FROM circuitos")) {
@@ -201,8 +202,8 @@ public class CircuitoDAO implements Map<String,Circuito>{
     public Collection<Circuito> values() {
         Collection<Circuito> res = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) { 
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT nome FROM circuitos")) {
             while (rs.next()) {
                 String idt = rs.getString("nome");
                 Circuito t = this.get(idt);
@@ -218,16 +219,23 @@ public class CircuitoDAO implements Map<String,Circuito>{
 
     public void povoar() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-            Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
 
-            // 1º Circuito
+            if (this.size() < 0) {
 
+                // 1º Circuito
+                String sql = "INSERT INTO circuitos (nome,nVoltas,comprimento,ncurvas,nretas,nchicanes)" +
+                        "Values ('circ1',3,'130.00',5,5,4)," +
+                        "('circ2',6,'160.00',5,4,5)," +
+                        "('circ3',1,'110.00',4,5,5);";
+                stm.executeUpdate(sql);
+            }
 
         } catch (SQLException e) {
             // Database error!
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
-        } 
+        }
     }
 
 }

@@ -27,11 +27,11 @@ public class PilotoDAO implements Map<String, Piloto> {
     public PilotoDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();) {
-            
+
             stm.executeUpdate("CREATE TABLE IF NOT EXISTS pilotos ("
                     + "nome VARCHAR(255) NOT NULL,"
-                    + "cts DOUBLE NOT NULL,"
-                    + "sva DOUBLE NOT NULL,"
+                    + "cts DOUBLE(5,2) NOT NULL,"
+                    + "sva DOUBLE(5,2) NOT NULL,"
                     + "PRIMARY KEY (nome))");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -203,20 +203,30 @@ public class PilotoDAO implements Map<String, Piloto> {
 
     public void povoar() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-            Statement stm = conn.createStatement()) {
+                Statement stm = conn.createStatement()) {
 
-            // 1º Carro
-            stm.executeUpdate(
-                "INSERT INTO pilotos " +
-                    "VALUES ('Battery Voltar', "+ //nome
-                    "0.6, "+ // cts
-                    "0.4) ON DUPLICATE KEY UPDATE nome = 'Battery Voltar'"); // sva
+            if (this.size() < 0) {
+
+                // 1º Carro
+                stm.executeUpdate(
+                        "INSERT INTO pilotos " +
+                                "VALUES ('Battery Voltar', " + // nome
+                                "0.6, " + // cts
+                                "0.4);"); // sva
+
+                String sql = "INSERT INTO pilotos (nome,cts,sva)" +
+                        "Values ('p1',0.1,0.1)," +
+                        "('p2',0.2,0.2)," +
+                        "('p3',0.3,0.3);";
+                stm.executeUpdate(sql);
+
+            }
 
         } catch (SQLException e) {
             // Database error!
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
-        }  
+        }
     }
 
 }

@@ -12,14 +12,14 @@ import business.subCatálogos.C2Hibrido;
 import business.subCatálogos.GTHibrido;
 import business.subCatálogos.Hibrido;
 
-public class CarroHibridoDAO implements Map<Integer, Hibrido>{
+public class CarroHibridoDAO implements Map<Integer, Hibrido> {
 
     private static CarroHibridoDAO singleton = null;
 
     public static CarroHibridoDAO getInstance() {
-        
+
         if (CarroHibridoDAO.singleton == null) {
-            
+
             CarroHibridoDAO.singleton = new CarroHibridoDAO();
         }
 
@@ -36,8 +36,8 @@ public class CarroHibridoDAO implements Map<Integer, Hibrido>{
                     + "cilindrada INT NOT NULL,"
                     + "potencia INT NOT NULL,"
                     + "fiabilidade INT NOT NULL,"
-                    + "pac DOUBLE NOT NULL,"
-                    + "taxadeterioracao DOUBLE NULL"
+                    + "pac DOUBLE(5,2) NOT NULL,"
+                    + "taxadeterioracao DOUBLE(5,2) NULL"
                     + "potenciaEletrica INT NOT NULL,"
                     + "PRIMARY KEY (id))";
             stm.executeUpdate(sql);
@@ -55,7 +55,7 @@ public class CarroHibridoDAO implements Map<Integer, Hibrido>{
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
-        } 
+        }
     }
 
     @Override
@@ -89,15 +89,18 @@ public class CarroHibridoDAO implements Map<Integer, Hibrido>{
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
                 String modelo = rs.getString("Modelo");
-                if (modelo.equals("C1")) {  
-                    h = new C1Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"), rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
-                }
-                else if (modelo.equals("C2")) {  
-                    h = new C2Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"), rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
-                }
-                else
-                {
-                    h = new GTHibrido(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"),  rs.getInt("potenciaEletrica"));
+                if (modelo.equals("C1")) {
+                    h = new C1Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"),
+                            rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),
+                            rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
+                } else if (modelo.equals("C2")) {
+                    h = new C2Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"),
+                            rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),
+                            rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
+                } else {
+                    h = new GTHibrido(rs.getInt("Id"), rs.getString("Marca"), rs.getString("Modelo"),
+                            rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"),
+                            rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"), rs.getInt("potenciaEletrica"));
                 }
                 set.add(new AbstractMap.SimpleEntry<>(h.getID(), h));
             }
@@ -117,17 +120,20 @@ public class CarroHibridoDAO implements Map<Integer, Hibrido>{
             ResultSet rs = stm.executeQuery(sql);
             if (rs.next()) {
                 String modelo = rs.getString("Modelo");
-                if (modelo.equals("C1")) {  
-                    h = new C1Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"), rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
+                if (modelo.equals("C1")) {
+                    h = new C1Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"),
+                            rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),
+                            rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
+                } else if (modelo.equals("C2")) {
+                    h = new C2Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"),
+                            rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),
+                            rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
+                } else {
+                    h = new GTHibrido(rs.getInt("Id"), rs.getString("Marca"), rs.getString("Modelo"),
+                            rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"),
+                            rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"), rs.getInt("potenciaEletrica"));
                 }
-                else if (modelo.equals("C2")) {  
-                    h = new C2Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"), rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
-                }
-                else
-                {
-                    h = new GTHibrido(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"),  rs.getInt("potenciaEletrica"));
-                }
-                
+
                 return h;
             }
         } catch (SQLException e) {
@@ -165,16 +171,23 @@ public class CarroHibridoDAO implements Map<Integer, Hibrido>{
             Statement stm = conn.createStatement();
             String modelo = arg1.getModelo();
             String sql = null;
-            if (modelo.equals("C1")) {  
-                sql = "INSERT INTO carroshibridos (id, marca, modelo, cilindrada, potencia, fiabilidade, pac, potenciaEletrica) VALUES ('" + arg1.getID() + "', '" + arg1.getMarca() + "', '" + arg1.getModelo() + "', '" + arg1.getCilindrada() + "', '" + arg1.getPotenciaCombustao() + "', '" + arg1.getFiabilidade() + "', '" + arg1.getPAC() + "', '" + arg1.getPotenciaEletrico() + "')";
-            }
-            else if (modelo.equals("C2")) {  
-                sql = "INSERT INTO carroshibridos (id, marca, modelo, cilindrada, potencia, fiabilidade, pac, potenciaEletrica) VALUES ('" + arg1.getID() + "', '" + arg1.getMarca() + "', '" + arg1.getModelo() + "', '" + arg1.getCilindrada() + "', '" + arg1.getPotenciaCombustao() + "', '" + arg1.getFiabilidade() + "', '" + arg1.getPAC() + "', '" + arg1.getPotenciaEletrico() + "')";
-            }
-            else
-            {
+            if (modelo.equals("C1")) {
+                sql = "INSERT INTO carroshibridos (id, marca, modelo, cilindrada, potencia, fiabilidade, pac, potenciaEletrica) VALUES ('"
+                        + arg1.getID() + "', '" + arg1.getMarca() + "', '" + arg1.getModelo() + "', '"
+                        + arg1.getCilindrada() + "', '" + arg1.getPotenciaCombustao() + "', '" + arg1.getFiabilidade()
+                        + "', '" + arg1.getPAC() + "', '" + arg1.getPotenciaEletrico() + "')";
+            } else if (modelo.equals("C2")) {
+                sql = "INSERT INTO carroshibridos (id, marca, modelo, cilindrada, potencia, fiabilidade, pac, potenciaEletrica) VALUES ('"
+                        + arg1.getID() + "', '" + arg1.getMarca() + "', '" + arg1.getModelo() + "', '"
+                        + arg1.getCilindrada() + "', '" + arg1.getPotenciaCombustao() + "', '" + arg1.getFiabilidade()
+                        + "', '" + arg1.getPAC() + "', '" + arg1.getPotenciaEletrico() + "')";
+            } else {
                 GTHibrido arg = (GTHibrido) arg1;
-                sql = "INSERT INTO carroshibridos (id, marca, modelo, cilindrada, potencia, fiabilidade, pac, taxaDeteriorizacao, potenciaEletrica) VALUES ('" + arg.getID() + "', '" + arg.getMarca() + "', '" + arg.getModelo() + "', '" + arg.getCilindrada() + "', '" + arg.getPotenciaCombustao() + "', '" + arg.getFiabilidade() + "', '" + arg.getPAC() + "', '" + arg.getTaxaDeterioracao() + "', '" + arg.getPotenciaEletrico() + "')";
+                sql = "INSERT INTO carroshibridos (id, marca, modelo, cilindrada, potencia, fiabilidade, pac, taxaDeteriorizacao, potenciaEletrica) VALUES ('"
+                        + arg.getID() + "', '" + arg.getMarca() + "', '" + arg.getModelo() + "', '"
+                        + arg.getCilindrada() + "', '" + arg.getPotenciaCombustao() + "', '" + arg.getFiabilidade()
+                        + "', '" + arg.getPAC() + "', '" + arg.getTaxaDeterioracao() + "', '"
+                        + arg.getPotenciaEletrico() + "')";
             }
             stm.executeUpdate(sql);
         } catch (SQLException e) {
@@ -188,7 +201,7 @@ public class CarroHibridoDAO implements Map<Integer, Hibrido>{
     public void putAll(Map<? extends Integer, ? extends Hibrido> m) {
         for (Hibrido h : m.values()) {
             put(h.getID(), h);
-        }   
+        }
     }
 
     @Override
@@ -231,15 +244,18 @@ public class CarroHibridoDAO implements Map<Integer, Hibrido>{
             Hibrido h = null;
             while (rs.next()) {
                 String modelo = rs.getString("Modelo");
-                if (modelo.equals("C1")) {  
-                    h = new C1Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"), rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
-                }
-                else if (modelo.equals("C2")) {  
-                    h = new C2Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"), rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
-                }
-                else
-                {
-                    h = new GTHibrido(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"),  rs.getInt("potenciaEletrica"));
+                if (modelo.equals("C1")) {
+                    h = new C1Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"),
+                            rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),
+                            rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
+                } else if (modelo.equals("C2")) {
+                    h = new C2Hibrido(rs.getInt("id"), rs.getString("marca"), rs.getString("modelo"),
+                            rs.getInt("cilindrada"), rs.getInt("potencia"), rs.getInt("fiabilidade"),
+                            rs.getDouble("pac"), rs.getInt("potenciaEletrica"));
+                } else {
+                    h = new GTHibrido(rs.getInt("Id"), rs.getString("Marca"), rs.getString("Modelo"),
+                            rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"),
+                            rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"), rs.getInt("potenciaEletrica"));
                 }
                 col.add(h);
             }
@@ -250,6 +266,4 @@ public class CarroHibridoDAO implements Map<Integer, Hibrido>{
         return null;
     }
 
- 
-    
 }
