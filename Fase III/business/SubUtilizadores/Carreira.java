@@ -44,11 +44,6 @@ public class Carreira {
         this.email = email;
         this.id = this.nomeCampeonato.concat(email);
     }
-
-    public Carreira(String nomeCampeonato, int pontuacao){
-        this.nomeCampeonato = nomeCampeonato;
-        this.pontuacao = pontuacao;
-    }
     
 
     public int hashCode() {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Evento {
-	private int idSeccao;
+	private int idSecção;
 	private int acontecimento;
 
 	/**
@@ -26,8 +26,8 @@ public class Evento {
 		this.idjogadoresEnvolvidos.add(jogador);
 	}
 
-	public int getIDSeccao(){
-		return this.idSeccao;
+	public int getIDSecção(){
+		return this.idSecção;
 	}
 
 
@@ -37,7 +37,7 @@ public class Evento {
 		} else if (aObject instanceof Evento) {
 			Evento lEventoObject = (Evento) aObject;
 			boolean lEquals = true;
-			lEquals &= this.idSeccao == lEventoObject.idSeccao;
+			lEquals &= this.idSecção == lEventoObject.idSecção;
 			lEquals &= this.acontecimento == lEventoObject.acontecimento;
 			lEquals &= this.idjogadoresEnvolvidos == lEventoObject.idjogadoresEnvolvidos;
 			return lEquals;

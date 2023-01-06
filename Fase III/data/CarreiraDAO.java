@@ -29,11 +29,9 @@ public class CarreiraDAO implements Map<String, Carreira>{
              Statement stm = conn.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS carreiras (" +
                     "Id varchar(245) NOT NULL PRIMARY KEY," + // Id = NomeCampeonato + Email
-                    "Pontuacao int NOT NULL," +
-                    "NomeCampeonato varchar(510) NOT NULL," +
-                    "Email varchar(100) NOT NULL," +
-                    "FOREIGN KEY(Email) REFERENCES utilizadores(Email)," + 
-                    "FOREIGN KEY(NomeCampeonato) REFERENCES campeonatos(Id));"; 
+                    "NomeCampeonato varchar(100) NOT NULL FOREIGN KEY REFERENCES campeonatos(Nome)," +
+                    "Email varchar(100) NOT NULL FOREIGN KEY REFERENCES utilizadores(Email)," +
+                    "Pontuacao int NOT NULL)"; 
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...
@@ -61,7 +59,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs =
-                stm.executeQuery("SELECT Id FROM carreiras WHERE Id='"+key.toString()+"'")) {
+                stm.executeQuery("SELECT Id FROM carreiras WHERE Id='"+key+"'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -87,7 +85,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         Carreira t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id='"+key.toString()+"'")) {
+             ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id='"+key+"'")) {
             
             new Carreira();
         
@@ -106,7 +104,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
 
     @Override
     public Set<String> keySet() {
-        throw new NullPointerException("Not implemented!");
+        throw new NullPointerException("Not implemented!");// TODO Auto-generated method stub
     }
 
     @Override
@@ -121,11 +119,11 @@ public class CarreiraDAO implements Map<String, Carreira>{
             int pontuacao = arg1.getPontuacao();
 
             stm.executeUpdate(
-                    "INSERT INTO carreiras " +
-                            "VALUES ("+ id + ", '"+
+                    "INSERT INTO utilizadores " +
+                            "VALUES ('"+ id + "', '"+
                             NomeCampeonato +"', '"+
-                            Email +"', "+
-                            pontuacao + ")");
+                            Email +"', '"+
+                            pontuacao + ") '");
 
         } catch (SQLException e) {
             // Database error!
@@ -195,7 +193,7 @@ public class CarreiraDAO implements Map<String, Carreira>{
         return res;
     }
 
-    public List<Carreira> getCarreiras(String email){
+public List<Carreira> getCarreiras(String email){
         List<Carreira> res = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
@@ -211,21 +209,6 @@ public class CarreiraDAO implements Map<String, Carreira>{
             throw new NullPointerException(e.getMessage());
         }
         return res;
-    }
-
-    public void updatePontuacao(String id, int pontuacao){
-        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-             Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("UPDATE carreiras SET Pontuacao='"+pontuacao+"' WHERE Id='"+id+"'")) { 
-        } catch (Exception e) {
-            // Database error!
-            e.printStackTrace();
-            throw new NullPointerException(e.getMessage());
-        }
-    }
-
-    public void povoar() {
-
     }
     
 }

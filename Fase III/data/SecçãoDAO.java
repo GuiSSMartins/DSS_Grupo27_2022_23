@@ -1,36 +1,39 @@
 package data;
 
-import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.sql.*;
 
-import business.SubUtilizadores.*;
+import business.subCatálogos.Secção;
 
-public class UtilizadorDAO implements Map<String,Utilizador>{
+public class SecçãoDAO implements Map<Integer,Secção>{
+    private static SecçãoDAO singleton = null;
 
-    private static UtilizadorDAO singleton = null;
-
-    public static UtilizadorDAO getInstance() {
+    public static SecçãoDAO getInstance() {
         
-        if (UtilizadorDAO.singleton == null) {
+        if (SecçãoDAO.singleton == null) {
             
-            UtilizadorDAO.singleton = new UtilizadorDAO();
+            SecçãoDAO.singleton = new SecçãoDAO();
         }
 
-        return UtilizadorDAO.singleton;
+        return SecçãoDAO.singleton;
     }
 
-    public UtilizadorDAO() {
+    //seccao(__id__, _nomecircuito_, tipo, posicao, gdu) 
+
+    public SecçãoDAO() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
-            String sql = "CREATE TABLE IF NOT EXISTS utilizadores (" +
-                    "Email varchar(100) NOT NULL PRIMARY KEY," +
-                    "Password varchar(100) NOT NULL," +
-                    "Nome varchar(100) NOT NULL)" +
-                    "Jogador int NOT NULL" +
-                    "VersaoJogo varchar(10)";
+            String sql = "CREATE TABLE IF NOT EXISTS seccoes (" +
+                    "Id int NOT NULL PRIMARY KEY AUTO_INCREMENT," +
+                    "NomeCircuito varchar(100) NOT NULL FOREIGN KEY REFERENCES circuitos(Nome)," +
+                    "Tipo varchar(10) NOT NULL," +
+                    "Posicao int NOT NULL," +
+                    "GDU int NOT NULL)";
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...
@@ -43,12 +46,30 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     public void clear() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
-            stm.executeUpdate("TRUNCATE utilizadores");
+            stm.executeUpdate("TRUNCATE seccoes");
         } catch (SQLException e) {
             // Database error!
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
         }
+    }
+
+    public List<Secção> getSecções(String nomeCircuito){
+        List<Secção> res = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT * FROM seccoes where NomeCircuito='"+nomeCircuito+"'")) { 
+            while (rs.next()) {
+                Integer idt = rs.getInt("Id");
+                Secção t = this.get(idt);
+                res.add(t);
+            }
+        } catch (Exception e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return res;
     }
 
     @Override
@@ -57,7 +78,7 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs =
-                stm.executeQuery("SELECT Email FROM utilizadores WHERE Email='"+key.toString()+"'")) {
+                stm.executeQuery("SELECT Id FROM seccoes WHERE Id='"+key.toString()+"'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -69,30 +90,24 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
 
     @Override
     public boolean containsValue(Object value) {
-        Utilizador u = (Utilizador) value;
-        return this.containsKey(u.getEmail());
+        Secção t = (Secção) value;
+		return this.containsKey(t.getID());
     }
 
     @Override
-    public Set<Entry<String, Utilizador>> entrySet() {
-        throw new NullPointerException("public Set<Map.Entry<String,Utilizador>> entrySet() not implemented!");
+    public Set<Entry<Integer, Secção>> entrySet() {
+        throw new NullPointerException("public Set<Map.Entry<Integer,Seccao>> entrySet() not implemented!");
     }
 
     @Override
-    public Utilizador get(Object key) {
-        Utilizador t = null;
+    public Secção get(Object key) {
+        Secção t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT * FROM utilizadores WHERE Email='"+key+"'")) {
-            if (rs.next()) {  // A chave existe na tabela
-                int jogador = rs.getInt("Jogador");
-                if (jogador == 1) {
-                    t = new Jogador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"), rs.getString("VersaoJogo"));
-                }
-                else {
-                    t = new Administrador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"));
-                }
-            }
+             ResultSet rs = stm.executeQuery("SELECT * FROM seccoes WHERE Id='"+key+"'")) {
+            
+            new Secção(rs.getInt("Id"), rs.getString("Tipo"), rs.getInt("GDU"), rs.getInt("Posicao"), rs.getString("NomeCircuito"));
+        
         } catch (SQLException e) {
             // Database error!
             e.printStackTrace();
@@ -107,24 +122,17 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     }
 
     @Override
-    public Set<String> keySet() {
+    public Set<Integer> keySet() {
         throw new NullPointerException("Not implemented!");
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends Utilizador> utilizadores) {
-        for(Utilizador t : utilizadores.values()) {
-            this.put(t.getEmail(), t);
-        }
-    }
-
-    @Override
-    public Utilizador remove(Object key) {
-        Utilizador t = this.get(key);
+    public Secção remove(Object key) {
+        Secção t = this.get(key);
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
             
-            stm.executeUpdate("DELETE FROM utilizadores WHERE Email='"+key+"'");
+            stm.executeUpdate("DELETE FROM seccoes WHERE Id='"+key+"'");
         } catch (Exception e) {
             // Database error!
             e.printStackTrace();
@@ -138,7 +146,7 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
         int i = 0;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT count(*) FROM utilizadores")) {
+             ResultSet rs = stm.executeQuery("SELECT count(*) FROM seccoes")) {
             if(rs.next()) {
                 i = rs.getInt(1);
             }
@@ -151,14 +159,15 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
         return i;
     }
 
-    public Collection<Utilizador> values() {
-        Collection<Utilizador> res = new HashSet<>();
+    @Override
+    public Collection<Secção> values() {
+        Collection<Secção> res = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
-             ResultSet rs = stm.executeQuery("SELECT Email FROM utilizadores")) { 
+             ResultSet rs = stm.executeQuery("SELECT Id FROM seccoes")) { 
             while (rs.next()) {
-                String idt = rs.getString("Email");
-                Utilizador t = this.get(idt);
+                Integer idt = rs.getInt("Id");
+                Secção t = this.get(idt);
                 res.add(t);
             }
         } catch (Exception e) {
@@ -170,30 +179,23 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
     }
 
     @Override
-    public Utilizador put(String arg0, Utilizador arg1) {
-        Utilizador t = null;
+    public Secção put(Integer key, Secção value) {
+        Secção t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
 
-            String email = arg1.getEmail();
-            String nome = arg1.getNome();
-            String password = arg1.getPassword();
-            int jogador = 0;
-            String versaoJogo = null; //arg1.getVersaoJogo();
-
-            if (arg1 instanceof Jogador) {
-                jogador = 1;
-                Jogador j = (Jogador) arg1;
-                versaoJogo = j.getVersaoJogo();
-            }
-
+            int Id = value.getID();
+            String Tipo = value.getTipo();
+            int GDU = value.getGDU();
+            int posicao = value.getPosicao();
+            String nomeCircuito = value.getNomeCircuito();
             stm.executeUpdate(
                     "INSERT INTO utilizadores " +
-                            "VALUES ('"+ email + "', '"+
-                            password +"', '"+
-                            nome +"', '"+
-                            jogador +"', '"+
-                            versaoJogo + ") '");
+                            "VALUES ('"+ Id + "', '"+
+                            nomeCircuito +"', '"+
+                            Tipo +"', '"+
+                            GDU +"', '"+
+                            posicao + ") '");
 
         } catch (SQLException e) {
             // Database error!
@@ -202,4 +204,14 @@ public class UtilizadorDAO implements Map<String,Utilizador>{
         }
         return t;
     }
+
+    @Override
+    public void putAll(Map<? extends Integer, ? extends Secção> m) {
+        for(Secção t : m.values()) {
+            this.put(t.getID(), t);
+        }
+        
+    }
+
+
 }

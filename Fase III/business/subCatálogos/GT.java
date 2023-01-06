@@ -8,7 +8,6 @@
 
 package business.subCatálogos;
 
-import java.util.Random;
 
 public class GT extends Carro
 {
@@ -55,17 +54,5 @@ public class GT extends Carro
 
     public void setTaxaDeterioracao(double taxaDeterioracao){
         this.taxaDeterioracao = taxaDeterioracao;
-    }
-
-
-    public boolean checkDNF(int volta,int totalvoltas,int clima)
-    {
-       Random rand=new Random();
-       int x=rand.nextInt(70);
-       //no maximo fiabilidade de 85%
-       // 3000 cilindrada = 85% / 4500 cilindrada = 57%
-       int fiabilidade = (int)((100000/super.getCilindrada())*2.55);
-       int desgaste = (int)((volta+1)*0.5); //0.5% a cada volta
-       return (x > (fiabilidade - desgaste));
     }
 }

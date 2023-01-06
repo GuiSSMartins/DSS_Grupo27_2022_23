@@ -21,7 +21,8 @@ public class Premium extends Simulador {
 			return true;
 		} else if (aObject instanceof Premium) {
 			Premium lPremiumObject = (Premium) aObject;
-			return this==lPremiumObject;
+			boolean lEquals = true;
+			return lEquals;
 		}
 		return false;
 	}

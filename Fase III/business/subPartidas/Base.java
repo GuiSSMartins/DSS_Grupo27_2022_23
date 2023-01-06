@@ -17,7 +17,8 @@ public class Base extends Simulador {
 			return true;
 		} else if (aObject instanceof Base) {
 			Base lBaseObject = (Base) aObject;
-			return this==lBaseObject;
+			boolean lEquals = true;
+			return lEquals;
 		}
 		return false;
 	}

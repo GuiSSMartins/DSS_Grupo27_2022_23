@@ -31,15 +31,13 @@ public class CarroDAO implements Map<Integer,Carro>{
             String sql = "CREATE TABLE IF NOT EXISTS carros (" +
                     "Id int NOT NULL PRIMARY KEY," +
                     "Categoria varchar(3) NOT NULL," +
-                    "Marca varchar(100) NOT NULL," +
-                    "Modelo varchar(100) NOT NULL," +
-                    "Cilindrada int NOT NULL," + 
-                    "Potencia int NOT NULL," + 
-                    "Pac double NOT NULL," +
-                    "Fiabilidade int NOT NULL," +
-                    "Hibrido int NOT NULL," + //1 sim, 0 não
-                    "PotenciaEletrica int," +
-                    "TaxaDeterioracao float)";
+                    "Marca varchar(100) NOT NULL)" +
+                    "Modelo varchar(100) NOT NULL" +
+                    "Cilindrada int NOT NULL" + 
+                    "Potencia int NOT NULL" + 
+                    "Pac double NOT NULL" +
+                    "Fiabilidade int NOT NULL" +
+                    "TaxaDeterioracao float";
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...
@@ -97,36 +95,18 @@ public class CarroDAO implements Map<Integer,Carro>{
              ResultSet rs = stm.executeQuery("SELECT * FROM carros WHERE Id='"+key+"'")) {
             if (rs.next()) {  // A chave existe na tabela
                 String modelo = rs.getString("Modelo");
-                int hibrido = rs.getInt("Hibrido");
                 if (modelo.equals("C1")) {  
-                    if(hibrido == 1){
-                       t = new C1Hibrido(rs.getInt("Id"), rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"), rs.getInt("PotenciaEletrica"));     
-                    }
-                    else {
-                        t = new C1(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"));    
-                    }
-                    
+                    t = new C1(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"));
                 }
                 else if (modelo.equals("C2")){
-                    if(hibrido == 1){
-                       t = new C2Hibrido(rs.getInt("Id"), rs.getString("Marca"), rs.getString("Modelo"),rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"), rs.getInt("PotenciaEletrica"));     
-                    }
-                    else {
-                        t = new C2(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"));
-                    }
+                    t = new C2(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"));
                 }
                 else if (modelo.equals("SC")){
                     t = new SC(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"));
                 }
                 else
                 {
-                    if(hibrido == 1){
-                        t = new GTHibrido(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"), rs.getInt("PotenciaEletrica"));
-                    }
-                    else{
-                        t = new GT(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"));
-               
-                    }
+                    t = new GT(rs.getInt("Id"),rs.getString("Marca"), rs.getString("Modelo"), rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"), rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"));
                 }
             }
         } catch (SQLException e) {
@@ -161,43 +141,24 @@ public class CarroDAO implements Map<Integer,Carro>{
             int potencia = arg1.getPotencia();
             double pac = arg1.getPAC();
             int fiabilidade = arg1.getFiabilidade();
-            double taxaDeterioracao = 0;
-            int hibrido = 0;
-            int potenciaeletrica = 0;
-          
+            double taxaDeterioracao;
+
             if (arg1 instanceof C1) {
                 categoria = "C1";
-                
-                if(arg1 instanceof C1Hibrido) {
-                    hibrido = 1;
-                    C1Hibrido c1 = (C1Hibrido) arg1;
-                    potenciaeletrica = c1.getPotenciaEletrico();
-                }
+                taxaDeterioracao = 0;
             }
             else if (arg1 instanceof C2) {
                 categoria = "C2";
-
-                if(arg1 instanceof C2Hibrido) {
-                    hibrido = 1;
-                    C2Hibrido c2 = (C2Hibrido) arg1;
-                    potenciaeletrica = c2.getPotenciaEletrico();
-                }
-                
+                taxaDeterioracao = 0;
             }
             else if (arg1 instanceof GT) {
                 GT j = (GT) arg1;
                 categoria = "GT";
                 taxaDeterioracao = j.getTaxaDeterioracao();
-
-                if(arg1 instanceof GTHibrido) {
-                    hibrido = 1;
-                    GTHibrido gt = (GTHibrido) arg1;
-                    potenciaeletrica = gt.getPotenciaEletrico();
-                }
             }
             else { //SC
                 categoria = "SC";
-                
+                taxaDeterioracao = 0;
             }
 
             stm.executeUpdate(
@@ -210,9 +171,7 @@ public class CarroDAO implements Map<Integer,Carro>{
                             potencia +"', '"+ 
                             pac +"', '"+ 
                             fiabilidade  +"', '"+ 
-                            hibrido  +"', '"+
-                            potenciaeletrica  +"', '"+
-                            taxaDeterioracao + "')");
+                            taxaDeterioracao + ") '");
 
         } catch (SQLException e) {
             // Database error!
@@ -281,31 +240,6 @@ public class CarroDAO implements Map<Integer,Carro>{
         return res;
     }
 
-    public void povoar() {
-        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-            Statement stm = conn.createStatement()) {
-
-            // 1º Carro
-            stm.executeUpdate(
-                "INSERT INTO carros " +
-                        "VALUES (1, '"+ //id
-                        "C2', '"+ // categoria
-                        "Ferrari', '"+ // marca
-                        "488 GTE', "+ // modelo
-                        "3902, "+ // cilindrada
-                        "661, "+ // potencia
-                        "0.2, "+  // pac
-                        "0.8, "+ // fiabilidade
-                        "0, "+ // hibrido (neste acso, não é híbrido)
-                        "0, "+ // potenciaeletrica
-                        "0.1)"); // taxaDeteriorcao
-
-        } catch (SQLException e) {
-            // Database error!
-            e.printStackTrace();
-            throw new NullPointerException(e.getMessage());
-        }        
-    }
 
     
 }

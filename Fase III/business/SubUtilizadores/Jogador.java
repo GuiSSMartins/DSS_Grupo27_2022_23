@@ -1,59 +1,33 @@
 package business.SubUtilizadores;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.login.AppConfigurationEntry;
+import data.CarreiraDAO;
 
 public class Jogador extends Utilizador{
-	private int versaoJogo; // Versão do Jogo -> 1 : Base; 2 : Premium; 3: NENHUM (bot)
-	private List<Carreira> carreiras; // null se for bot CUIDADO
-	private int pontuacaoGlobal;
+	private String versaoJogo;
+	private CarreiraDAO carreiraDAO;
 
 	public Jogador() {
 		super();
-		this.carreiras = new ArrayList<>();
-		this.pontuacaoGlobal = 0;
+		this.carreiraDAO = CarreiraDAO.getInstance();
 	}
 
-	public Jogador(int versaoJogo) {
+	public Jogador(String versaoJogo) {
 		super();
 		this.versaoJogo = versaoJogo;
-		this.carreiras = new ArrayList<>();
+		this.carreiraDAO = CarreiraDAO.getInstance();
 	}
 
-	public Jogador(String email, String password, String nome, int versaoJogo) {
+	public Jogador(String email, String password, String nome, String versaoJogo) {
 		super(email, password, nome);
 		this.versaoJogo = versaoJogo;
-		this.carreiras = new ArrayList<>();
+		this.carreiraDAO = CarreiraDAO.getInstance();
 	}
 
-	public void setVersaoJogo(int versaoJogo) {
+	public void setVersaoJogo(String versaoJogo) {
 		this.versaoJogo = versaoJogo;
 	}
 
-	public int getVersaoJogo() {
+	public String getVersaoJogo() {
 		return this.versaoJogo;
 	}
-
-	/*Caso o jogador já possua pontuação para o campeonato passado, apenas atualiza caso a nova pontuação seja maior
-	  Caso não tenha, adiciona à carreira*/
-	public void registaPontuacao(String nomeCampeonato, int pontuacao){
-		// Carreira novos_resultados
-	}
-	
-		/*String email = super.getEmail();
-		if(carreira.containsKey(nomeCampeonato.concat(email))){
-			Carreira c = carreiraDAO.get(nomeCampeonato.concat(email));
-			if(c.getPontuacao() < pontuacao) {
-				carreiraDAO.updatePontuacao(nomeCampeonato.concat(email), pontuacao);
-			}
-		}
-		else{
-			Carreira c = new Carreira(nomeCampeonato, pontuacao, email);
-			carreiraDAO.put(nomeCampeonato.concat(email),c);
-		}
-	}*/
-
-	
 }
