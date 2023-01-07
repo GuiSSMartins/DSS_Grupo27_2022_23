@@ -79,7 +79,7 @@ public class Evento {
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\n||| ");
+		sb.append("||| ");
 		if (this.acontecimento == 0) {
 			sb.append("Acidente");
 		} else if (this.acontecimento == 1) {
@@ -90,7 +90,7 @@ public class Evento {
 			sb.append("Avariou");
 		}
 		sb.append(this.idjogadoresEnvolvidos);
-		sb.append("\n");
+		//sb.append("\n");
 		return sb.toString();
 	}
 

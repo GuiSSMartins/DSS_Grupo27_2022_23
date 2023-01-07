@@ -79,7 +79,8 @@ public class Corrida implements Serializable {
     public List<Progresso> getProgressos() {
         ArrayList<Progresso> aux = new ArrayList<Progresso>();
         for (Progresso c : this.listaProgressos) {
-            aux.add(c.clone());
+            //aux.add(c.clone());
+            aux.add(c);
         }
         return aux;
     }
@@ -307,7 +308,6 @@ public class Corrida implements Serializable {
         for (Progresso progresso : resultados) {
             Carro c = progresso.getCarro();
             if (c instanceof Hibrido) {
-
                 sb.append("\n");
                 sb.append(i);
                 sb.append("º: ");

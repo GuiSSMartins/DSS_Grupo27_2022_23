@@ -60,10 +60,12 @@ public class Premium extends Simulador {
 				List<Evento> ev = this.checkEventosSeccao(aCorrida.getCircuito(), aux, i, aCorrida.getClima(), seccoes.get(j));
 				
 				if(ev.size()>0){
-					System.out.println("EVENTOS:");
+
+					System.out.println("\n ---- EVENTOS ------");
 					for (Evento e : ev) {
 						System.out.println(e);
 					}
+					System.out.println("------EVENTOS-------\n");
 
 					// percorre a lista de eventos para determinar se houve algum desistente por avaria ou acidente
 					for(Evento e:ev)
