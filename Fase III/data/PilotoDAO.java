@@ -215,9 +215,9 @@ public class PilotoDAO implements Map<String, Piloto> {
                                 "0.4)"); // sva
 
                 String sql = "INSERT INTO pilotos (nome,cts,sva)" +
-                        " Values ('p1',0.1,0.1)," +
-                        "('p2',0.2,0.2)," +
-                        "('p3',0.3,0.3)";
+                        " Values ('p1',0.5,0.5)," +
+                        "('p2',0.4,0.6)," +
+                        "('p3',0.6,0.4)";
                 stm.executeUpdate(sql);
 
             }

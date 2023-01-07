@@ -286,7 +286,7 @@ public class Corrida implements Serializable {
             sb.append("\n");
             sb.append(i);
             sb.append("º: ");
-            sb.append(progresso.getTempo());
+            sb.append(TimeConverter.toTimeFormat(progresso.getTempo()));
             sb.append("\t Categoria: ");
             sb.append(c.getClass().getName());
             sb.append(" ");
@@ -305,7 +305,7 @@ public class Corrida implements Serializable {
                 sb.append("\n");
                 sb.append(i);
                 sb.append("º: ");
-                sb.append(progresso.getTempo());
+                sb.append(TimeConverter.toTimeFormat(progresso.getTempo()));
                 sb.append("\t Categoria: ");
                 sb.append(c.getClass().getName());
                 sb.append(" ");
