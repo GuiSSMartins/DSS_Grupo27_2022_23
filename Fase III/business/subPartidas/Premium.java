@@ -48,7 +48,6 @@ public class Premium extends Simulador {
 		seccoes.sort((s1, s2) -> s1.getPosicao() - s2.getPosicao());
 		List<Progresso> primeiroVolta = new ArrayList<>();
 		int nSeccoes = seccoes.size();
-		Circuito circuito = aCorrida.getCircuito();
 		ArrayList<Progresso> aux = new ArrayList<Progresso>();
 		for (Progresso c : aCorrida.getProgressos()) {
 			c.setSeccao(0);
@@ -61,55 +60,62 @@ public class Premium extends Simulador {
 			for(int j=0; j<nSeccoes; j++){
 
 				List<Evento> ev = this.checkEventosSeccao(aCorrida.getCircuito(), aux, i, aCorrida.getClima(), seccoes.get(j));
-				System.out.println("EVENTOS" + ev);
+				
 				if(ev!=null){
-				// percorre a lista de eventos para determinar se houve algum desistente por avaria ou acidente
-				for(Evento e:ev)
-				{
-					if(e.getAcontecimento()==0 || e.getAcontecimento()==3)
+					System.out.println("EVENTOS:");
+					for (Evento e : ev) {
+						System.out.println(e);
+					}
+
+					// percorre a lista de eventos para determinar se houve algum desistente por avaria ou acidente
+					for(Evento e:ev)
 					{
-						// vai a todos os jogadores envolvidos
-						for(String piloto: e.getIdJogadoresEnvolvidos())
+						if(e.getAcontecimento()==0 || e.getAcontecimento()==3)
 						{
-							// procura pelo respetivo progresso
-							for(Progresso p: aux)
+							// vai a todos os jogadores envolvidos
+							for(String piloto: e.getIdJogadoresEnvolvidos())
 							{
-								if(piloto.equals(p.getPiloto().getNome()))
+								// procura pelo respetivo progresso
+								for(Progresso p: aux)
 								{
-									if(p.getCarro().checkDNF(i, voltas, aCorrida.getClima()))
+									if(piloto.equals(p.getPiloto().getNome()))
 									{
-										// desistiu
+										if(p.getCarro().checkDNF(i, voltas, aCorrida.getClima()))
+										{
+											// desistiu
 
-										// adiciona à lista de desistentes
-										desistentes.add(p.clone());
+											// adiciona à lista de desistentes
+											desistentes.add(p.clone());
 
-										// remove da lista de jogadores para a próxima volta
-										aux.remove(p);
+											// remove da lista de jogadores para a próxima volta
+											aux.remove(p);
+										}
 									}
 								}
 							}
 						}
+
+						// adiciona o evento à lista geral de eventos
+						eventos.add(e.clone());
 					}
-
-					// adiciona o evento à lista geral de eventos
-					eventos.add(e.clone());
-				}
-				}
-
-				System.out.println("FINAL :");
-				for (Progresso p: aux) {
-					System.out.println(p);
 				}
 
 				for (Progresso p: aux) {
 					if (!desistentes.contains(p)) {
-						Double novo_tempo = p.getCarro().tempoProximaVolta(circuito, aCorrida.getClima(), p.getPiloto());
+						Double novo_tempo = p.getCarro().tempoProximaSeccao(seccoes.get(j), aCorrida.getClima(), p.getPiloto());
 						Long tempo_progresso = p.getTempo() + Double.valueOf(novo_tempo).longValue();
 						p.setTempo(tempo_progresso);
 						if(nSeccoes==j) p.setSeccao(0);
 						else p.setSeccao(j+1);
 					}
 				}
+				
+				System.out.println("Seccao "+j+" :");
+				for (Progresso p: aux) {
+					System.out.println(p);
+					System.out.println("Tempo: "+p.getTempo());
+				}
+
 			}
 
 			// aumenta o numero de voltas dadas no progresso
@@ -117,7 +123,7 @@ public class Premium extends Simulador {
 				if (!desistentes.contains(p)){
 						p.setVolta(i+1);
 						p.setSeccao(0);}
-			primeiroVolta = this.primeiroVolta(voltas, aux);
+			primeiroVolta = this.primeiroVolta(voltas, aux, primeiroVolta);
 		}
 
 		aCorrida.setPrimeiroVolta(primeiroVolta);
@@ -316,9 +322,8 @@ public class Premium extends Simulador {
 	/**
 	 * Metodo auxiliar privado para determinar o carro que vai em 1o a cada volta
 	 */
-    private List<Progresso> primeiroVolta(int volta, List<Progresso> l)
+    private List<Progresso> primeiroVolta(int volta, List<Progresso> l, List<Progresso> primeiroVolta)
     {
-		List<Progresso> primeiroVolta = new ArrayList<>();
 		Collections.sort(l);
        	Iterator<Progresso> it = l.iterator();
        	Progresso c = null;

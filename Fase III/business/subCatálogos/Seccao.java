@@ -148,4 +148,5 @@ public class Seccao {
         return 0.50;
     }
 
+
 }

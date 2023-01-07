@@ -154,6 +154,19 @@ public abstract class Carro {
                 this.dnf == c.getDNF();
     }
 
+    public Double tempoProximaSeccao(Seccao s, int clima, Piloto p1) {
+        double t_medio = s.getTempoMedio();
+        double t_chuva = s.getTempoDesvio();
+        double minimum = 0;
+        double maximum = 5000;
+        double fator_sorte = minimum + Double.valueOf(Math.random() * (maximum - minimum)).intValue();
+        double maximum_chuva = 2000;
+        double fator_sorte_chuva = minimum + Double.valueOf(Math.random() * (maximum_chuva - minimum)).intValue();
+        return ((t_medio + (this.getCilindrada() / this.getPotencia()) * 1000) - fator_sorte
+                + (clima * (t_chuva - p1.getCTS() * 1000)) - fator_sorte_chuva);
+
+    }
+
     public Double tempoProximaVolta(Circuito c, int clima, Piloto p1) {
         double t_medio = c.getTempoMedio();
         double t_chuva = c.getTempoDesvio();
