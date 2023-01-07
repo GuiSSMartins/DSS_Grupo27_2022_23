@@ -68,19 +68,21 @@ public class Base extends Simulador {
 							// vai a todos os jogadores envolvidos
 							for (String piloto : e.getIdJogadoresEnvolvidos()) {
 								// procura pelo respetivo progresso
-								for (Progresso p : aux) {
-									if (piloto.equals(p.getPiloto().getNome())) {
-										if (p.getCarro().checkDNF(i, voltas, aCorrida.getClima())) {
+								List<Progresso> morreu = new ArrayList<>();
+								if (aux.size() > 0) {
+									for (Progresso p : aux) {
+										if (piloto.equals(p.getPiloto().getNome())) {
 											// desistiu
-
 											// adiciona à lista de desistentes
 											desistentes.add(p.clone());
-
 											// remove da lista de jogadores para a próxima volta
-											aux.remove(p);
+											morreu.add(p);
+											p.getCarro().setDNF(true);
+
 										}
 									}
 								}
+								aux.removeAll(morreu);
 							}
 						}
 
@@ -170,17 +172,6 @@ public class Base extends Simulador {
 
 		for (Progresso prog : aux)
 			if (!prog.equals(p)) {
-				// System.out.println("TESTE ULTR:" +
-				// seccao.probabilidadeCarroConsegueUltrapassar());
-				// System.out.println("TESTE PACS:" +
-				// seccao.probabilidadeCarroConsegueUltrapassar() / c.getPAC());
-				// System.out.println("TESTE TIME: " + p.getPiloto().getNome() + " to " +
-				// prog.getPiloto().getNome() + " :" + (p.getTempo()-prog.getTempo()));
-				// System.out.println("TESTE SVA :" + (piloto.getSVA() >
-				// prog.getPiloto().getSVA()));
-				// System.out.println("TESTE CARR:" + c.compararaCarros(prog.getCarro()));
-				// && piloto.getSVA() > prog.getPiloto().getSVA() &&
-				// c.compararaCarros(prog.getCarro())
 
 				if (p.getTempo() - prog.getTempo() < 0 && p.getTempo() - prog.getTempo() > -5000 &&
 						(seccao.probabilidadeCarroConsegueUltrapassar() / (1 - c.getPAC()) > 0.5) &&
@@ -287,9 +278,11 @@ public class Base extends Simulador {
 
 						}
 
-				if (!evento && ((clima == 0 && 1 - piloto.getCTS() > 0.8) || (clima == 1 && piloto.getCTS() > 0.8))) {
-					// está sol e o piloto não sabe conduzir com sol
-
+				Random rand = new Random();
+				int x = rand.nextInt(101);
+		
+				if (!evento && ((clima == 0 && 1 - piloto.getCTS() > 0.6) || (clima == 1 && piloto.getCTS() > 0.6))
+								&& x < 10) {
 					// adiciona o jogador à lista de jogadores envolvidos no evento acidente
 					idsJogadoresEnvolvidos.add(p.getPiloto().getNome());
 

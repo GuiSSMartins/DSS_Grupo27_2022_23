@@ -74,7 +74,6 @@ public class SSPartidas implements ISubPartidas {
 	public List<String> finalizarPartida() {
 		List<String> resultados = this.partida.calculaResultadoPartida(); // resultados finais
 		int pontuacao = this.partida.getPontuacaoJogador(jogador.getEmail());
-		System.out.println("PARTIDA: " + jogador.getEmail() + " " + pontuacao);
 		this.jogador.registaPontuacao(this.campeonato.getNome(), pontuacao);
 		this.partida = null;
 		return resultados;

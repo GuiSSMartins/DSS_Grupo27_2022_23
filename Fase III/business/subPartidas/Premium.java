@@ -175,17 +175,6 @@ public class Premium extends Simulador {
 
 		for (Progresso prog : aux)
 			if (!prog.equals(p)) {
-				// System.out.println("TESTE ULTR:" +
-				// seccao.probabilidadeCarroConsegueUltrapassar());
-				// System.out.println("TESTE PACS:" +
-				// seccao.probabilidadeCarroConsegueUltrapassar() / c.getPAC());
-				// System.out.println("TESTE TIME: " + p.getPiloto().getNome() + " to " +
-				// prog.getPiloto().getNome() + " :" + (p.getTempo()-prog.getTempo()));
-				// System.out.println("TESTE SVA :" + (piloto.getSVA() >
-				// prog.getPiloto().getSVA()));
-				// System.out.println("TESTE CARR:" + c.compararaCarros(prog.getCarro()));
-				// && piloto.getSVA() > prog.getPiloto().getSVA() &&
-				// c.compararaCarros(prog.getCarro())
 
 				if (p.getTempo() - prog.getTempo() < 0 && p.getTempo() - prog.getTempo() > -5000 &&
 						(seccao.probabilidadeCarroConsegueUltrapassar() / (1 - c.getPAC()) > 0.5) &&
