@@ -7,17 +7,20 @@ import data.CircuitoDAO;
 
 public class Campeonato {
     private String nome;
-    private List<String> circuitos;
+    private List<String> nomesCircuitos;
+    private List<Circuito> circuitos;
     private CircuitoDAO circuitoDAO;
 
 
     public Campeonato() {
+        this.nomesCircuitos = new ArrayList<>();
         this.circuitos = new ArrayList<>();
         this.circuitoDAO = CircuitoDAO.getInstance();
     }
 
     public Campeonato(String nome) {
         this.nome = nome;
+        this.nomesCircuitos = new ArrayList<>();
         this.circuitos = new ArrayList<>();
         this.circuitoDAO = CircuitoDAO.getInstance();
     }
@@ -30,30 +33,31 @@ public class Campeonato {
         return this.nome;
     }
 
-    public void setCircuitos(List<String> circuitos) {
+    public void setNomesCircuitos(List<String> circuitos) {
         for (String c : circuitos) {
-            this.circuitos.add(c);
+            this.nomesCircuitos.add(c);
         }
     }
 
     public List<Circuito> getCircuitos() {
         List<Circuito> copia = new ArrayList<>();
-        for (String c : this.circuitos) {
-            copia.add(this.circuitoDAO.get(c));
+        for (Circuito c : this.circuitos) {
+            copia.add(c);
         }
         return copia;
     }
 
     public List<String> getNomesCircuitos() {
         List<String> copia = new ArrayList<>();
-        for (String c : this.circuitos) {
+        for (String c : this.nomesCircuitos) {
             copia.add(c);
         }
         return copia;
     }
 
     public void addCircuitos(String circuito){
-        this.circuitos.add(circuito);
+        this.nomesCircuitos.add(circuito);
+        this.circuitos.add(this.circuitoDAO.get(circuito));
     }
 
     public String toString() {

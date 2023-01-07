@@ -221,7 +221,7 @@ public class CircuitoDAO implements Map<String, Circuito> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
 
-            if (this.size() < 0) {
+            if (this.size() == 0) {
 
                 // 1º Circuito
                 String sql = "INSERT INTO circuitos (nome,nVoltas,comprimento,ncurvas,nretas,nchicanes)" +

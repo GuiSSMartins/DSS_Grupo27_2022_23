@@ -34,26 +34,40 @@ public class Carreira {
         this.email = email;
     }
 
-    public Carreira(){
-        
+    public Carreira() {
+
     }
 
-    public Carreira(String nomeCampeonato, int pontuacao, String email){
+    public Carreira(String nomeCampeonato, int pontuacao, String email) {
         this.nomeCampeonato = nomeCampeonato;
         this.pontuacao = pontuacao;
         this.email = email;
         this.id = this.nomeCampeonato.concat(email);
     }
 
-    public Carreira(String nomeCampeonato, int pontuacao){
+    public Carreira(String nomeCampeonato, int pontuacao) {
         this.nomeCampeonato = nomeCampeonato;
         this.pontuacao = pontuacao;
     }
-    
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Username: ");
+        sb.append(this.email);
+        if (this.nomeCampeonato != null) {
+            sb.append(" ; Campeonato: ");
+            sb.append(this.nomeCampeonato);
+        }
+        sb.append(" ; Pontuacao: ");
+        sb.append(this.pontuacao);
+        sb.append("\n");
+        return sb.toString();
+
+    }
 
     public int hashCode() {
         int lHashCode = 0;
-        if ( lHashCode == 0 ) {
+        if (lHashCode == 0) {
             lHashCode = super.hashCode();
         }
         return lHashCode;
@@ -64,10 +78,10 @@ public class Carreira {
             return true;
         } else if (aObject instanceof Carreira) {
             Carreira c = (Carreira) aObject;
-        
+
             return (c.getID().equals(this.id) &&
-                    c.getEmail().equals(this.email) && 
-                    c.getNomeCampeonato().equals(this.nomeCampeonato) && 
+                    c.getEmail().equals(this.email) &&
+                    c.getNomeCampeonato().equals(this.nomeCampeonato) &&
                     c.getPontuacao() == this.pontuacao);
         }
         return false;

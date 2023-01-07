@@ -9,12 +9,11 @@ public class Seccao {
     private String nomeCircuito;
     private double comprimento;
 
-
-    public Seccao(){
+    public Seccao() {
 
     }
 
-    public Seccao(int id, String tipo, int GDU, int posicao, String nomeCircuito, double comprimento){
+    public Seccao(int id, String tipo, int GDU, int posicao, String nomeCircuito, double comprimento) {
         this.id = id;
         this.tipo = tipo;
         this.GDU = GDU;
@@ -23,7 +22,7 @@ public class Seccao {
         this.comprimento = comprimento;
     }
 
-    public Seccao(Seccao s){
+    public Seccao(Seccao s) {
         this.id = s.getID();
         this.tipo = s.getTipo();
         this.GDU = s.getGDU();
@@ -32,28 +31,25 @@ public class Seccao {
         this.comprimento = s.getComprimento();
     }
 
-    public double getComprimento()
-    {
+    public double getComprimento() {
         return this.comprimento;
     }
 
-    public void setComprimento(double c)
-    {
-        this.comprimento=c;
+    public void setComprimento(double c) {
+        this.comprimento = c;
     }
 
     public String getNomeCircuito() {
         return this.nomeCircuito;
     }
 
-    public int getGDU(){
+    public int getGDU() {
         return this.GDU;
     }
 
     public void setGDU(int GDU) {
         this.GDU = GDU;
     }
-
 
     public String getTipo() {
         return this.tipo;
@@ -78,12 +74,13 @@ public class Seccao {
     public void setPosicao(int posicao) {
         this.posicao = posicao;
     }
+
     public int hashCode() {
         int lHashCode = 0;
-        if ( this.tipo != null ) {
+        if (this.tipo != null) {
             lHashCode += this.tipo.hashCode();
         }
-        if ( lHashCode == 0 ) {
+        if (lHashCode == 0) {
             lHashCode = super.hashCode();
         }
         return lHashCode;
@@ -105,17 +102,16 @@ public class Seccao {
         return false;
     }
 
-    public double getTempoMedio(){
-        return this.comprimento/this.getVelocidadeMedia();
+    public double getTempoMedio() {
+        return this.comprimento / this.getVelocidadeMedia();
     }
 
-    public double getTempoDesvio(){
-        return this.comprimento/this.getVelocidadeDesvio();
+    public double getTempoDesvio() {
+        return this.comprimento / this.getVelocidadeDesvio();
     }
 
-    public double getVelocidadeMedia()
-    {
-        switch(tipo){
+    public double getVelocidadeMedia() {
+        switch (tipo) {
             case "Reta":
                 return 180;
             case "Curva":
@@ -127,9 +123,8 @@ public class Seccao {
         }
     }
 
-    public double getVelocidadeDesvio()
-    {
-        switch(tipo){
+    public double getVelocidadeDesvio() {
+        switch (tipo) {
             case "Reta":
                 return 150;
             case "Curva":
@@ -141,8 +136,16 @@ public class Seccao {
         }
     }
 
-    public Seccao clone(){
+    public Seccao clone() {
         return new Seccao(this);
+    }
+
+    public double probabilidadeCarroConsegueUltrapassar() {
+        if (this.GDU == 2)
+            return 0.10;
+        if (this.GDU == 1)
+            return 0.30;
+        return 0.50;
     }
 
 }

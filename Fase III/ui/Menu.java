@@ -202,7 +202,8 @@ public class Menu {
             String line = is.nextLine();
             op = Integer.parseInt(line);
         }
-        catch (NumberFormatException e) { // Não foi inscrito um int
+        catch (NumberFormatException e) { // Não foi inscrito um int 
+            e.printStackTrace();
             op = -1;
         }
         if (op<0 || op>this.opcoes.size()) {

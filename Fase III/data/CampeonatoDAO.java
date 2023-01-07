@@ -29,11 +29,13 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();) {
 
-            stm.executeUpdate("CREATE TABLE IF NOT EXISTS campeonatos ("
-                    + "Id NOT NULL PRIMARY KEY,"
+                    stm.executeUpdate("CREATE TABLE IF NOT EXISTS campeonatos ("
+                    + "Id varchar(510) NOT NULL PRIMARY KEY," //Nome campeonato + nome circuito
                     + "Nome VARCHAR(255) NOT NULL,"
                     + "nomeCircuito VARCHAR(255) NOT NULL,"
-                    + "FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome));");
+                    + "FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome));"
+                    );
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,6 +90,7 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
             t = new Campeonato(key.toString());
             while (rs.next()) {
                 String circuito = rs.getString("nomeCircuito");
+
                 t.addCircuitos(circuito);
             }
 
@@ -204,15 +207,7 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
 
-            // 1º Carro
-            /*
-             * stm.executeUpdate(
-             * "INSERT INTO campeonatos " +
-             * "VALUES (1, '"+ //Id
-             * 
-             * ")");
-             */
-            if (this.size() < 0) {
+            if (this.size() == 0) {
                 String sql = "INSERT INTO campeonatos (Id,Nome,nomeCircuito)" +
                         "Values ('camp1circ1','camp1','circ1')," +
                         "('camp1circ2','camp1','circ2')," +

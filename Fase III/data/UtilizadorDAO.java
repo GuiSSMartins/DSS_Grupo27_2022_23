@@ -89,7 +89,7 @@ public class UtilizadorDAO implements Map<String, Utilizador> {
                 int jogador = rs.getInt("Jogador");
                 if (jogador == 1) { // Joagdor
                     t = new Jogador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"),
-                            rs.getInt("VersaoJogo"));
+                            rs.getInt("VersaoJogo"), false);
                 } else { // administrador
                     t = new Administrador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"));
                 }
@@ -110,6 +110,22 @@ public class UtilizadorDAO implements Map<String, Utilizador> {
     @Override
     public Set<String> keySet() {
         throw new NullPointerException("Not implemented!");
+    }
+
+    public Set<String> keySetJogador() {
+        Set<String> set = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                Statement stm = conn.createStatement();
+                ResultSet rs = stm.executeQuery("SELECT Email FROM utilizadores")) {
+            while (rs.next()) {
+                set.add(rs.getString("Email"));
+            }
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return set;
     }
 
     @Override
@@ -230,11 +246,12 @@ public class UtilizadorDAO implements Map<String, Utilizador> {
     public void povoar() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
-
-            String sql = "INSERT INTO utilizadores (Email,Password,Nome,Jogador,VersaoJogo)" +
-                    "Values ('user1','123','Me',0,0)," +
-                    "('user2','123','Me',1,1);";
-            stm.executeUpdate(sql);
+            if (this.size() == 0) {
+                String sql = "INSERT INTO utilizadores (Email,Password,Nome,Jogador,VersaoJogo)" +
+                        "Values ('user1','123','Me',0,0)," +
+                        "('user2','123','Me',1,1);";
+                stm.executeUpdate(sql);
+            }
 
         } catch (SQLException e) {
             // Database error!

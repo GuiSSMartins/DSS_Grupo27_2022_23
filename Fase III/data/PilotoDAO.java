@@ -190,7 +190,7 @@ public class PilotoDAO implements Map<String, Piloto> {
                 Statement stm = conn.createStatement();
                 ResultSet rs = stm.executeQuery("SELECT * FROM pilotos")) {
             while (rs.next()) {
-                Piloto p = new Piloto(rs.getString("nome"), rs.getDouble("cts"), rs.getDouble("sga"));
+                Piloto p = new Piloto(rs.getString("nome"), rs.getDouble("cts"), rs.getDouble("sva"));
                 col.add(p);
             }
         } catch (SQLException e) {
@@ -205,7 +205,7 @@ public class PilotoDAO implements Map<String, Piloto> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
 
-            if (this.size() < 0) {
+            if (this.size() == 0) {
 
                 // 1º Carro
                 stm.executeUpdate(

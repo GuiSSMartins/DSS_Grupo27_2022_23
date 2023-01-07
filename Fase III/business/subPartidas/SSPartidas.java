@@ -3,8 +3,11 @@ package business.subPartidas;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import business.SubUtilizadores.Jogador;
+import business.subCatálogos.C2;
+import business.subCatálogos.C2Hibrido;
 import business.subCatálogos.Campeonato;
 import business.subCatálogos.Carro;
 import business.subCatálogos.Piloto;
@@ -23,10 +26,10 @@ public class SSPartidas implements ISubPartidas {
 
 	public int hashCode() {
 		int lHashCode = 0;
-		if ( this.partida != null ) {
+		if (this.partida != null) {
 			lHashCode += this.partida.hashCode();
 		}
-		if ( lHashCode == 0 ) {
+		if (lHashCode == 0) {
 			lHashCode = super.hashCode();
 		}
 		return lHashCode;
@@ -39,12 +42,11 @@ public class SSPartidas implements ISubPartidas {
 			SSPartidas lSSPartidasObject = (SSPartidas) aObject;
 			boolean lEquals = true;
 			lEquals &= ((this.partida == lSSPartidasObject.partida)
-				|| (this.partida != null && this.partida.equals(lSSPartidasObject.partida)));
+					|| (this.partida != null && this.partida.equals(lSSPartidasObject.partida)));
 			return lEquals;
 		}
 		return false;
 	}
-
 
 	@Override
 	public void iniciarPartida() {
@@ -52,7 +54,7 @@ public class SSPartidas implements ISubPartidas {
 		this.n_corridas = this.partida.getNCorridas();
 
 		// iniciar as várias corridas
-		for (int i=0; i<n_corridas; i++) {
+		for (int i = 0; i < n_corridas; i++) {
 			iniciarCorrida();
 			String resultados_corrida = finalizarCorrida();
 			System.out.println(resultados_corrida);
@@ -66,13 +68,14 @@ public class SSPartidas implements ISubPartidas {
 
 	@Override
 	public void atualizaEstados(List<String> resultados) {
-		// no final de cada partida, deve-se atualizar os estados dos vários jogadores
+		// no final de cada corrida, deve-se atualizar os estados dos vários jogadores
 	}
 
 	@Override
 	public List<String> finalizarPartida() {
 		List<String> resultados = this.partida.calculaResultadoPartida(); // resultados finais
 		atualizaEstados(resultados);
+		this.jogador.registaPontuacao(this.campeonato.getNome(), 0);
 		this.partida = null;
 		return resultados;
 	}
@@ -95,23 +98,15 @@ public class SSPartidas implements ISubPartidas {
 	}
 
 	@Override
-	public void entrarNaPartida(String idJogador, int versaoJogo, Piloto piloto, Carro carro) {
-		if (idJogador.equals("Utilizador")) {
-			this.jogador.setVersaoJogo(versaoJogo);
-			this.partida.adicionaJogador(idJogador, piloto, carro);
-		}
-		else { // é um bot
-			String idBot = "BOT1";
-			// Criar Piloto
-
-			// Criar Carro
-		}
+	public void entrarNaPartida(Jogador jogador, int versaoJogo, Piloto piloto, Carro carro) {
+		this.jogador = jogador;
+		this.partida.adicionaJogador(jogador.getEmail(), piloto, carro);
 	}
 
 	@Override
-	public void registarConfiguracao(Campeonato campeonato) {
+	public void registarConfiguracao(Campeonato campeonato, int versaoJogo) {
 		this.campeonato = campeonato;
-		this.partida = new Partida(this.campeonato);
+		this.partida = new Partida(this.campeonato, versaoJogo);
 	}
 
 	@Override
@@ -126,6 +121,26 @@ public class SSPartidas implements ISubPartidas {
 
 	public Map<String, Integer> clima() { // Clima
 		return this.partida.getClimas();
+	}
+
+	public void criarBots() {
+		// Jogadores temporários
+
+		// 1º Bot - Normal
+		// Configuar piloto e carro demos
+		Piloto pb1 = new Piloto("bot1", 0.5, 0.6);
+		Carro cb1 = new C2Hibrido(3, "marcabot1", "modelobot1", 4000, 100, 0.5, 0.6, 100);
+		Jogador bot1 = new Jogador("bot1", "", "", 2, true);
+		this.bots.add(bot1);
+		entrarNaPartida(bot1, 2, pb1, cb1);
+
+		// 2º Bot - Híbrido
+		// Configuarar piloto e carro demos
+		Piloto pb2 = new Piloto("bot2", 0.5, 0.6);
+		Carro cb2 = new C2Hibrido(3, "marcabot1", "modelobot1", 4000, 100, 0.5, 0.6, 100);
+		Jogador bot2 = new Jogador("bot2", "", "", 2, true);
+		this.bots.add(bot2);
+		entrarNaPartida(bot2, 2, pb2, cb2);
 	}
 
 }

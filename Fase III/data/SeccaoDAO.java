@@ -56,8 +56,7 @@ public class SeccaoDAO implements Map<Integer, Seccao> {
                 Statement stm = conn.createStatement();
                 ResultSet rs = stm.executeQuery("SELECT * FROM seccoes where NomeCircuito='" + nomeCircuito + "'")) {
             while (rs.next()) {
-                Integer idt = rs.getInt("Id");
-                Seccao t = this.get(idt);
+                Seccao t = new Seccao(rs.getInt("Id"), rs.getString("tipo"), rs.getInt("GDU"), rs.getInt("posicao"), rs.getString("nomeCircuito"), rs.getDouble("comprimento"));
                 res.add(t);
             }
         } catch (Exception e) {
@@ -99,7 +98,8 @@ public class SeccaoDAO implements Map<Integer, Seccao> {
         Seccao t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();
-                ResultSet rs = stm.executeQuery("SELECT * FROM seccoes WHERE Id='" + key.toString() + "'")) {
+                ResultSet rs = stm.executeQuery("SELECT * FROM seccoes WHERE nomeCircuito='" + key.toString() + "'")) {
+ 
 
             new Seccao(rs.getInt("Id"), rs.getString("Tipo"), rs.getInt("GDU"), rs.getInt("Posicao"),
                     rs.getString("NomeCircuito"), rs.getDouble("Comprimento"));
@@ -214,9 +214,9 @@ public class SeccaoDAO implements Map<Integer, Seccao> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
 
-            if (this.size() < 0) {
+            if (this.size() == 0) {
 
-                String sql = "INSERT INTO seccoes (id,tipo,posicao,comprimento,GDU,nomeCircuito)" +
+                String sql = "INSERT INTO seccoes (tipo,posicao,comprimento,GDU,nomeCircuito)" +
                         "Values ('chicane',0,5.5,3,'circ1')," +
                         "('chicane',1,5.5,3,'circ1')," +
                         "('chicane',3,5.5,3,'circ1')," +
@@ -245,10 +245,10 @@ public class SeccaoDAO implements Map<Integer, Seccao> {
                         "('curva',7,5.5,3,'circ2')," +
                         "('curva',10,5.5,3,'circ2')," +
                         "('curva',13,5.5,3,'circ2')," +
-                        "('curva',0,5.5,3,'circ1')," +
-                        "('curva',1,5.5,3,'circ1')," +
-                        "('curva',3,5.5,3,'circ1')," +
-                        "('curva',9,5.5,3,'circ1')," +
+                        "('curva',0,5.5,3,'circ3')," +
+                        "('curva',1,5.5,3,'circ3')," +
+                        "('curva',3,5.5,3,'circ3')," +
+                        "('curva',9,5.5,3,'circ3')," +
                         "('reta',2,5.5,3,'circ3')," +
                         "('reta',5,5.5,3,'circ3')," +
                         "('reta',8,5.5,3,'circ3')," +

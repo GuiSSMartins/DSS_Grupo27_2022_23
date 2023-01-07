@@ -1,7 +1,9 @@
 package business.subPartidas;
 
 import java.util.List;
+import java.util.Set;
 
+import business.SubUtilizadores.Jogador;
 import business.subCatálogos.Campeonato;
 import business.subCatálogos.Carro;
 import business.subCatálogos.Piloto;
@@ -10,9 +12,9 @@ public interface ISubPartidas {
 	/**
 	 * 
 	 * @param campeonato
-	 * @param idJogador
+	 * @param versaoJogo
 	 */
-	void registarConfiguracao(Campeonato campeonato);
+	void registarConfiguracao(Campeonato campeonato, int versaoJogo);
 
 	/**
 	 * 
@@ -21,7 +23,7 @@ public interface ISubPartidas {
 	 * @param piloto
 	 * @param carro
 	 */
-	void entrarNaPartida(String idJogador, int versaoJogo, Piloto piloto, Carro carro);
+	void entrarNaPartida(Jogador jogador, int versaoJogo, Piloto piloto, Carro carro);
 
 	void iniciarPartida();
 

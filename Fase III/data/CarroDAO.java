@@ -127,11 +127,11 @@ public class CarroDAO implements Map<Integer, Carro> {
                     if (hibrido == 1) {
                         t = new GTHibrido(rs.getInt("Id"), rs.getString("Marca"), rs.getString("Modelo"),
                                 rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"),
-                                rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"), rs.getInt("PotenciaEletrica"));
+                                rs.getDouble("Pac"), rs.getDouble("TaxaDeterioracao"), rs.getInt("PotenciaEletrica"));
                     } else {
                         t = new GT(rs.getInt("Id"), rs.getString("Marca"), rs.getString("Modelo"),
                                 rs.getInt("Cilindrada"), rs.getInt("Potencia"), rs.getInt("Fiabilidade"),
-                                rs.getDouble("Pac"), rs.getDouble("taxaDeteriorizacao"));
+                                rs.getDouble("Pac"), rs.getDouble("TaxaDeterioracao"));
 
                     }
                 }
@@ -288,15 +288,15 @@ public class CarroDAO implements Map<Integer, Carro> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
 
-            if (this.size() < 0) {
+            if (this.size() == 0) {
 
                 // 1º Carro
                 stm.executeUpdate(
                         "INSERT INTO carros " +
-                                "VALUES (1, '" + // id
-                                "C2', '" + // categoria
-                                "Ferrari', '" + // marca
-                                "488 GTE', " + // modelo
+                                "VALUES (1, " + // id
+                                "'C2', " + // categoria
+                                "'Ferrari', " + // marca
+                                "'488 GTE', " + // modelo
                                 "3902, " + // cilindrada
                                 "661, " + // potencia
                                 "0.2, " + // pac
@@ -307,10 +307,11 @@ public class CarroDAO implements Map<Integer, Carro> {
 
                 String sql = "INSERT INTO carros (Id,Categoria,Marca,Modelo,Cilindrada,Potencia,Pac,Fiabilidade,Hibrido,PotenciaEletrica,TaxaDeterioracao)"
                         +
-                        "Values (2,'c1','marca1','modelo1',6000,100,1,10.0,0)," +
-                        "(3,'c2','marca1','modelo1',6000,100,1,20.0,0)," +
-                        "(4,'gt','marca1','modelo1',6000,100,1,30.0,0)," +
-                        "(5,'sc','marca1','modelo1',6000,100,0,0,0);";
+                        "Values (2,'C1','marca1','modelo1',6000,100,0.4,0.7,0,0,0)," +
+                        "(3,'C2','marca1','modelo1',4000,100,0.5,0.6,1,100,0.06)," +
+                        "(4,'GT','marca1','modelo1',3000,100,0.6,0.3,0,200,0.03)," +
+                        "(5,'SC','marca1','modelo1',2500,100,0.9,0.4,0,0,0);";
+
                 stm.executeUpdate(sql);
             }
 

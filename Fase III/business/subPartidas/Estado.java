@@ -14,10 +14,11 @@ public class Estado {
 	private Carro carro;
 
 	public Estado() {
-		this.pontuacao = 0; // inicialmente, o jogador não possui pontuação
+		this.pontuacao = 0; // no início de cada partida, o jogador não possui pontuação
 	}
 
-	public Estado(int nAfinacoes, int posicao, int tipoPneus, int modoMotor, int downforce, Piloto piloto, Carro carro) {
+	public Estado(int nAfinacoes, int posicao, int tipoPneus, int modoMotor, int downforce, Piloto piloto,
+			Carro carro) {
 		this.nAfinacoes = nAfinacoes;
 		this.posicao = posicao;
 		this.tipoPneus = tipoPneus;
@@ -95,12 +96,17 @@ public class Estado {
 	// public SubSistemaCatálogo___carro carro;
 
 	public boolean haAfinacoesDisponiveis() {
-		if (this.nAfinacoes > 0) return true;
+		if (this.nAfinacoes > 0)
+			return true;
 		return false;
 	}
 
 	public void decnAfinacoes() {
 		this.nAfinacoes--;
+	}
+
+	public void adicionarPontuacao(int pontuacao) {
+		this.pontuacao += pontuacao;
 	}
 
 	public void configuraEstadoJogador(int aTipoPneus, int aModoMotor) {

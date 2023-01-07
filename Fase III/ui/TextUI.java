@@ -1,10 +1,14 @@
 package ui;
 
+import business.SubUtilizadores.Carreira;
+import business.SubUtilizadores.Jogador;
+import business.SubUtilizadores.SSUtilizadores;
 import business.subCatálogos.Campeonato;
 import business.subCatálogos.Carro;
 import business.subCatálogos.Circuito;
 import business.subCatálogos.FacadeCatalogos;
 import business.subCatálogos.Piloto;
+
 import business.subPartidas.SSPartidas;
 
 import java.util.List;
@@ -12,7 +16,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 /**
  * Exemplo de interface em modo texto.
@@ -22,6 +25,7 @@ public class TextUI {
     private FacadeCatalogos model;
 
     private SSPartidas sspartidas;
+    private SSUtilizadores ssutilizadores;
 
     // Menus da aplicação
     private Menu menu;
@@ -38,11 +42,14 @@ public class TextUI {
         this.sspartidas = new SSPartidas();
 
         // Criar o menu
-        this.menu = new Menu("Racing Manager", new String[]{
-            "Entrar em Campeonato" //,
-            // "Consultar Carreira do Jogador"
+        this.menu = new Menu("Racing Manager", new String[] {
+                "Entrar em Campeonato",
+                "Consultar Carreira do Jogador",
+                "Ranking Global"
         });
         this.menu.setHandler(1, this::trataEntrarCampeonato);
+        this.menu.setHandler(2, this::trataConsultarCarreira);
+        this.menu.setHandler(2, this::trataRankingGlobal);
 
         this.model = new FacadeCatalogos();
         this.model.povoar();
@@ -50,16 +57,39 @@ public class TextUI {
     }
 
     /**
-     * Executa o menu principal e invoca o método correspondente à opção seleccionada.
+     * Executa o menu principal e invoca o método correspondente à opção
+     * seleccionada.
      */
     public void run() {
         this.menu.run();
         System.out.println("\nAté breve!...");
     }
 
-    private void trataEntrarCampeonato(){
+    private void trataEntrarCampeonato() {
         try {
+            // LOGIN
 
+            boolean b_utilizador = false;
+            String username = null;
+            String pass = null;
+
+            System.out.println("\n||| LOGIN |||\n");
+
+            while (!b_utilizador) {
+                System.out.print("Nome de utilizador: ");
+                username = scin.nextLine();
+                System.out.print("\nPassword: ");
+                pass = scin.nextLine();
+                b_utilizador = this.ssutilizadores.validaAcesso(username, pass);
+                if (!b_utilizador) {
+                    System.out.println("\nUsername/Password errada(s). Por favor, tente novamente.\n");
+                }
+            }
+
+            Jogador jogador = this.model.getJogador(username);
+            int versaoJogo = Integer.parseInt(this.ssutilizadores.verificaVersao(username));
+
+            this.printVersaoJogo(versaoJogo);
 
             // Apresentar e escolher o CAMPEONATO
 
@@ -67,9 +97,9 @@ public class TextUI {
             String op_camp = null;
 
             List<Campeonato> campeonatos = this.model.getCampeonatos().stream()
-                                            .collect(Collectors.toList());
+                    .collect(Collectors.toList());
 
-            while(!bool_opcao1) {
+            while (!bool_opcao1) {
                 // Primeiro tem de escolher o Campeonato
                 this.printCampeonatos(campeonatos);
                 int nCampeonatos = campeonatos.size();
@@ -82,7 +112,7 @@ public class TextUI {
             int opcao1 = Integer.parseInt(op_camp);
             Campeonato campeonato = campeonatos.get(opcao1 - 1);
 
-            sspartidas.registarConfiguracao(campeonato);
+            sspartidas.registarConfiguracao(campeonato, versaoJogo);
 
             // Visualizar circuitos do campeonato
 
@@ -95,8 +125,8 @@ public class TextUI {
             String op_carro = null;
 
             List<Carro> carros = this.model.getCarros().stream()
-                                            .collect(Collectors.toList());
-            while(!bool_opcao2) {
+                    .collect(Collectors.toList());
+            while (!bool_opcao2) {
                 this.printCarros(carros);
                 int nCarros = carros.size();
                 System.out.print("\nNúmero do carro: ");
@@ -114,9 +144,9 @@ public class TextUI {
             String op_piloto = null;
 
             List<Piloto> pilotos = this.model.getPilotos().stream()
-                                            .collect(Collectors.toList());
+                    .collect(Collectors.toList());
 
-            while(!bool_opcao3) {
+            while (!bool_opcao3) {
                 this.printPilotos(pilotos);
                 int nPilotos = pilotos.size();
                 System.out.print("\nNúmero do piloto: ");
@@ -129,11 +159,11 @@ public class TextUI {
             Piloto piloto = pilotos.get(opcao3 - 1);
 
             // Adicionar jogador
-            sspartidas.entrarNaPartida("Utilizador", 1, piloto, carro);
+            sspartidas.entrarNaPartida(jogador, 1, piloto, carro);
 
             // Apresentar os outros jogadores "bot" (Dummy: 1 jogador)
-            sspartidas.entrarNaPartida(null, 3, null, null); // cria-se apenas um Bot
-            System.out.println("\nEste jogo terá apenas um bot! (Versão DEMO)\n");
+            sspartidas.criarBots(); // cria-se apenas um Bot
+            System.out.println("\nEste jogo terá bots durante a partida! (Versão DEMO)\n");
 
             // Apresentar a situação meteorologica de cada circuito
             Map<String, Integer> climas = sspartidas.clima();
@@ -152,19 +182,20 @@ public class TextUI {
                 System.out.println("2 - Não");
                 System.out.print("\nOpção: ");
                 op_afinacao = scin.nextLine();
-                Integer opcao =  Integer.parseInt(op_afinacao);
+                Integer opcao = Integer.parseInt(op_afinacao);
                 if (opcao == 1) {
                     pode_avancar = true;
                     bool_opcao4 = true;
-                }
-                else if (opcao == 2) pode_avancar = true;
-                else System.out.println("\n\nOpção inválida!\n");
+                } else if (opcao == 2)
+                    pode_avancar = true;
+                else
+                    System.out.println("\n\nOpção inválida!\n");
             }
 
             String s_downforce;
             double downforce = -1;
             if (bool_opcao4) { // Quer alterar a downforce do carro (entre 0 e 1)
-                while(downforce >= 0 && downforce <= 1) {
+                while (downforce >= 0 && downforce <= 1) {
                     System.out.println("\nEscreva o novo valor da downforce  (Entre 0 e 1)\n");
                     System.out.println("Valor: ");
                     s_downforce = scin.nextLine();
@@ -178,12 +209,12 @@ public class TextUI {
 
             // Escolher modo dos pneus & modo do motor
             /*
-            boolean bool_opcao5 = false;
-            String op_pneus = null;
-
-            boolean bool_opcao6 = false;
-            String op_pneus6 = null;
-            */
+             * boolean bool_opcao5 = false;
+             * String op_pneus = null;
+             * 
+             * boolean bool_opcao6 = false;
+             * String op_pneus6 = null;
+             */
 
             // Correr a simulação
             sspartidas.iniciarPartida();
@@ -191,56 +222,109 @@ public class TextUI {
             // Apresentar os resultados da partida
             List<String> resultados_finais = sspartidas.finalizarPartida();
             System.out.println(resultados_finais);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }
 
+    private void trataConsultarCarreira() {
+        // LOGIN
+
+        boolean b_utilizador = false;
+        String username = null;
+        String pass = null;
+
+        System.out.println("\n||| LOGIN |||\n");
+
+        while (!b_utilizador) {
+            System.out.print("Nome de utilizador: ");
+            username = scin.nextLine();
+            System.out.print("\nPassword: ");
+            pass = scin.nextLine();
+            b_utilizador = this.ssutilizadores.validaAcesso(username, pass);
+            if (!b_utilizador) {
+                System.out.println("\nUsername/Password errada(s). Por favor, tente novamente.\n");
+            }
+        }
+
+        // Lista das carreiras
+        List<Carreira> carreiras = this.model.getCarreiraJogador(username);
+        if (carreiras == null) {
+            System.out.println("\nNão existe histórico para este jogador!\nEntre num Campeonato e começe a jogar!\n");
+        } else {
+            System.out.println("\n||| CARREIRAS |||\n");
+            for (Carreira c : carreiras) {
+                System.out.println(c);
+            }
+            System.out.println();
+        }
+    }
+
+    private void trataRankingGlobal() {
+        List<Carreira> ranking = this.model.getRankingGlobal();
+
+        if (ranking == null) {
+            System.out
+                    .println("\nAinda não existe ranking na base de dados.\nEntre num Campeonato e começe a jogar!\n");
+        } else {
+            System.out.println("\n||| RANKING GLOBAL |||\n");
+
+            int i = 1;
+            for (Carreira c : ranking) {
+                System.out.println(i + "º: " + c);
+                i++;
+            }
+            System.out.println();
+        }
+    }
+
     private void printCampeonatos(List<Campeonato> campeonatos) {
-        int i=1;
+        int i = 1;
         System.out.println("\n--- CAMPEONATOS DISPONÍVEIS ---\n");
         for (Campeonato c : campeonatos) {
-            System.out.println("Campeonato "+i+": "+c);
-            i+=1;
+            System.out.println("Campeonato " + i + ": " + c);
+            i += 1;
         }
         System.out.println();
     }
 
-    private boolean verificaOpcaoCampeonato(int nCampeonatos, String op_camp){
+    private boolean verificaOpcaoCampeonato(int nCampeonatos, String op_camp) {
         int opcao = Integer.parseInt(op_camp);
-        if (opcao > 0 && opcao <= nCampeonatos) return true;
+        if (opcao > 0 && opcao <= nCampeonatos)
+            return true;
         else {
             System.out.println("\nATENÇÃO: Opção inválida!\n");
             return false;
         }
     }
 
-    private void printCircuitos(List<Circuito> circuitos){
+    private void printCircuitos(List<Circuito> circuitos) {
         System.out.println("\n--- Lista de CIRCUITOS do Campeonato ---\n");
-        int i=1;
+        int i = 1;
 
-        for(Circuito circuito : circuitos) {
+        for (Circuito circuito : circuitos) {
             String nome = circuito.getNome();
-            System.out.println(i+": "+nome);
-            i+=1;
+            System.out.println(i + ": " + nome);
+            i += 1;
         }
         System.out.println();
     }
 
     private void printCarros(List<Carro> carros) {
         System.out.println("\n--- Lista de CARROS disponíveis  ---\n");
-        int i=1;
-        for(Carro carro : carros) {
-            System.out.println(i+": "+carro);
-            i+=1;
+        int i = 1;
+        for (Carro carro : carros) {
+            System.out.println(i + ": " + carro);
+            i += 1;
         }
         System.out.println();
     }
 
     private boolean verificaOpcaoCarro(int nCarros, String op_carro) {
         int opcao = Integer.parseInt(op_carro);
-        if (opcao > 0 && opcao <= nCarros) return true;
+        if (opcao > 0 && opcao <= nCarros)
+            return true;
         else {
             System.out.println("\nATENÇÃO: Opção inválida!\n");
             return false;
@@ -249,17 +333,18 @@ public class TextUI {
 
     private void printPilotos(List<Piloto> pilotos) {
         System.out.println("\n--- Lista de PILOTOS disponíveis  ---\n");
-        int i=1;
-        for(Piloto piloto : pilotos) {
-            System.out.println("Piloto "+i+": "+piloto);
-            i+=1;
+        int i = 1;
+        for (Piloto piloto : pilotos) {
+            System.out.println("Piloto " + i + ": " + piloto);
+            i += 1;
         }
         System.out.println();
     }
 
     private boolean verificaOpcaoPiloto(int nPilotos, String op_piloto) {
         int opcao = Integer.parseInt(op_piloto);
-        if (opcao > 0 && opcao <= nPilotos) return true;
+        if (opcao > 0 && opcao <= nPilotos)
+            return true;
         else {
             System.out.println("\nATENÇÃO: Opção inválida!\n");
             return false;
@@ -272,9 +357,19 @@ public class TextUI {
         for (String circuito : circuitos) {
             int clima = climas.get(circuito);
             String s_clima;
-            if (clima == 1) s_clima = "Chove";
-            else s_clima = "Sol";
+            if (clima == 1)
+                s_clima = "Chove";
+            else
+                s_clima = "Sol";
             System.out.println(circuito + " : " + s_clima);
         }
+    }
+
+    private void printVersaoJogo(int versaoJogo) {
+        // 0 - Base; 1 - Premium
+        if (versaoJogo == 0)
+            System.out.println("\n Versão do Jogo: BASE\n");
+        else if (versaoJogo == 1)
+            System.out.println("\n Versão do Jogo: PREMIUM\n");
     }
 }
