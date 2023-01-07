@@ -35,7 +35,7 @@ public class Evento {
 		this.volta = e.getVolta();
 		this.idSeccao = e.getIDSeccao();
 		this.acontecimento = e.getAcontecimento();
-		this.idjogadoresEnvolvidos = getIdJogadoresEnvolvidos();
+		this.idjogadoresEnvolvidos = e.getIdJogadoresEnvolvidos();
 
 	}
 
