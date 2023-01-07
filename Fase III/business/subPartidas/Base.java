@@ -1,12 +1,13 @@
 package business.subPartidas;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
 
 import business.subCatálogos.Carro;
-import business.subCatálogos.Hibrido;
+import business.subCatálogos.Circuito;
 import business.subCatálogos.Piloto;
 
 public class Base extends Simulador {
@@ -35,21 +36,20 @@ public class Base extends Simulador {
 		List<Evento> eventos = new ArrayList<Evento>();
 		List<Progresso> primeiroVolta = new ArrayList<Progresso>();
 		int voltas = aCorrida.getCircuito().getNVoltas();
+		Circuito circuito = aCorrida.getCircuito();
 		ArrayList<Progresso> aux = new ArrayList<Progresso>();
 		HashMap<Progresso, Integer> temp = new HashMap<Progresso, Integer>();
 		for (Progresso c : aCorrida.getProgressos()) {
 			aux.add(c.clone());
 		}
 		for (int i = 0; i < voltas; i++) {
-			// Criar os progressos desta volta
 
-			// Ler os progressos
 			for (Progresso p : aux) {
 				Carro carro = p.getCarro();
 				Piloto piloto = p.getPiloto();
 				if (carro.getDNF() == false) // verifica se o carro esta acidentado
 				{
-					List<Evento> ev = carro.checkLap(aCorrida.getCircuito(), i, aCorrida.getClima(),piloto); // verifica se o carro tem evento na volta
+					List<Evento> ev = null; //carro.checkLap(aCorrida.getCircuito(), i, aCorrida.getClima(),piloto); // verifica se o carro tem evento na volta
 					int eve=-1;
 					if(ev!=null)
 						for (Evento e : ev){
@@ -62,36 +62,45 @@ public class Base extends Simulador {
 						carro.setDNF(true);
 						temp.put(p.clone(), i);
 					} 
+
+					Double novo_tempo = carro.tempoProximaVolta(circuito, aCorrida.getClima(), piloto);
+					Long tempo_progresso = p.getTempo() + Double.valueOf(novo_tempo).longValue();
+					p.setTempo(tempo_progresso);
+					p.setVolta(i);
 				}
 			}
+			
 			List<Evento> evs= this.checkMultiEventos();
 			for(Evento e:evs)
 				eventos.add(e);
-			primeiroVolta = this.primeiroVolta(i, aux, primeiroVolta);
+			
+			
 		}
+		primeiroVolta = this.primeiroVolta(voltas-1, aux);
+		aCorrida.setPrimeiroVolta(primeiroVolta);
+		aCorrida.setProgressos(aux);
 		return eventos;
 	}
 
 	private List<Evento> checkMultiEventos() {
 		//
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**
      * Metodo auxiliar privado para determinar o carro que vai em 1o a cada volta
      */
-    private List<Progresso> primeiroVolta(int volta, List<Progresso> l, List<Progresso> primeiroVolta)
+    private List<Progresso> primeiroVolta(int volta, List<Progresso> l)
     {
-       	l.sort(null); 
+		List<Progresso> primeiroVolta = new ArrayList<>();
+		Collections.sort(l);
        	Iterator<Progresso> it = l.iterator();
-       	boolean f = false;
        	Progresso c = null;
-       	while(it.hasNext() && f==false)
+       	while(it.hasNext())
        	{
        	    c = it.next();
        	}
-       	if(c!=null)
-       	    primeiroVolta.add(volta,c.clone());
+       	if(c!=null) primeiroVolta.add(c.clone());
 		return primeiroVolta;
 	}
 }

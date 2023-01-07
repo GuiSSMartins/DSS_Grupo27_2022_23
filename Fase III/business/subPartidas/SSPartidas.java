@@ -3,13 +3,11 @@ package business.subPartidas;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import business.SubUtilizadores.Jogador;
-import business.subCatálogos.C2;
 import business.subCatálogos.C2Hibrido;
 import business.subCatálogos.Campeonato;
 import business.subCatálogos.Carro;
+import business.subCatálogos.GT;
 import business.subCatálogos.Piloto;
 
 public class SSPartidas implements ISubPartidas {
@@ -55,9 +53,10 @@ public class SSPartidas implements ISubPartidas {
 
 		// iniciar as várias corridas
 		for (int i = 0; i < n_corridas; i++) {
-			iniciarCorrida();
+			this.iniciarCorrida();
 			String resultados_corrida = finalizarCorrida();
 			System.out.println(resultados_corrida);
+			System.out.println("\n");
 		}
 	}
 
@@ -74,8 +73,8 @@ public class SSPartidas implements ISubPartidas {
 	@Override
 	public List<String> finalizarPartida() {
 		List<String> resultados = this.partida.calculaResultadoPartida(); // resultados finais
-		atualizaEstados(resultados);
-		this.jogador.registaPontuacao(this.campeonato.getNome(), 0);
+		int pontuacao = this.partida.getPontuacaoJogador(jogador.getEmail());
+		this.jogador.registaPontuacao(this.campeonato.getNome(), pontuacao);
 		this.partida = null;
 		return resultados;
 	}
@@ -129,18 +128,18 @@ public class SSPartidas implements ISubPartidas {
 		// 1º Bot - Normal
 		// Configuar piloto e carro demos
 		Piloto pb1 = new Piloto("bot1", 0.5, 0.6);
-		Carro cb1 = new C2Hibrido(3, "marcabot1", "modelobot1", 4000, 100, 0.5, 0.6, 100);
-		Jogador bot1 = new Jogador("bot1", "", "", 2, true);
+		Carro cb1 = new GT(11,"marcabot1","modelobot1",3000,100,60,0.3,0.03);
+		Jogador bot1 = new Jogador("bot1", "", "", 2);
 		this.bots.add(bot1);
-		entrarNaPartida(bot1, 2, pb1, cb1);
+		this.partida.adicionaJogador("bot1", pb1, cb1);
 
 		// 2º Bot - Híbrido
 		// Configuarar piloto e carro demos
 		Piloto pb2 = new Piloto("bot2", 0.5, 0.6);
-		Carro cb2 = new C2Hibrido(3, "marcabot1", "modelobot1", 4000, 100, 0.5, 0.6, 100);
-		Jogador bot2 = new Jogador("bot2", "", "", 2, true);
+		Carro cb2 = new C2Hibrido(10, "marcabot2", "modelobot2", 4000, 100, 50, 0.6, 100);
+		Jogador bot2 = new Jogador("bot2", "", "", 2);
 		this.bots.add(bot2);
-		entrarNaPartida(bot2, 2, pb2, cb2);
+		this.partida.adicionaJogador("bot2", pb2, cb2);
 	}
 
 }

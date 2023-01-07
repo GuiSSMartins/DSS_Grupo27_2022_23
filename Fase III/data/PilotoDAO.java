@@ -212,12 +212,12 @@ public class PilotoDAO implements Map<String, Piloto> {
                         "INSERT INTO pilotos " +
                                 "VALUES ('Battery Voltar', " + // nome
                                 "0.6, " + // cts
-                                "0.4);"); // sva
+                                "0.4)"); // sva
 
                 String sql = "INSERT INTO pilotos (nome,cts,sva)" +
-                        "Values ('p1',0.1,0.1)," +
+                        " Values ('p1',0.1,0.1)," +
                         "('p2',0.2,0.2)," +
-                        "('p3',0.3,0.3);";
+                        "('p3',0.3,0.3)";
                 stm.executeUpdate(sql);
 
             }

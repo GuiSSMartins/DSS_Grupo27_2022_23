@@ -307,10 +307,10 @@ public class CarroDAO implements Map<Integer, Carro> {
 
                 String sql = "INSERT INTO carros (Id,Categoria,Marca,Modelo,Cilindrada,Potencia,Pac,Fiabilidade,Hibrido,PotenciaEletrica,TaxaDeterioracao)"
                         +
-                        "Values (2,'C1','marca1','modelo1',6000,100,0.4,0.7,0,0,0)," +
+                        " Values (2,'C1','marca1','modelo1',6000,100,0.4,0.7,0,0,0)," +
                         "(3,'C2','marca1','modelo1',4000,100,0.5,0.6,1,100,0.06)," +
                         "(4,'GT','marca1','modelo1',3000,100,0.6,0.3,0,200,0.03)," +
-                        "(5,'SC','marca1','modelo1',2500,100,0.9,0.4,0,0,0);";
+                        "(5,'SC','marca1','modelo1',2500,100,0.9,0.4,0,0,0)";
 
                 stm.executeUpdate(sql);
             }

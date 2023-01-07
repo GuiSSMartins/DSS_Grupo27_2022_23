@@ -55,7 +55,7 @@ public class Campeonato {
         return copia;
     }
 
-    public void addCircuitos(String circuito){
+    public void addCircuito(String circuito){
         this.nomesCircuitos.add(circuito);
         this.circuitos.add(this.circuitoDAO.get(circuito));
     }

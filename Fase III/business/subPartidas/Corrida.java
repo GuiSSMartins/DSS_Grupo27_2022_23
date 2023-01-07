@@ -35,12 +35,13 @@ public class Corrida implements Serializable {
     private int versaoJogo;
 
     // Construtores
-    public Corrida(int versaoJogo) {
+    public Corrida(int versaoJogo, Circuito circuito) {
         this.versaoJogo = versaoJogo;
         this.listaProgressos = new ArrayList<Progresso>();
-        this.circuito = new Circuito();
+        this.circuito = circuito;
+        this.eventos = new ArrayList<>();
         this.dnf = new HashMap<Carro, Integer>();
-        this.resultados = new TreeSet<Progresso>();
+        this.resultados = new TreeSet<Progresso>((o1, o2) -> o1.compareTo(o2));
         // this.bestLap = new HashMap<Carro,double>();
         this.primeiroVolta = new ArrayList<Progresso>();
         Random rand = new Random();
@@ -61,6 +62,7 @@ public class Corrida implements Serializable {
         }
         this.clima = clima;
         this.versaoJogo = versaoJogo;
+        this.eventos = new ArrayList<>();
     }
 
     public Corrida(Corrida c) {
@@ -82,12 +84,19 @@ public class Corrida implements Serializable {
         return aux;
     }
 
+    public void setProgressos(List<Progresso> progressos) {
+        this.limpaListaProgressos();
+        for (Progresso c : progressos) {
+            this.listaProgressos.add(c.clone());
+        }
+    }
+
     public Circuito getCircuito() {
         return this.circuito.clone();
     }
 
     public Set<Progresso> getResultados() {
-        TreeSet<Progresso> aux = new TreeSet<Progresso>();
+        Set<Progresso> aux = new TreeSet<Progresso>();
         for (Progresso c : this.resultados) {
             aux.add(c.clone());
         }
@@ -108,6 +117,13 @@ public class Corrida implements Serializable {
             aux.add(c.clone());
         }
         return aux;
+    }
+
+    public void setPrimeiroVolta(List<Progresso> ps) {
+        for(Progresso p : ps) {
+            this.primeiroVolta.add(p.clone());
+        }
+
     }
 
     public void setCircuito(Circuito c) {
@@ -155,6 +171,7 @@ public class Corrida implements Serializable {
      */
     public void limpaListaProgressos() {
         this.listaProgressos.clear();
+        this.listaProgressos = new ArrayList<>();
     }
 
     /**
@@ -162,6 +179,7 @@ public class Corrida implements Serializable {
      */
     public void simulaCorrida(Simulador s) {
         this.eventos = s.calcularEventosPartida(this);
+        this.calculaResultadosFinais();
     }
 
     /**
@@ -268,7 +286,7 @@ public class Corrida implements Serializable {
             sb.append("\n");
             sb.append(i);
             sb.append("º: ");
-            sb.append(TimeConverter.toTimeFormat(progresso.getTempo()));
+            sb.append(progresso.getTempo());
             sb.append("\t Categoria: ");
             sb.append(c.getClass().getName());
             sb.append(" ");
@@ -287,7 +305,7 @@ public class Corrida implements Serializable {
                 sb.append("\n");
                 sb.append(i);
                 sb.append("º: ");
-                sb.append(TimeConverter.toTimeFormat(progresso.getTempo()));
+                sb.append(progresso.getTempo());
                 sb.append("\t Categoria: ");
                 sb.append(c.getClass().getName());
                 sb.append(" ");
@@ -301,4 +319,12 @@ public class Corrida implements Serializable {
         sb.append(this.printPrimeiroVolta());
         return sb.toString();
     }
+
+    public void calculaResultadosFinais() {
+        for(Progresso p : listaProgressos) {
+            this.resultados.add(p.clone());
+        }
+    }
+
+
 }

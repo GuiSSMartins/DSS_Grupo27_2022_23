@@ -79,6 +79,7 @@ public class Evento {
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append("\n||| ");
 		if (this.acontecimento == 0) {
 			sb.append("Acidente");
 		} else if (this.acontecimento == 1) {
@@ -88,6 +89,7 @@ public class Evento {
 		} else if (this.acontecimento == 3) {
 			sb.append("Avariou");
 		}
+		sb.append("\n");
 		return sb.toString();
 	}
 

@@ -225,9 +225,9 @@ public class CircuitoDAO implements Map<String, Circuito> {
 
                 // 1º Circuito
                 String sql = "INSERT INTO circuitos (nome,nVoltas,comprimento,ncurvas,nretas,nchicanes)" +
-                        "Values ('circ1',3,'130.00',5,5,4)," +
+                        " Values ('circ1',3,'130.00',5,5,4)," +
                         "('circ2',6,'160.00',5,4,5)," +
-                        "('circ3',1,'110.00',4,5,5);";
+                        "('circ3',1,'110.00',4,5,5)";
                 stm.executeUpdate(sql);
             }
 

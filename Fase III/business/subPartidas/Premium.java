@@ -1,6 +1,7 @@
 package business.subPartidas;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,6 @@ import business.subCatálogos.Carro;
 import business.subCatálogos.Circuito;
 import business.subCatálogos.GT;
 import business.subCatálogos.GTHibrido;
-import business.subCatálogos.Hibrido;
 import business.subCatálogos.Piloto;
 import business.subCatálogos.Seccao;
 
@@ -44,18 +44,107 @@ public class Premium extends Simulador {
 
 	public List<Evento> calcularEventosPartida(Corrida aCorrida) {
 
+		/*
 		List<Evento> eventos = new ArrayList<Evento>();
 		List<Progresso> primeiroVolta = new ArrayList<Progresso>();
 		int voltas = aCorrida.getCircuito().getNVoltas();
+		Circuito circuito = aCorrida.getCircuito();
 		List<Seccao> seccoes = aCorrida.getCircuito().getseccoes();
 		ArrayList<Progresso> aux = new ArrayList<Progresso>();
 		for (Progresso c : aCorrida.getProgressos()) {
 			aux.add(c.clone());
 		}
-		for (int i = 0; i < voltas; i++) {
-			List<Evento> ev = this.checkEventosSeccao(aCorrida.getCircuito(), aux, i, s, aCorrida.getClima(), seccoes);
-			primeiroVolta = this.primeiroVolta(i, aux, primeiroVolta);
+		*/
+
+		List<Evento> eventos = new ArrayList<Evento>();
+		int voltas = aCorrida.getCircuito().getNVoltas();
+		List<Seccao> seccoes = aCorrida.getCircuito().getseccoes();
+		Circuito circuito = aCorrida.getCircuito();
+		ArrayList<Progresso> aux = new ArrayList<Progresso>();
+		for (Progresso c : aCorrida.getProgressos()) {
+			c.setSeccao(1);
+			aux.add(c.clone());
 		}
+
+		List<Progresso> desistentes = new ArrayList<>();
+		for (int i = 0; i < voltas; i++) {
+			List<Evento> ev = this.checkEventosSeccao(aCorrida.getCircuito(), aux, i, aCorrida.getClima(), seccoes);
+			
+			// percorre a lista de eventos para determinar se houve algum desistente por avaria ou acidente
+			for(Evento e:ev)
+			{
+				if(e.getAcontecimento()==0 || e.getAcontecimento()==3)
+				{
+					// vai a todos os jogadores envolvidos
+					for(String piloto: e.getIdJogadoresEnvolvidos())
+					{
+						// procura pelo respetivo progresso
+						for(Progresso p: aux)
+						{
+							if(piloto.equals(p.getPiloto().getNome()))
+							{
+								if(p.getCarro().checkDNF(i, voltas, aCorrida.getClima()))
+								{
+									// desistiu
+
+									// adiciona à lista de desistentes
+									desistentes.add(p.clone());
+
+									// remove da lista de jogadores para a próxima volta
+									aux.remove(p);
+								}
+							}
+						}
+					}
+				}
+
+				// adiciona o evento à lista geral de eventos
+				eventos.add(e.clone());
+			}
+			for (Progresso p: aCorrida.getProgressos()) {
+				if (!desistentes.contains(p)) {
+					Double novo_tempo = p.getCarro().tempoProximaVolta(circuito, aCorrida.getClima(), p.getPiloto());
+					Long tempo_progresso = p.getTempo() + Double.valueOf(novo_tempo).longValue();
+					p.setTempo(tempo_progresso);
+					p.setVolta(i);
+					
+				}
+			}
+		}
+		List<Progresso> primeiroVolta = new ArrayList<>();
+		primeiroVolta = this.primeiroVolta(voltas-1, aux);
+		aCorrida.setPrimeiroVolta(primeiroVolta);
+		aCorrida.setProgressos(aux);
+		/*
+		for (int i = 0; i < voltas; i++) {
+
+			List<Evento> ev = this.checkEventosSeccao(aCorrida.getCircuito(), aux, i, aCorrida.getClima(), seccoes);
+			for (Progresso p : aux) {
+				Carro carro = p.getCarro();
+				Piloto piloto = p.getPiloto();
+				if (carro.getDNF() == false) // verifica se o carro esta acidentado
+				{
+					int eve=-1;
+					if(ev!=null)
+						for (Evento e : ev){
+							if(e.getAcontecimento()==3)
+								eve=1;
+							eventos.add(e);
+						}
+					if (eve==1) // verifica se o carro tem acidente na volta
+					{
+						carro.setDNF(true);
+					} 
+
+					Double novo_tempo = carro.tempoProximaVolta(circuito, aCorrida.getClima(), piloto);
+					Long tempo_progresso = p.getTempo() + Double.valueOf(novo_tempo).longValue();
+					p.setTempo(tempo_progresso);
+					p.setVolta(i+1);
+				}
+			}
+			primeiroVolta = this.primeiroVolta(i, aux);
+			
+		}*/
 		return eventos;
 	}
 
@@ -102,13 +191,15 @@ public class Premium extends Simulador {
 		Carro c = p.getCarro();
 		int seccao = p.getSeccao();
 
+		System.out.println(seccao);
+
 		List<Evento> res = new ArrayList<>();
 
 		for (Progresso prog : aux)
 			if (!prog.equals(p))
 				if (prog.getSeccao() == p.getSeccao()) {
-					if (piloto.getSVA() > prog.getPiloto().getSVA() && c.compararaCarros(prog.getCarro())
-							&& (seccoes.get(seccao).probabilidadeCarroConsegueUltrapassar() * c.getPAC() > 0.8)) {
+					if (piloto.getSVA() > prog.getPiloto().getSVA() && c.compararaCarros(prog.getCarro())){
+							// && (seccoes.get(seccao).probabilidadeCarroConsegueUltrapassar() * c.getPAC() > 0.8)) {
 						// consegue ultrapassar
 
 						// adiciona o jogador à lista de jogadores envolvidos no evento ultrapassar
@@ -234,16 +325,17 @@ public class Premium extends Simulador {
 	/**
 	 * Metodo auxiliar privado para determinar o carro que vai em 1o a cada volta
 	 */
-	private List<Progresso> primeiroVolta(int volta, List<Progresso> l, List<Progresso> primeiroVolta) {
-		l.sort(null);
-		Iterator<Progresso> it = l.iterator();
-		boolean f = false;
-		Progresso c = null;
-		while (it.hasNext() && f == false) {
-			c = it.next();
-		}
-		if (c != null)
-			primeiroVolta.add(volta, c.clone());
+    private List<Progresso> primeiroVolta(int volta, List<Progresso> l)
+    {
+		List<Progresso> primeiroVolta = new ArrayList<>();
+		Collections.sort(l);
+       	Iterator<Progresso> it = l.iterator();
+       	Progresso c = null;
+       	while(it.hasNext())
+       	{
+       	    c = it.next();
+       	}
+       	if(c!=null) primeiroVolta.add(c.clone());
 		return primeiroVolta;
 	}
 }

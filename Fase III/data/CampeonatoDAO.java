@@ -33,7 +33,7 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
                     + "Id varchar(510) NOT NULL PRIMARY KEY," //Nome campeonato + nome circuito
                     + "Nome VARCHAR(255) NOT NULL,"
                     + "nomeCircuito VARCHAR(255) NOT NULL,"
-                    + "FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome));"
+                    + "FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome))"
                     );
 
 
@@ -60,7 +60,7 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
         boolean r;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();
-                ResultSet rs = stm.executeQuery("SELECT Id FROM campeonatos WHERE Id='" + key.toString() + "'")) {
+                ResultSet rs = stm.executeQuery("SELECT Nome FROM campeonatos WHERE Nome='" + key.toString() + "'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -91,7 +91,7 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
             while (rs.next()) {
                 String circuito = rs.getString("nomeCircuito");
 
-                t.addCircuitos(circuito);
+                t.addCircuito(circuito);
             }
 
         } catch (SQLException e) {
@@ -209,9 +209,9 @@ public class CampeonatoDAO implements Map<String, Campeonato> {
 
             if (this.size() == 0) {
                 String sql = "INSERT INTO campeonatos (Id,Nome,nomeCircuito)" +
-                        "Values ('camp1circ1','camp1','circ1')," +
+                        " Values ('camp1circ1','camp1','circ1')," +
                         "('camp1circ2','camp1','circ2')," +
-                        "('camp1circ3','camp1','circ3');";
+                        "('camp1circ3','camp1','circ3')";
                 stm.executeUpdate(sql);
             }
 

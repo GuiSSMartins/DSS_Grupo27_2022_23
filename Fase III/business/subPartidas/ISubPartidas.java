@@ -1,8 +1,6 @@
 package business.subPartidas;
 
 import java.util.List;
-import java.util.Set;
-
 import business.SubUtilizadores.Jogador;
 import business.subCatálogos.Campeonato;
 import business.subCatálogos.Carro;

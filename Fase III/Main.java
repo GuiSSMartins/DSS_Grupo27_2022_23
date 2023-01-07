@@ -19,6 +19,7 @@ public class Main {
         }
         catch (Exception e) {
             System.out.println("Não foi possível arrancar: "+e.getMessage());
+            e.printStackTrace();
         }
     }
 

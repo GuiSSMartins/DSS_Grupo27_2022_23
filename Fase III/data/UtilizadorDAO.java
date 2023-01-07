@@ -80,8 +80,8 @@ public class UtilizadorDAO implements Map<String, Utilizador> {
     }
 
     @Override
-    public Utilizador get(Object key) {
-        Utilizador t = null;
+    public Jogador get(Object key) {
+        Jogador t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();
                 ResultSet rs = stm.executeQuery("SELECT * FROM utilizadores WHERE Email='" + key.toString() + "'")) {
@@ -89,10 +89,10 @@ public class UtilizadorDAO implements Map<String, Utilizador> {
                 int jogador = rs.getInt("Jogador");
                 if (jogador == 1) { // Joagdor
                     t = new Jogador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"),
-                            rs.getInt("VersaoJogo"), false);
-                } else { // administrador
+                            rs.getInt("VersaoJogo")); }
+                /*} else { // administrador
                     t = new Administrador(rs.getString("Email"), rs.getString("Password"), rs.getString("Nome"));
-                }
+                }*/
             }
         } catch (SQLException e) {
             // Database error!
@@ -247,9 +247,9 @@ public class UtilizadorDAO implements Map<String, Utilizador> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
             if (this.size() == 0) {
-                String sql = "INSERT INTO utilizadores (Email,Password,Nome,Jogador,VersaoJogo)" +
-                        "Values ('user1','123','Me',0,0)," +
-                        "('user2','123','Me',1,1);";
+                String sql = "INSERT INTO utilizadores (Email,Password,Nome,Jogador,VersaoJogo) " +
+                        "Values ('user1','123','Me',1,0)," +
+                        "('user2','123','Me',1,1)";
                 stm.executeUpdate(sql);
             }
 

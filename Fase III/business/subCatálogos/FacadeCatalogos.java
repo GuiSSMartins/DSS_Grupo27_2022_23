@@ -71,7 +71,7 @@ public class FacadeCatalogos {
     }
 
     public Jogador getJogador(String email) {
-        return (Jogador) this.utilizadores.get(email);
+        return this.utilizadores.get(email);
     }
 
     public List<Carreira> getCarreiraJogador(String email) {

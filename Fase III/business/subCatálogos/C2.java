@@ -8,8 +8,6 @@
 package business.subCatálogos;
 
 import java.util.Random;
-import java.util.List;
-import business.subPartidas.Evento;
 
 public class C2 extends Carro {
 

@@ -3,7 +3,7 @@ package business.subPartidas;
 import business.subCatálogos.Carro;
 import business.subCatálogos.Piloto;
 
-public class Progresso {
+public class Progresso implements Comparable<Progresso>{
 	private String email;
 	private Piloto piloto;
 	private Carro carro;
@@ -51,17 +51,30 @@ public class Progresso {
 		this.seccao = seccao;
 	}
 
+	public int getVolta() {
+		return this.volta;
+	}
+
+	public void setVolta(int volta) {
+		this.volta = volta;
+	}
+
 	public Progresso(String email, Piloto piloto, Carro carro) {
 		this.email = email;
-		this.piloto = piloto.clone();
-		this.carro = carro.clone();
+		this.piloto = piloto;
+		this.carro = carro;
+		this.seccao = -1;
+		this.volta = -1;
+		this.tempo = 0;
 	}
 
 	public Progresso(Piloto piloto, Carro carro, long tempo, int seccao) {
-		this.piloto = piloto.clone();
-		this.carro = carro.clone();
+		this.piloto = piloto;
+		this.carro = carro;
 		this.tempo = tempo;
 		this.seccao = seccao;
+		this.volta = -1;
+		this.email = null;
 	}
 
 	public Progresso(Progresso p) {
@@ -70,6 +83,7 @@ public class Progresso {
 		this.piloto = p.getPiloto();
 		this.tempo = p.getTempo();
 		this.seccao = p.getSeccao();
+		this.volta = p.getVolta();
 	}
 
 	public void update(Evento aE, String aIdJogador) {
@@ -93,17 +107,24 @@ public class Progresso {
 		return false;
 	}
 
-	public Integer compareTo(Progresso p) {
+	public int compareTo(Progresso p) {
 		if (this.tempo < p.getTempo())
 			return -1;
 		else if (this.tempo > p.getTempo())
 			return 1;
 		else
-			return 0;
+			return 1;
 	}
 
 	public Progresso clone() {
 		return new Progresso(this);
+	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.getEmail());
+		sb.append(this.tempo);
+		return sb.toString();
 	}
 
 }

@@ -40,6 +40,7 @@ public class TextUI {
      */
     public TextUI() {
         this.sspartidas = new SSPartidas();
+        this.ssutilizadores = new SSUtilizadores();
 
         // Criar o menu
         this.menu = new Menu("Racing Manager", new String[] {
@@ -49,7 +50,7 @@ public class TextUI {
         });
         this.menu.setHandler(1, this::trataEntrarCampeonato);
         this.menu.setHandler(2, this::trataConsultarCarreira);
-        this.menu.setHandler(2, this::trataRankingGlobal);
+        this.menu.setHandler(3, this::trataRankingGlobal);
 
         this.model = new FacadeCatalogos();
         this.model.povoar();
@@ -87,7 +88,7 @@ public class TextUI {
             }
 
             Jogador jogador = this.model.getJogador(username);
-            int versaoJogo = Integer.parseInt(this.ssutilizadores.verificaVersao(username));
+            int versaoJogo = jogador.getVersaoJogo();
 
             this.printVersaoJogo(versaoJogo);
 
@@ -161,9 +162,9 @@ public class TextUI {
             // Adicionar jogador
             sspartidas.entrarNaPartida(jogador, 1, piloto, carro);
 
-            // Apresentar os outros jogadores "bot" (Dummy: 1 jogador)
-            sspartidas.criarBots(); // cria-se apenas um Bot
-            System.out.println("\nEste jogo terá bots durante a partida! (Versão DEMO)\n");
+            // Apresentar os outros jogadores "bot"
+            sspartidas.criarBots();
+            System.out.println("\nEste jogo terá bots durante a simulação!\n");
 
             // Apresentar a situação meteorologica de cada circuito
             Map<String, Integer> climas = sspartidas.clima();
@@ -195,7 +196,7 @@ public class TextUI {
             String s_downforce;
             double downforce = -1;
             if (bool_opcao4) { // Quer alterar a downforce do carro (entre 0 e 1)
-                while (downforce >= 0 && downforce <= 1) {
+                while (downforce < 0 && downforce > 1) {
                     System.out.println("\nEscreva o novo valor da downforce  (Entre 0 e 1)\n");
                     System.out.println("Valor: ");
                     s_downforce = scin.nextLine();
@@ -208,20 +209,24 @@ public class TextUI {
             }
 
             // Escolher modo dos pneus & modo do motor
-            /*
-             * boolean bool_opcao5 = false;
-             * String op_pneus = null;
-             * 
-             * boolean bool_opcao6 = false;
-             * String op_pneus6 = null;
-             */
+            
+            boolean bool_opcao5 = false;
+            String op_pneus = null;
+             
+            boolean bool_opcao6 = false;
+            String op_pneus6 = null;
+            
 
             // Correr a simulação
             sspartidas.iniciarPartida();
 
             // Apresentar os resultados da partida
             List<String> resultados_finais = sspartidas.finalizarPartida();
-            System.out.println(resultados_finais);
+            System.out.println("\n||| RESULTADOS FINAIS |||\n");
+            for (int i=1; i<=3; i++) {
+                System.out.println(i + "º: " + resultados_finais.get(i-1));
+            }
+            System.out.println();
         } catch (NullPointerException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

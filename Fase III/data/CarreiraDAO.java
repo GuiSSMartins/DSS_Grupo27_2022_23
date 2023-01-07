@@ -33,8 +33,7 @@ public class CarreiraDAO implements Map<String, Carreira> {
                     "Pontuacao int NOT NULL," +
                     "NomeCampeonato varchar(510) NOT NULL," +
                     "Email varchar(100) NOT NULL," +
-                    "FOREIGN KEY(Email) REFERENCES utilizadores(Email)," +
-                    "FOREIGN KEY(NomeCampeonato) REFERENCES campeonatos(Id));";
+                    "FOREIGN KEY(Email) REFERENCES utilizadores(Email))";
             stm.executeUpdate(sql);
         } catch (SQLException e) {
             // Erro a criar tabela...
@@ -61,7 +60,7 @@ public class CarreiraDAO implements Map<String, Carreira> {
         boolean r;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();
-                ResultSet rs = stm.executeQuery("SELECT Email FROM carreiras WHERE Email='" + key.toString() + "'")) {
+                ResultSet rs = stm.executeQuery("SELECT Id FROM carreiras WHERE Id='" + key.toString() + "'")) {
             r = rs.next();
         } catch (SQLException e) {
             // Database error!
@@ -87,7 +86,7 @@ public class CarreiraDAO implements Map<String, Carreira> {
         Carreira t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement();
-                ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Email ='" + key.toString() + "'")) {
+                ResultSet rs = stm.executeQuery("SELECT * FROM carreiras WHERE Id ='" + key.toString() + "'")) {
             if (rs.next()) { // A chave existe na tabela
                 t = new Carreira(rs.getString("nomeCampeonato"), rs.getInt("Pontuacao"),
                         rs.getString("Email"));
@@ -124,10 +123,10 @@ public class CarreiraDAO implements Map<String, Carreira> {
 
             stm.executeUpdate(
                     "INSERT INTO carreiras " +
-                            "VALUES (" + id + ", '" +
+                            "VALUES ('" + id + "', " +
+                            pontuacao + ", '" +
                             NomeCampeonato + "', '" +
-                            Email + "', " +
-                            pontuacao + ")");
+                            Email + "') ON DUPLICATE KEY UPDATE Id = '" + id + "'");
 
         } catch (SQLException e) {
             // Database error!
@@ -230,12 +229,13 @@ public class CarreiraDAO implements Map<String, Carreira> {
 
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
-
+            
+                    /* 
             if (this.size() == 0) {
-                String sql = "INSERT INTO carreiras (Id,Pontuacao,NomeCampeonato,Email)" +
-                        "Values ('camp1p1',0,'camp1circ1','user1');";
+                String sql = "INSERT INTO carreiras (Id,Pontuacao,NomeCampeonato,Email) " +
+                        "Values ('camp1p1',0,'camp1circ1','user1')";
                 stm.executeUpdate(sql);
-            }
+            }*/
 
         } catch (SQLException e) {
             // Database error!

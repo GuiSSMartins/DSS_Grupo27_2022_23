@@ -18,7 +18,7 @@ public class SSUtilizadores implements ISubUtilizadores {
         boolean res = false;
 
         if (utilizadores.containsKey(email)) {
-            Utilizador u = utilizadores.get(email);
+            Jogador u = utilizadores.get(email);
             if (u.getPassword().equals(password))
                 res = true;
         }
@@ -56,7 +56,7 @@ public class SSUtilizadores implements ISubUtilizadores {
 
         if (validaEmail(email)) { // e-mail é válido
             if (jogador == 1) {
-                u = new Jogador(email, password, nome, versaoJogo, false);
+                u = new Jogador(email, password, nome, versaoJogo);
             } else {
                 u = new Administrador(email, password, nome);
             }

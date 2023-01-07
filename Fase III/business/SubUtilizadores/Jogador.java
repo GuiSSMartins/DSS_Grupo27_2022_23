@@ -5,25 +5,22 @@ import data.CarreiraDAO;
 public class Jogador extends Utilizador {
 	private int versaoJogo; // 0 -> base; 1 -> premium;
 	private CarreiraDAO carreiraDAO;
-	private boolean bot;
 
 	public Jogador() {
 		super();
 		this.carreiraDAO = CarreiraDAO.getInstance();
 	}
 
-	public Jogador(int versaoJogo, boolean bot) {
+	public Jogador(int versaoJogo) {
 		super();
 		this.versaoJogo = versaoJogo;
 		this.carreiraDAO = CarreiraDAO.getInstance();
-		this.bot = bot;
 	}
 
-	public Jogador(String email, String password, String nome, int versaoJogo, boolean bot) {
+	public Jogador(String email, String password, String nome, int versaoJogo) {
 		super(email, password, nome);
 		this.versaoJogo = versaoJogo;
 		this.carreiraDAO = CarreiraDAO.getInstance();
-		this.bot = bot;
 	}
 
 	public void setVersaoJogo(int versaoJogo) {
@@ -44,14 +41,16 @@ public class Jogador extends Utilizador {
 		String email = super.getEmail();
 
 		// Só atualiza carreira se não for bot
-		if (carreiraDAO.containsKey(nomeCampeonato.concat(email))) {
-			Carreira c = carreiraDAO.get(nomeCampeonato.concat(email));
+		String id = nomeCampeonato;
+		id.concat(email);
+		if (carreiraDAO.containsKey(id)) {
+			Carreira c = carreiraDAO.get(id);
 			if (c.getPontuacao() < pontuacao) {
-				carreiraDAO.updatePontuacao(nomeCampeonato.concat(email), pontuacao);
+				carreiraDAO.updatePontuacao(id, pontuacao);
 			}
 		} else {
 			Carreira c = new Carreira(nomeCampeonato, pontuacao, email);
-			carreiraDAO.put(nomeCampeonato.concat(email), c);
+			carreiraDAO.put(id, c);
 		}
 	}
 

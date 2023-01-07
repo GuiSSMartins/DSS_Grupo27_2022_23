@@ -24,15 +24,14 @@ public class Partida {
 
 	public Partida(Campeonato c, int versaoJogo) {
 		this.circuitos = new ArrayList<>();
+		this.corridas = new ArrayList<>();
 		for (Circuito s : c.getCircuitos()) {
 			this.circuitos.add(s);
-			this.corridas.add(new Corrida(versaoJogo));
+			this.corridas.add(new Corrida(versaoJogo, s));
 		}
 		this.totalAfinações = (this.circuitos.size() / 3) * 2;
-		this.corridas = new ArrayList<Corrida>();
-		this.estados = new HashMap<String, Estado>();
 		this.idCorridaAtual = 0;
-		this.resultadoFinal = new ArrayList<String>();
+		this.resultadoFinal = new ArrayList<>();
 		if (versaoJogo == 0)
 			this.simulador = new Base();
 		else if (versaoJogo == 1)
@@ -50,6 +49,7 @@ public class Partida {
 	public void iniciarCorrida() {
 		Corrida corrida = this.corridas.get(this.idCorridaAtual);
 		corrida.iniciarProgressos(this.estados);
+		// System.out.println(corrida.totalProgressos());
 		corrida.simulaCorrida(this.simulador);
 	}
 
@@ -134,5 +134,9 @@ public class Partida {
 			return lEquals;
 		}
 		return false;
+	}
+
+	public int getPontuacaoJogador(String email) {
+		return this.estados.get(email).getPontuacao();
 	}
 }

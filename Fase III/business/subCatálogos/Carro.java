@@ -154,7 +154,7 @@ public abstract class Carro {
                 this.dnf == c.getDNF();
     }
 
-    public Double tempoProximaVolta(Circuito c, int clima, int volta, Piloto p1) {
+    public Double tempoProximaVolta(Circuito c, int clima, Piloto p1) {
         double t_medio = c.getTempoMedio();
         double t_chuva = c.getTempoDesvio();
         double minimum = 0;

@@ -15,6 +15,7 @@ public class Estado {
 
 	public Estado() {
 		this.pontuacao = 0; // no início de cada partida, o jogador não possui pontuação
+		this.nAfinacoes = 0;
 	}
 
 	public Estado(int nAfinacoes, int posicao, int tipoPneus, int modoMotor, int downforce, Piloto piloto,

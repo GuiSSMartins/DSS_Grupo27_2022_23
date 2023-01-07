@@ -30,7 +30,7 @@ public class SeccaoDAO implements Map<Integer, Seccao> {
                 Statement stm = conn.createStatement()) {
 
             stm.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS seccoes (Id INT NOT NULL AUTO_INCREMENT, tipo VARCHAR(10) NOT NULL, posicao INT NOT NULL, comprimento DOUBLE(5,2) NOT NULL, GDU INT NOT NULL, nomeCircuito VARCHAR(255) NOT NULL, PRIMARY KEY (Id), FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome));");
+                    "CREATE TABLE IF NOT EXISTS seccoes (Id INT NOT NULL AUTO_INCREMENT, tipo VARCHAR(10) NOT NULL, posicao INT NOT NULL, comprimento DOUBLE(5,2) NOT NULL, GDU INT NOT NULL, nomeCircuito VARCHAR(255) NOT NULL, PRIMARY KEY (Id), FOREIGN KEY(nomeCircuito) REFERENCES circuitos(nome))");
         } catch (SQLException e) {
             // Erro a criar tabela...
             e.printStackTrace();
@@ -217,7 +217,7 @@ public class SeccaoDAO implements Map<Integer, Seccao> {
             if (this.size() == 0) {
 
                 String sql = "INSERT INTO seccoes (tipo,posicao,comprimento,GDU,nomeCircuito)" +
-                        "Values ('chicane',0,5.5,3,'circ1')," +
+                        " Values ('chicane',0,5.5,3,'circ1')," +
                         "('chicane',1,5.5,3,'circ1')," +
                         "('chicane',3,5.5,3,'circ1')," +
                         "('chicane',9,5.5,3,'circ1')," +
@@ -258,7 +258,7 @@ public class SeccaoDAO implements Map<Integer, Seccao> {
                         "('chicane',6,5.5,3,'circ3')," +
                         "('chicane',7,5.5,3,'circ3')," +
                         "('chicane',10,5.5,3,'circ3')," +
-                        "('chicane',13,5.5,3,'circ3');";
+                        "('chicane',13,5.5,3,'circ3')";
                 stm.executeUpdate(sql);
             }
 
