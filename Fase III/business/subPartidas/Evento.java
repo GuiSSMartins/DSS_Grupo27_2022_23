@@ -89,6 +89,7 @@ public class Evento {
 		} else if (this.acontecimento == 3) {
 			sb.append("Avariou");
 		}
+		sb.append(this.idjogadoresEnvolvidos);
 		sb.append("\n");
 		return sb.toString();
 	}

@@ -218,47 +218,47 @@ public class SeccaoDAO implements Map<Integer, Seccao> {
 
                 String sql = "INSERT INTO seccoes (tipo,posicao,comprimento,GDU,nomeCircuito)" +
                         " Values ('chicane',0,5.5,3,'circ1')," +
-                        "('chicane',1,5.5,3,'circ1')," +
-                        "('chicane',3,5.5,3,'circ1')," +
-                        "('chicane',9,5.5,3,'circ1')," +
-                        "('reta',2,5.5,3,'circ1')," +
-                        "('reta',5,5.5,3,'circ1')," +
-                        "('reta',8,5.5,3,'circ1')," +
-                        "('reta',11,5.5,3,'circ1')," +
+                        "('chicane',1,5.5,2,'circ1')," +
+                        "('chicane',3,5.5,1,'circ1')," +
+                        "('chicane',9,5.5,2,'circ1')," +
+                        "('reta',2,5.5,1,'circ1')," +
+                        "('reta',5,5.5,1,'circ1')," +
+                        "('reta',8,5.5,1,'circ1')," +
+                        "('reta',11,5.5,2,'circ1')," +
                         "('reta',12,5.5,3,'circ1')," +
-                        "('curva',4,5.5,3,'circ1')," +
-                        "('curva',6,5.5,3,'circ1')," +
-                        "('curva',7,5.5,3,'circ1')," +
-                        "('curva',10,5.5,3,'circ1')," +
+                        "('curva',4,5.5,2,'circ1')," +
+                        "('curva',6,5.5,1,'circ1')," +
+                        "('curva',7,5.5,1,'circ1')," +
+                        "('curva',10,5.5,2,'circ1')," +
                         "('curva',13,5.5,3,'circ1')," +
                         "('reta',0,5.5,3,'circ2')," +
-                        "('reta',1,5.5,3,'circ2')," +
-                        "('reta',3,5.5,3,'circ2')," +
-                        "('reta',9,5.5,3,'circ2')," +
-                        "('chicane',2,5.5,3,'circ2')," +
-                        "('chicane',5,5.5,3,'circ2')," +
-                        "('chicane',8,5.5,3,'circ2')," +
-                        "('chicane',11,5.5,3,'circ2')," +
+                        "('reta',1,5.5,1,'circ2')," +
+                        "('reta',3,5.5,1,'circ2')," +
+                        "('reta',9,5.5,1,'circ2')," +
+                        "('chicane',2,5.5,1,'circ2')," +
+                        "('chicane',5,5.5,2,'circ2')," +
+                        "('chicane',8,5.5,2,'circ2')," +
+                        "('chicane',11,5.5,2,'circ2')," +
                         "('chicane',12,5.5,3,'circ2')," +
-                        "('curva',4,5.5,3,'circ2')," +
-                        "('curva',6,5.5,3,'circ2')," +
-                        "('curva',7,5.5,3,'circ2')," +
-                        "('curva',10,5.5,3,'circ2')," +
-                        "('curva',13,5.5,3,'circ2')," +
-                        "('curva',0,5.5,3,'circ3')," +
-                        "('curva',1,5.5,3,'circ3')," +
-                        "('curva',3,5.5,3,'circ3')," +
-                        "('curva',9,5.5,3,'circ3')," +
-                        "('reta',2,5.5,3,'circ3')," +
-                        "('reta',5,5.5,3,'circ3')," +
-                        "('reta',8,5.5,3,'circ3')," +
-                        "('reta',11,5.5,3,'circ3')," +
-                        "('reta',12,5.5,3,'circ3')," +
-                        "('chicane',4,5.5,3,'circ3')," +
-                        "('chicane',6,5.5,3,'circ3')," +
-                        "('chicane',7,5.5,3,'circ3')," +
-                        "('chicane',10,5.5,3,'circ3')," +
-                        "('chicane',13,5.5,3,'circ3')";
+                        "('curva',4,5.5,1,'circ2')," +
+                        "('curva',6,5.5,1,'circ2')," +
+                        "('curva',7,5.5,2,'circ2')," +
+                        "('curva',10,5.5,1,'circ2')," +
+                        "('curva',13,5.5,1,'circ2')," +
+                        "('curva',0,5.5,2,'circ3')," +
+                        "('curva',1,5.5,2,'circ3')," +
+                        "('curva',3,5.5,2,'circ3')," +
+                        "('curva',9,5.5,1,'circ3')," +
+                        "('reta',2,5.5,2,'circ3')," +
+                        "('reta',5,5.5,1,'circ3')," +
+                        "('reta',8,5.5,1,'circ3')," +
+                        "('reta',11,5.5,1,'circ3')," +
+                        "('reta',12,5.5,1,'circ3')," +
+                        "('chicane',4,5.5,2,'circ3')," +
+                        "('chicane',6,5.5,2,'circ3')," +
+                        "('chicane',7,5.5,1,'circ3')," +
+                        "('chicane',10,5.5,2,'circ3')," +
+                        "('chicane',13,5.5,1,'circ3')";
                 stm.executeUpdate(sql);
             }
 

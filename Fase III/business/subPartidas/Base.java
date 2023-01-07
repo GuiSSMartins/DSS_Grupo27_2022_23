@@ -64,7 +64,7 @@ public class Base extends Simulador {
 					} 
 
 					Double novo_tempo = carro.tempoProximaVolta(circuito, aCorrida.getClima(), piloto);
-					Long tempo_progresso = p.getTempo() + Double.valueOf(novo_tempo).longValue();
+					Double tempo_progresso = p.getTempo() + novo_tempo;
 					p.setTempo(tempo_progresso);
 					p.setVolta(i);
 				}

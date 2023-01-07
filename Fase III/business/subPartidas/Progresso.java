@@ -7,7 +7,7 @@ public class Progresso implements Comparable<Progresso>{
 	private String email;
 	private Piloto piloto;
 	private Carro carro;
-	private long tempo;
+	private Double tempo;
 	private int seccao;
 	private int volta;
 
@@ -35,11 +35,11 @@ public class Progresso implements Comparable<Progresso>{
 		this.carro = carro;
 	}
 
-	public long getTempo() {
+	public Double getTempo() {
 		return this.tempo;
 	}
 
-	public void setTempo(long tempo) {
+	public void setTempo(Double tempo) {
 		this.tempo = tempo;
 	}
 
@@ -63,17 +63,17 @@ public class Progresso implements Comparable<Progresso>{
 		this.email = email;
 		this.piloto = piloto;
 		this.carro = carro;
-		this.seccao = -1;
-		this.volta = -1;
-		this.tempo = 0;
+		this.seccao = 0;
+		this.volta = 0;
+		this.tempo = 0.0;
 	}
 
-	public Progresso(Piloto piloto, Carro carro, long tempo, int seccao) {
+	public Progresso(Piloto piloto, Carro carro, Double tempo, int seccao) {
 		this.piloto = piloto;
 		this.carro = carro;
 		this.tempo = tempo;
 		this.seccao = seccao;
-		this.volta = -1;
+		this.volta = 0;
 		this.email = null;
 	}
 
@@ -121,10 +121,8 @@ public class Progresso implements Comparable<Progresso>{
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(this.getEmail());
-		sb.append(this.tempo);
-		return sb.toString();
+		return "Progresso [piloto=" + piloto.getNome() + ", carro=" + carro.getModelo() + ", tempo=" + String.format("%.2f",tempo) + ", volta=("
+				+ volta + "," + seccao + ")]";
 	}
 
 }

@@ -159,11 +159,13 @@ public abstract class Carro {
         double t_chuva = s.getTempoDesvio();
         double minimum = 0;
         double maximum = 5000;
-        double fator_sorte = minimum + Double.valueOf(Math.random() * (maximum - minimum)).intValue();
+        double fator_sorte = (minimum + Double.valueOf(Math.random() * (maximum - minimum)).intValue())/5000;
         double maximum_chuva = 2000;
-        double fator_sorte_chuva = minimum + Double.valueOf(Math.random() * (maximum_chuva - minimum)).intValue();
-        return ((t_medio + (this.getCilindrada() / this.getPotencia()) * 1000) - fator_sorte
-                + (clima * (t_chuva - p1.getCTS() * 1000)) - fator_sorte_chuva);
+        double fator_sorte_chuva = (minimum + Double.valueOf(Math.random() * (maximum_chuva - minimum)).intValue())/2000;
+        double racio = (this.getCilindrada()*1.0 / this.getPotencia()*1.0)/1000.0;
+        double variavel =(clima * (t_chuva * (1-p1.getCTS())))*fator_sorte_chuva;
+        double finalio =(t_medio*fator_sorte - racio) + (variavel);
+        return finalio;
 
     }
 

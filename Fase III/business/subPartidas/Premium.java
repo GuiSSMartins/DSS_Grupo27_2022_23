@@ -1,10 +1,8 @@
 package business.subPartidas;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.Iterator;
 
 import business.subCatálogos.Carro;
 import business.subCatálogos.Circuito;
@@ -61,7 +59,7 @@ public class Premium extends Simulador {
 
 				List<Evento> ev = this.checkEventosSeccao(aCorrida.getCircuito(), aux, i, aCorrida.getClima(), seccoes.get(j));
 				
-				if(ev!=null){
+				if(ev.size()>0){
 					System.out.println("EVENTOS:");
 					for (Evento e : ev) {
 						System.out.println(e);
@@ -103,7 +101,7 @@ public class Premium extends Simulador {
 				for (Progresso p: aux) {
 					if (!desistentes.contains(p)) {
 						Double novo_tempo = p.getCarro().tempoProximaSeccao(seccoes.get(j), aCorrida.getClima(), p.getPiloto());
-						Long tempo_progresso = p.getTempo() + Double.valueOf(novo_tempo).longValue();
+						Double tempo_progresso = p.getTempo() + novo_tempo;
 						p.setTempo(tempo_progresso);
 						if(nSeccoes==j) p.setSeccao(0);
 						else p.setSeccao(j+1);
@@ -112,18 +110,19 @@ public class Premium extends Simulador {
 				
 				System.out.println("Seccao "+j+" :");
 				for (Progresso p: aux) {
-					System.out.println(p);
-					System.out.println("Tempo: "+p.getTempo());
+					System.out.println("Piloto: "+p.getPiloto().getNome()+"; Tempo: "+TimeConverter.toTimeFormat(Double.valueOf(p.getTempo()*1000).longValue()));
 				}
 
 			}
 
 			// aumenta o numero de voltas dadas no progresso
 			for (Progresso p: aux)
-				if (!desistentes.contains(p)){
+				if (!desistentes.contains(p))
+				{
 						p.setVolta(i+1);
-						p.setSeccao(0);}
-			primeiroVolta = this.primeiroVolta(voltas, aux, primeiroVolta);
+						p.setSeccao(0);
+				}
+			primeiroVolta = this.primeiroVolta(aux, primeiroVolta);
 		}
 
 		aCorrida.setPrimeiroVolta(primeiroVolta);
@@ -164,7 +163,7 @@ public class Premium extends Simulador {
 		return res;
 	}
 
-	public List<Evento> ocorreuUltrapassagem(List<Progresso> aux, Progresso p, List<Integer> sofreuEventoNaSeccao, int i) {
+	public List<Evento> ocorreuUltrapassagem(List<Progresso> aux, Progresso p, List<Integer> sofreuEventoNaSeccao, int i, Seccao seccao) {
 
 		Piloto piloto = p.getPiloto();
 		Carro c = p.getCarro();
@@ -174,14 +173,21 @@ public class Premium extends Simulador {
 
 		for (Progresso prog : aux)
 			if (!prog.equals(p))
+			{
+				//System.out.println("TESTE ULTR:" + seccao.probabilidadeCarroConsegueUltrapassar());
+				//System.out.println("TESTE PACS:" + seccao.probabilidadeCarroConsegueUltrapassar() / c.getPAC());
+				//System.out.println("TESTE TIME: " + p.getPiloto().getNome() + " to " + prog.getPiloto().getNome() + " :" + (p.getTempo()-prog.getTempo()));
+				//System.out.println("TESTE SVA :" + (piloto.getSVA() > prog.getPiloto().getSVA()));
+				//System.out.println("TESTE CARR:" + c.compararaCarros(prog.getCarro()));
+				//&& piloto.getSVA() > prog.getPiloto().getSVA() && c.compararaCarros(prog.getCarro())
 				
-				if (piloto.getSVA() > prog.getPiloto().getSVA() && c.compararaCarros(prog.getCarro())){
-						// && (seccoes.get(seccao).probabilidadeCarroConsegueUltrapassar() * c.getPAC() > 0.8)) {
+				if (p.getTempo()-prog.getTempo()<0 && p.getTempo()-prog.getTempo()>-25   &&
+				 (seccao.probabilidadeCarroConsegueUltrapassar() / c.getPAC() > 0.5)) {
 					// consegue ultrapassar
 
 					// adiciona o jogador à lista de jogadores envolvidos no evento ultrapassar
 					List<String> idsJogadoresEnvolvidos = new ArrayList<>();
-					idsJogadoresEnvolvidos.add(p.getPiloto().getNome());
+					idsJogadoresEnvolvidos.add(prog.getPiloto().getNome());
 
 					// adiciona novo evento do tipo ultrapassagem
 					
@@ -199,8 +205,9 @@ public class Premium extends Simulador {
 					// adiciona novo evento do tipo ultrapassado
 					res.add(new Evento(i, p.getSeccao(), 1, idsJogadoresEnvolvidos));
 					res.add(new Evento(i, p.getSeccao(), 2, idsJogadoresEnvolvidosTemp));
+					p.setTempo(prog.getTempo()+10);
 				}
-				
+			}
 
 		return res;
 	}
@@ -223,7 +230,6 @@ public class Premium extends Simulador {
 				progressosNestaSeccao.add(p);
 		}
 
-		System.out.println("\nSECCAO: " + seccao + " PROGRESSOS: " + progressosNestaSeccao);
 				
 		// para todos os progressos nesta seccao
 		for (Progresso p : progressosNestaSeccao) {
@@ -238,7 +244,6 @@ public class Premium extends Simulador {
 
 				if (c instanceof GT)
 					if (i * ((GT) c).getTaxaDeterioracao() >= 1) {
-						System.out.println("AVARIA GT");
 						// adiciona o jogador à lista de jogadores envolvidos no evento avaria
 						idsJogadoresEnvolvidos.add(piloto.getNome());
 
@@ -258,7 +263,6 @@ public class Premium extends Simulador {
 
 					} else if (c instanceof GTHibrido)
 						if (i * ((GTHibrido) c).getTaxaDeterioracao() >= 1) {
-							System.out.println("AVARIA HIBRIDOGT");
 							// adiciona o jogador à lista de jogadores envolvidos no evento avaria
 							idsJogadoresEnvolvidos.add(p.getPiloto().getNome());
 
@@ -279,7 +283,6 @@ public class Premium extends Simulador {
 						}
 
 				if (!evento && ((clima == 0 && 1 - piloto.getCTS() > 0.8) || (clima == 1 && piloto.getCTS() > 0.8))) {
-					System.out.println("ACIDENTE");
 					// está sol e o piloto não sabe conduzir com sol
 
 					// adiciona o jogador à lista de jogadores envolvidos no evento acidente
@@ -303,11 +306,10 @@ public class Premium extends Simulador {
 				if (!evento) {
 
 					// pode ocorrer ultrapassagens
-					List<Evento> acidentes = ocorreuUltrapassagem(progressosNestaSeccao, p, sofreuEventoNaSeccao,i);
+					List<Evento> acidentes = ocorreuUltrapassagem(progressosNestaSeccao, p, sofreuEventoNaSeccao,i, seccaoATestar);
 					if (acidentes != null)
 						for (Evento e : acidentes)
 						{
-							System.out.println("ULTRAPASSAGEM");
 							res.add(e.clone());
 						}
 						
@@ -316,22 +318,20 @@ public class Premium extends Simulador {
 			}
 		}
 
-		return null;
+		return res;
 	}
 
 	/**
 	 * Metodo auxiliar privado para determinar o carro que vai em 1o a cada volta
 	 */
-    private List<Progresso> primeiroVolta(int volta, List<Progresso> l, List<Progresso> primeiroVolta)
+    private List<Progresso> primeiroVolta(List<Progresso> l, List<Progresso> primeiroVolta)
     {
-		Collections.sort(l);
-       	Iterator<Progresso> it = l.iterator();
-       	Progresso c = null;
-       	while(it.hasNext())
-       	{
-       	    c = it.next();
-       	}
-       	if(c!=null) primeiroVolta.add(c.clone());
+		List<Progresso> pl = new ArrayList<>();
+		for (Progresso p : l)
+			pl.add(p.clone());
+		pl.sort((p1, p2) -> p1.compareTo(p2));
+		for (int i = 0; i < pl.size(); i++)
+			primeiroVolta.add(pl.get(i));
 		return primeiroVolta;
 	}
 }

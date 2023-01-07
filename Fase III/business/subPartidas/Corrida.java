@@ -235,21 +235,26 @@ public class Corrida implements Serializable {
     /**
      * Lista o 1o classificado em cada volta
      */
-    private String printPrimeiroVolta() {
+    private String printPrimeiroVolta(int voltas,int concorrentes) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
         sb.append("\n||||| Primeiro carro a cada volta e desistentes |||||");
         List<Progresso> primeiroVolta = this.getPrimeiroVolta();
-        for (int i = 0; i < primeiroVolta.size(); i++) {
+        for (int i = 0; i < voltas; i++) {
             sb.append("\n");
             sb.append(i + 1);
             sb.append("ª Volta: ");
-            sb.append(primeiroVolta.get(i).getCarro().getMarca());
-            sb.append(" ");
-            sb.append(primeiroVolta.get(i).getCarro().getModelo());
-            sb.append(" ");
-            if (primeiroVolta.get(i).getCarro().checkDNF(i + 1, primeiroVolta.size(), this.getClima()))
-                sb.append("DESISTIU");
+            for(Progresso p : primeiroVolta) {
+                if (p.getVolta() == i + 1) {
+                    sb.append("\n");
+                    sb.append(p.getCarro().getMarca());
+                    sb.append(" ");
+                    sb.append(p.getCarro().getModelo());
+                    sb.append(" ");
+                    if (p.getCarro().getDNF())
+                        sb.append("DNF");
+                }
+            }
         }
         return sb.toString();
     }
@@ -280,32 +285,13 @@ public class Corrida implements Serializable {
         }
         sb.append("\n\n||||| Classificacoes da corrida |||||");
 
-        Set<Progresso> resultados = this.getResultados();
-        for (Progresso progresso : resultados) {
+        for (Progresso progresso : this.resultados) {
             Carro c = progresso.getCarro();
-            sb.append("\n");
-            sb.append(i);
-            sb.append("º: ");
-            sb.append(TimeConverter.toTimeFormat(progresso.getTempo()));
-            sb.append("\t Categoria: ");
-            sb.append(c.getClass().getName());
-            sb.append(" ");
-            sb.append("\t Carro: ");
-            sb.append(c.getMarca());
-            sb.append(" ");
-            sb.append(c.getModelo());
-            i++;
-        }
-        sb.append("\n\n||||| Classificacoes da corrida Hibridos |||||");
-        i = 1;
-        for (Progresso progresso : resultados) {
-            Carro c = progresso.getCarro();
-            if (c instanceof Hibrido) {
-
+            if (!(c instanceof Hibrido)){
                 sb.append("\n");
                 sb.append(i);
                 sb.append("º: ");
-                sb.append(TimeConverter.toTimeFormat(progresso.getTempo()));
+                sb.append(TimeConverter.toTimeFormat(Double.valueOf(progresso.getTempo()).longValue()));
                 sb.append("\t Categoria: ");
                 sb.append(c.getClass().getName());
                 sb.append(" ");
@@ -316,7 +302,27 @@ public class Corrida implements Serializable {
                 i++;
             }
         }
-        sb.append(this.printPrimeiroVolta());
+        sb.append("\n\n||||| Classificacoes da corrida Hibridos |||||");
+        i = 1;
+        for (Progresso progresso : resultados) {
+            Carro c = progresso.getCarro();
+            if (c instanceof Hibrido) {
+
+                sb.append("\n");
+                sb.append(i);
+                sb.append("º: ");
+                sb.append(TimeConverter.toTimeFormat(Double.valueOf(progresso.getTempo()).longValue()));
+                sb.append("\t Categoria: ");
+                sb.append(c.getClass().getName());
+                sb.append(" ");
+                sb.append("\t Carro: ");
+                sb.append(c.getMarca());
+                sb.append(" ");
+                sb.append(c.getModelo());
+                i++;
+            }
+        }
+        sb.append(this.printPrimeiroVolta(circuito.getNVoltas(),this.resultados.size()));
         return sb.toString();
     }
 
