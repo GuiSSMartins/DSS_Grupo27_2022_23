@@ -55,11 +55,12 @@ public class Premium extends Simulador {
 		List<Progresso> desistentes = new ArrayList<>();
 		for (int i = 0; i < voltas; i++) {
 
-			for(int j=0; j<nSeccoes; j++){
+			for (int j = 0; j < nSeccoes; j++) {
 
-				List<Evento> ev = this.checkEventosSeccao(aCorrida.getCircuito(), aux, i, aCorrida.getClima(), seccoes.get(j));
-				
-				if(ev.size()>0){
+				List<Evento> ev = this.checkEventosSeccao(aCorrida.getCircuito(), aux, i, aCorrida.getClima(),
+						seccoes.get(j));
+
+				if (ev.size() > 0) {
 
 					System.out.println("\n ---- EVENTOS ------");
 					for (Evento e : ev) {
@@ -67,31 +68,28 @@ public class Premium extends Simulador {
 					}
 					System.out.println("------EVENTOS-------\n");
 
-					// percorre a lista de eventos para determinar se houve algum desistente por avaria ou acidente
-					for(Evento e:ev)
-					{
-						if(e.getAcontecimento()==0 || e.getAcontecimento()==3)
-						{
+					// percorre a lista de eventos para determinar se houve algum desistente por
+					// avaria ou acidente
+					for (Evento e : ev) {
+						if (e.getAcontecimento() == 0 || e.getAcontecimento() == 3) {
 							// vai a todos os jogadores envolvidos
-							for(String piloto: e.getIdJogadoresEnvolvidos())
-							{
+							for (String piloto : e.getIdJogadoresEnvolvidos()) {
 								// procura pelo respetivo progresso
-								for(Progresso p: aux)
-								{
-									if(piloto.equals(p.getPiloto().getNome()))
-									{
-										if(p.getCarro().checkDNF(i, voltas, aCorrida.getClima()))
-										{
+								List<Progresso> morreu = new ArrayList<>();
+								if (aux.size() > 0) {
+									for (Progresso p : aux) {
+										if (piloto.equals(p.getPiloto().getNome())) {
 											// desistiu
-
 											// adiciona à lista de desistentes
 											desistentes.add(p.clone());
-
 											// remove da lista de jogadores para a próxima volta
-											aux.remove(p);
+											morreu.add(p);
+											p.getCarro().setDNF(true);
+
 										}
 									}
 								}
+								aux.removeAll(morreu);
 							}
 						}
 
@@ -100,29 +98,32 @@ public class Premium extends Simulador {
 					}
 				}
 
-				for (Progresso p: aux) {
+				for (Progresso p : aux) {
 					if (!desistentes.contains(p)) {
-						Double novo_tempo = p.getCarro().tempoProximaSeccao(seccoes.get(j), aCorrida.getClima(), p.getPiloto());
+						Double novo_tempo = p.getCarro().tempoProximaSeccao(seccoes.get(j), aCorrida.getClima(),
+								p.getPiloto());
 						Double tempo_progresso = p.getTempo() + novo_tempo;
 						p.setTempo(tempo_progresso);
-						if(nSeccoes==j) p.setSeccao(0);
-						else p.setSeccao(j+1);
+						if (nSeccoes == j)
+							p.setSeccao(0);
+						else
+							p.setSeccao(j + 1);
 					}
 				}
-				
-				System.out.println("Seccao "+j+" :");
-				for (Progresso p: aux) {
-					System.out.println("Piloto: "+p.getPiloto().getNome()+"; Tempo: "+TimeConverter.toTimeFormat(Double.valueOf(p.getTempo()*1000).longValue()));
+
+				System.out.println("Seccao " + j + " :");
+				for (Progresso p : aux) {
+					System.out.println("Piloto: " + p.getPiloto().getNome() + "; Tempo: "
+							+ TimeConverter.toTimeFormat(Double.valueOf(p.getTempo()).longValue()));
 				}
 
 			}
 
 			// aumenta o numero de voltas dadas no progresso
-			for (Progresso p: aux)
-				if (!desistentes.contains(p))
-				{
-						p.setVolta(i+1);
-						p.setSeccao(0);
+			for (Progresso p : aux)
+				if (!desistentes.contains(p)) {
+					p.setVolta(i + 1);
+					p.setSeccao(0);
 				}
 			primeiroVolta = this.primeiroVolta(aux, primeiroVolta);
 		}
@@ -131,21 +132,20 @@ public class Premium extends Simulador {
 		return eventos;
 	}
 
-	public List<Evento> algoGeraAcidente(List<Progresso> aux, Progresso p, List<String> idsJogadoresEnvolvidos, List<Integer> sofreuEventoNaSeccao, int i) {
+	public List<Evento> algoGeraAcidente(List<Progresso> aux, Progresso p, List<String> idsJogadoresEnvolvidos,
+			List<Integer> sofreuEventoNaSeccao, int i) {
 		List<Evento> res = new ArrayList<>();
 
 		// percorre todos os progressos na seccao
 		for (Progresso prog : aux)
 			if (!prog.equals(p))
-				if (prog.getPiloto().getSVA() > 0.5) 
-				{
+				if (prog.getPiloto().getSVA() > 0.3) {
 					// piloto agressivo
 
 					// cria random entre 0 e 100
 					int probAcidente = rand.nextInt(101);
 
-					if (probAcidente > 80 && !sofreuEventoNaSeccao.contains(prog.getCarro().getID())) 
-					{
+					if (probAcidente > 80 && !sofreuEventoNaSeccao.contains(prog.getCarro().getID())) {
 
 						// adiciona o jogador à lista de jogadores envolvidos no evento acidente
 						idsJogadoresEnvolvidos.add(prog.getPiloto().getNome());
@@ -165,26 +165,34 @@ public class Premium extends Simulador {
 		return res;
 	}
 
-	public List<Evento> ocorreuUltrapassagem(List<Progresso> aux, Progresso p, List<Integer> sofreuEventoNaSeccao, int i, Seccao seccao) {
+	public List<Evento> ocorreuUltrapassagem(List<Progresso> aux, Progresso p, List<Integer> sofreuEventoNaSeccao,
+			int i, Seccao seccao) {
 
 		Piloto piloto = p.getPiloto();
 		Carro c = p.getCarro();
 
-
 		List<Evento> res = new ArrayList<>();
 
 		for (Progresso prog : aux)
-			if (!prog.equals(p))
-			{
-				//System.out.println("TESTE ULTR:" + seccao.probabilidadeCarroConsegueUltrapassar());
-				//System.out.println("TESTE PACS:" + seccao.probabilidadeCarroConsegueUltrapassar() / c.getPAC());
-				//System.out.println("TESTE TIME: " + p.getPiloto().getNome() + " to " + prog.getPiloto().getNome() + " :" + (p.getTempo()-prog.getTempo()));
-				//System.out.println("TESTE SVA :" + (piloto.getSVA() > prog.getPiloto().getSVA()));
-				//System.out.println("TESTE CARR:" + c.compararaCarros(prog.getCarro()));
-				//&& piloto.getSVA() > prog.getPiloto().getSVA() && c.compararaCarros(prog.getCarro())
-				
-				if (p.getTempo()-prog.getTempo()<0 && p.getTempo()-prog.getTempo()>-25   &&
-				 (seccao.probabilidadeCarroConsegueUltrapassar() / c.getPAC() > 0.5)) {
+			if (!prog.equals(p)) {
+				// System.out.println("TESTE ULTR:" +
+				// seccao.probabilidadeCarroConsegueUltrapassar());
+				// System.out.println("TESTE PACS:" +
+				// seccao.probabilidadeCarroConsegueUltrapassar() / c.getPAC());
+				// System.out.println("TESTE TIME: " + p.getPiloto().getNome() + " to " +
+				// prog.getPiloto().getNome() + " :" + (p.getTempo()-prog.getTempo()));
+				// System.out.println("TESTE SVA :" + (piloto.getSVA() >
+				// prog.getPiloto().getSVA()));
+				// System.out.println("TESTE CARR:" + c.compararaCarros(prog.getCarro()));
+				// && piloto.getSVA() > prog.getPiloto().getSVA() &&
+				// c.compararaCarros(prog.getCarro())
+
+				if (p.getTempo() - prog.getTempo() < 0 && p.getTempo() - prog.getTempo() > -5000 &&
+						(seccao.probabilidadeCarroConsegueUltrapassar() / (1 - c.getPAC()) > 0.5) &&
+						!(sofreuEventoNaSeccao.contains(prog.getCarro().getID()))) {
+					// consegue ultrapassar
+
+					sofreuEventoNaSeccao.add(prog.getCarro().getID());
 					// consegue ultrapassar
 
 					// adiciona o jogador à lista de jogadores envolvidos no evento ultrapassar
@@ -192,22 +200,22 @@ public class Premium extends Simulador {
 					idsJogadoresEnvolvidos.add(prog.getPiloto().getNome());
 
 					// adiciona novo evento do tipo ultrapassagem
-					
+
 					// adiciona o carro à lista de carros que sofreram evento nesta secção
 					sofreuEventoNaSeccao.add(c.getID());
-					
+
 					// adiciona o jogador à lista de jogadores envolvidos no evento ultrapassar
 					List<String> idsJogadoresEnvolvidosTemp = new ArrayList<>();
 					idsJogadoresEnvolvidosTemp.add(p.getPiloto().getNome());
 					idsJogadoresEnvolvidosTemp.add(prog.getPiloto().getNome());
-					
+
 					// adiciona o jogador à lista de jogadores envolvidos no evento ultrapassado
 					idsJogadoresEnvolvidos.add(p.getPiloto().getNome());
-					
+
 					// adiciona novo evento do tipo ultrapassado
 					res.add(new Evento(i, p.getSeccao(), 1, idsJogadoresEnvolvidos));
 					res.add(new Evento(i, p.getSeccao(), 2, idsJogadoresEnvolvidosTemp));
-					p.setTempo(prog.getTempo()+10);
+					p.setTempo(prog.getTempo() + 5000);
 				}
 			}
 
@@ -224,18 +232,17 @@ public class Premium extends Simulador {
 
 		// lista de ids dos carros que já sofreram algum evento nesta seccao
 		List<Integer> sofreuEventoNaSeccao = new ArrayList<>();
-		
+
 		int seccao = seccaoATestar.getPosicao();
 		// pego nos progressos que estão nesta seccao
-		for (Progresso p : aux){
+		for (Progresso p : aux) {
 			if (p.getSeccao() == seccao)
 				progressosNestaSeccao.add(p);
 		}
 
-				
 		// para todos os progressos nesta seccao
 		for (Progresso p : progressosNestaSeccao) {
-			
+
 			Carro c = p.getCarro();
 
 			if (!sofreuEventoNaSeccao.contains(c.getID())) {
@@ -253,7 +260,8 @@ public class Premium extends Simulador {
 						res.add(new Evento(i, seccao, 3, idsJogadoresEnvolvidos));
 
 						// adiciona acidentes provocados por avaria
-						List<Evento> acidentes = algoGeraAcidente(progressosNestaSeccao, p, idsJogadoresEnvolvidos,sofreuEventoNaSeccao,i);
+						List<Evento> acidentes = algoGeraAcidente(progressosNestaSeccao, p, idsJogadoresEnvolvidos,
+								sofreuEventoNaSeccao, i);
 						if (acidentes != null)
 							for (Evento e : acidentes)
 								res.add(e.clone());
@@ -272,7 +280,8 @@ public class Premium extends Simulador {
 							res.add(new Evento(i, p.getSeccao(), 3));
 
 							// adiciona acidentes provocados por avaria
-							List<Evento> acidentes = algoGeraAcidente(progressosNestaSeccao, p, idsJogadoresEnvolvidos,sofreuEventoNaSeccao,i);
+							List<Evento> acidentes = algoGeraAcidente(progressosNestaSeccao, p, idsJogadoresEnvolvidos,
+									sofreuEventoNaSeccao, i);
 							if (acidentes != null)
 								for (Evento e : acidentes)
 									res.add(e.clone());
@@ -284,7 +293,11 @@ public class Premium extends Simulador {
 
 						}
 
-				if (!evento && ((clima == 0 && 1 - piloto.getCTS() > 0.8) || (clima == 1 && piloto.getCTS() > 0.8))) {
+				Random rand = new Random();
+				int x = rand.nextInt(101);
+
+				if (!evento && ((clima == 0 && 1 - piloto.getCTS() > 0.6) || (clima == 1 && piloto.getCTS() > 0.6))
+						&& x < 10) {
 					// está sol e o piloto não sabe conduzir com sol
 
 					// adiciona o jogador à lista de jogadores envolvidos no evento acidente
@@ -294,7 +307,8 @@ public class Premium extends Simulador {
 					res.add(new Evento(i, p.getSeccao(), 0, idsJogadoresEnvolvidos));
 
 					// adiciona acidentes provocados por acidente
-					List<Evento> acidentes = algoGeraAcidente(progressosNestaSeccao, p, idsJogadoresEnvolvidos,sofreuEventoNaSeccao,i);
+					List<Evento> acidentes = algoGeraAcidente(progressosNestaSeccao, p, idsJogadoresEnvolvidos,
+							sofreuEventoNaSeccao, i);
 					if (acidentes != null)
 						for (Evento e : acidentes)
 							res.add(e.clone());
@@ -308,13 +322,13 @@ public class Premium extends Simulador {
 				if (!evento) {
 
 					// pode ocorrer ultrapassagens
-					List<Evento> acidentes = ocorreuUltrapassagem(progressosNestaSeccao, p, sofreuEventoNaSeccao,i, seccaoATestar);
+					List<Evento> acidentes = ocorreuUltrapassagem(progressosNestaSeccao, p, sofreuEventoNaSeccao, i,
+							seccaoATestar);
 					if (acidentes != null)
-						for (Evento e : acidentes)
-						{
+						for (Evento e : acidentes) {
 							res.add(e.clone());
 						}
-						
+
 				}
 
 			}
@@ -326,8 +340,7 @@ public class Premium extends Simulador {
 	/**
 	 * Metodo auxiliar privado para determinar o carro que vai em 1o a cada volta
 	 */
-    private List<Progresso> primeiroVolta(List<Progresso> l, List<Progresso> primeiroVolta)
-    {
+	private List<Progresso> primeiroVolta(List<Progresso> l, List<Progresso> primeiroVolta) {
 		List<Progresso> pl = new ArrayList<>();
 		for (Progresso p : l)
 			pl.add(p.clone());

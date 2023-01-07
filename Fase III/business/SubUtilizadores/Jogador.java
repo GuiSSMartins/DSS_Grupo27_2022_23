@@ -41,8 +41,8 @@ public class Jogador extends Utilizador {
 		String email = super.getEmail();
 
 		// Só atualiza carreira se não for bot
-		String id = nomeCampeonato;
-		id.concat(email);
+		String id = nomeCampeonato + email;
+
 		if (carreiraDAO.containsKey(id)) {
 			Carreira c = carreiraDAO.get(id);
 			if (c.getPontuacao() < pontuacao) {

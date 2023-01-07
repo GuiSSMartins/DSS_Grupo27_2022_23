@@ -308,12 +308,12 @@ public class CarroDAO implements Map<Integer, Carro> {
                 String sql = "INSERT INTO carros (Id,Categoria,Marca,Modelo,Cilindrada,Potencia,Pac,Fiabilidade,Hibrido,PotenciaEletrica,TaxaDeterioracao)"
                         +
                         " Values (2,'C1','marca1','modelo1',995,557,0.4,0.7,0,0,0)," +
-                                "(3,'C1','marca1','modelo1',999,568,0.4,0.6,0,0,0)," +
-                                "(4,'C1','marca1','modelo1',997,550,0.5,0.7,0,0,0)";
-                        //" Values (2,'C1','marca1','modelo1',1000,600,0.4,0.7,0,0,0)," +
-                        //"(3,'C2','marca1','modelo1',4000,1000,0.5,0.6,1,100,0.06)," +
-                        //"(4,'GT','marca1','modelo1',3000,1000,0.6,0.3,0,200,0.03)," +
-                        //"(5,'SC','marca1','modelo1',2500,1000,0.9,0.4,0,0,0)";
+                        "(3,'C1','marca2','modelo1',999,568,0.4,0.6,0,0,0)," +
+                        "(4,'C1','marca1','modelo2',997,550,0.5,0.7,0,0,0)," +
+                        "(5,'C1','marca4','modelo1',1000,600,0.4,0.7,0,0,0)," +
+                        "(6,'C2','marca2','modelo2',4000,1000,0.5,0.6,1,100,0.06)," +
+                        "(7,'GT','marca1','modelo3',3000,1000,0.6,0.3,0,200,50)," +
+                        "(8,'SC','marca4','modelo1',2500,1000,0.9,0.4,0,0,0)";
 
                 stm.executeUpdate(sql);
             }

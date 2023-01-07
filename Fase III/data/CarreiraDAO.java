@@ -116,7 +116,7 @@ public class CarreiraDAO implements Map<String, Carreira> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
 
-            String id = arg1.getID();
+            String id = arg0;
             String NomeCampeonato = arg1.getNomeCampeonato();
             String Email = arg1.getEmail();
             int pontuacao = arg1.getPontuacao();
@@ -214,10 +214,10 @@ public class CarreiraDAO implements Map<String, Carreira> {
     }
 
     public void updatePontuacao(String id, int pontuacao) {
-        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-                Statement stm = conn.createStatement();
-                ResultSet rs = stm
-                        .executeQuery("UPDATE carreiras SET Pontuacao='" + pontuacao + "' WHERE Id='" + id + "'")) {
+        try {
+            Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+            Statement stm = conn.createStatement();
+            int rs = stm.executeUpdate("UPDATE carreiras SET Pontuacao = " + pontuacao + " WHERE Id = '" + id + "'");
         } catch (Exception e) {
             // Database error!
             e.printStackTrace();
@@ -229,13 +229,14 @@ public class CarreiraDAO implements Map<String, Carreira> {
 
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 Statement stm = conn.createStatement()) {
-            
-                    /* 
-            if (this.size() == 0) {
-                String sql = "INSERT INTO carreiras (Id,Pontuacao,NomeCampeonato,Email) " +
-                        "Values ('camp1p1',0,'camp1circ1','user1')";
-                stm.executeUpdate(sql);
-            }*/
+
+            /*
+             * if (this.size() == 0) {
+             * String sql = "INSERT INTO carreiras (Id,Pontuacao,NomeCampeonato,Email) " +
+             * "Values ('camp1p1',0,'camp1circ1','user1')";
+             * stm.executeUpdate(sql);
+             * }
+             */
 
         } catch (SQLException e) {
             // Database error!

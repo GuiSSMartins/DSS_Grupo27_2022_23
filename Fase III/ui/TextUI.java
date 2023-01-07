@@ -88,6 +88,7 @@ public class TextUI {
             }
 
             Jogador jogador = this.model.getJogador(username);
+
             int versaoJogo = jogador.getVersaoJogo();
 
             this.printVersaoJogo(versaoJogo);
@@ -196,26 +197,53 @@ public class TextUI {
             String s_downforce;
             double downforce = -1;
             if (bool_opcao4) { // Quer alterar a downforce do carro (entre 0 e 1)
-                while (downforce < 0 && downforce > 1) {
+                while (downforce < 0 || downforce > 1) {
                     System.out.println("\nEscreva o novo valor da downforce  (Entre 0 e 1)\n");
                     System.out.println("Valor: ");
                     s_downforce = scin.nextLine();
                     downforce = Double.parseDouble(s_downforce);
 
-                    if (downforce < 0 && downforce > 1) { // Valor inválido
+                    if (downforce < 0 || downforce > 1) { // Valor inválido
                         System.out.println("\nO valor está errado!!! (tem de ser dentro de 0 e 1)\n");
                     }
                 }
             }
 
             // Escolher modo dos pneus & modo do motor
-            
+
             boolean bool_opcao5 = false;
             String op_pneus = null;
-             
+            int pneus = -1;
+
+            while (!bool_opcao5) {
+                System.out.println("\n||| Modos de Pneus |||");
+                System.out.println("1 - Macio;  2 - Duro;  3 - Chuva");
+                System.out.print("\nNúmero da opção: ");
+                op_pneus = scin.nextLine();
+                pneus = Integer.parseInt(op_pneus);
+
+                if (pneus == 1 || pneus == 2 || pneus == 3)
+                    bool_opcao5 = true;
+                if (!bool_opcao5)
+                    System.out.println("\nValor errado!\n");
+            }
+
             boolean bool_opcao6 = false;
-            String op_pneus6 = null;
-            
+            String op_motor = null;
+            int motor = -1;
+
+            while (!bool_opcao6) {
+                System.out.println("\n||| Modos de Motor |||");
+                System.out.println("1 - Conservador;  2 - Normal;  3 - Agressivo");
+                System.out.print("\nNúmero da opção: ");
+                op_motor = scin.nextLine();
+                motor = Integer.parseInt(op_motor);
+
+                if (motor == 1 || motor == 2 || motor == 3)
+                    bool_opcao6 = true;
+                if (!bool_opcao6)
+                    System.out.println("\nValor errado!\n");
+            }
 
             // Correr a simulação
             sspartidas.iniciarPartida();
@@ -223,10 +251,11 @@ public class TextUI {
             // Apresentar os resultados da partida
             List<String> resultados_finais = sspartidas.finalizarPartida();
             System.out.println("\n||| RESULTADOS FINAIS |||\n");
-            for (int i=1; i<=3; i++) {
-                System.out.println(i + "º: " + resultados_finais.get(i-1));
+            for (int i = 1; i <= 3; i++) {
+                System.out.println(i + "º: " + resultados_finais.get(i - 1));
             }
             System.out.println();
+
         } catch (NullPointerException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -255,7 +284,7 @@ public class TextUI {
 
         // Lista das carreiras
         List<Carreira> carreiras = this.model.getCarreiraJogador(username);
-        if (carreiras == null) {
+        if (carreiras.size() == 0) {
             System.out.println("\nNão existe histórico para este jogador!\nEntre num Campeonato e começe a jogar!\n");
         } else {
             System.out.println("\n||| CARREIRAS |||\n");

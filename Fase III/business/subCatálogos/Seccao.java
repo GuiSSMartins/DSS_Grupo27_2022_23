@@ -103,21 +103,21 @@ public class Seccao {
     }
 
     public double getTempoMedio() {
-        return (this.comprimento / this.getVelocidadeMedia())*1000;
+        return (this.comprimento / this.getVelocidadeMedia()); // em milisegundos
     }
 
     public double getTempoDesvio() {
-        return (this.comprimento / this.getVelocidadeDesvio())*1000;
+        return (this.comprimento / this.getVelocidadeDesvio()); // em milisegundos
     }
 
     public double getVelocidadeMedia() {
         switch (tipo) {
             case "reta":
-                return 50;
+                return 0.05; // metros por milisegundo
             case "curva":
-                return 33;
+                return 0.033;
             case "chicane":
-                return 22;
+                return 0.022;
             default:
                 return 0;
         }
@@ -126,11 +126,11 @@ public class Seccao {
     public double getVelocidadeDesvio() {
         switch (tipo) {
             case "reta":
-                return 41;
+                return 0.041;
             case "curva":
-                return 22;
+                return 0.022;
             case "chicane":
-                return 13;
+                return 0.013;
             default:
                 return 0;
         }

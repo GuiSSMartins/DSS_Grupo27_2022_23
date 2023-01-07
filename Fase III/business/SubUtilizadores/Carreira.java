@@ -42,7 +42,8 @@ public class Carreira {
         this.nomeCampeonato = nomeCampeonato;
         this.pontuacao = pontuacao;
         this.email = email;
-        this.id = this.nomeCampeonato.concat(email);
+        if(nomeCampeonato==null) this.id = email;
+        else this.id = this.nomeCampeonato.concat(email);
     }
 
     public Carreira(String nomeCampeonato, int pontuacao) {

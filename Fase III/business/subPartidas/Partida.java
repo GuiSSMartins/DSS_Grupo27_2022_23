@@ -83,6 +83,15 @@ public class Partida {
 				return estados.get(aKey2).getPontuacao() - estados.get(aKey1).getPontuacao();
 			}
 		});
+
+		int[] pontuacao = { 12, 10, 8, 7, 6, 5, 4, 3, 2, 1 };
+		int i = 0;
+
+		for(String email: lKeys)
+		{
+			this.estados.get(email).setPontuacao(pontuacao[i]);
+			i++;
+		}
 		return lKeys;
 	}
 
